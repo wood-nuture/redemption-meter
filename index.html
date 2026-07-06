@@ -707,7 +707,7 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 // ===== 启动 =====
 
 // Language system
-var curLang = localStorage.getItem("salaryLang") || "zh";
+var curLang = localStorage.getItem("salaryLang") || "zh";try{document.getElementById("langBtn").textContent=curLang==="zh"?"US":"CN"}catch(e){}
 var isProUser = localStorage.getItem("salaryPro") === "true";
 function toggleLang() {
   curLang = curLang === "zh" ? "en" : "zh";
@@ -720,22 +720,44 @@ function showProPopup() {
   if (el) el.classList.add("show");
 }
 function translateDOM() {
-  if (curLang === "zh") return;
-  var m = {"月薪":"Salary","上班":"Start","下班":"End","午休":"Lunch","工作日":"Work Days","目标":"Goal","语音包":"Sound","取消":"Cancel","保存":"Save","关闭":"Close","今日搬砖收益":"Today's Grind","日薪":"Daily","每秒":"/Sec","本月":"Month","日报":"Report","满勤":"Attend.","已下班":"Outta","搬砖中":"Hustlin'","摸鱼中":"Slackin'","摸鱼":"Slack","休息日":"Day Off","距离下班":"Till freedom"};
-  var w = document.createTreeWalker(document.body, 4, null, false), n;
-  while (n = w.nextNode()) {
-    var t = n.textContent, ch = false;
-    for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
-    if (ch) n.textContent = t;
-  }
+  if(curLang==="zh")return;
+  var w=document.createTreeWalker(document.body,4,null,false),n;
+  var m={};
+  m["月薪"]="Salary";m["上班"]="Start";m["下班"]="End";m["午休"]="Lunch";
+  m["工作日"]="Work Days";m["目标"]="Goal";m["语音包"]="Sound";
+  m["取消"]="Cancel";m["保存"]="Save";m["关闭"]="Close";
+  m["今日搬砖收益"]="Today's Grind";m["日薪"]="Daily";m["每秒"]="/Sec";
+  m["本月"]="Month";m["日报"]="Report";m["满勤"]="Attend.";
+  m["总工时"]="Hours";m["总收入"]="Earned";m["时薪"]="/Hour";
+  m["连续打卡"]="Streak";m["今日打工报告"]="Daily Report";
+  m["今日收入相当于"]="Today =";m["杯"]="cups";m["已够"]="Got";
+  m["全国"]="";m["位工友正在搬砖"]="grindin'";
+  m["今日全国平均时薪"]="Nat'l avg";m["位工友在摸鱼"]="nearby slackin'";
+  m["靠工资攒够需要很久，想加速吗？"]="Savings slow? Speed up?";
+  m["这个目标不小，有没有想过副业？"]="Side hustle?";
+  m["已下班"]="Outta";m["搬砖中"]="Hustlin'";m["摸鱼中"]="Slackin'";
+  m["摸鱼"]="Slack";m["休息日"]="Day Off";m["距离下班"]="Till freedom";
+  m["距上班"]="Till start";m["已上班"]="On clock";m["下班啦"]="Peace!";
+  m["午休中"]="Lunch";m["未开工"]="Not Started";
+  m["带薪放松"]="Paid Chill";m["放松中"]="Chillin'";m["暂停计时"]="Paused";
+  m["带薪放松中"]="Chillin'";m["开始搬砖赚小钱钱~"]="Start earnin'~";
+  m["当前:"]="Current:";m["至少选一天"]="Pick a day";
+  m["结束放松，继续搬砖 →"]="End Chill →";
+  m["继续搬砖"]="Back to Grind";m["本次带薪价值"]="Break Value";
+  m["身心舒畅，可以继续搬砖了。"]="Refreshed, back to grind.";
+  m["放空的时候，钱也在为你打工"]="Money works while you chill";
+  m["带薪放松计时器"]="Paid Chill Timer";
+  m["这趟放松，已为你赚了"]="You earned:";
+  m["截图分享"]="Screenshot";m["攒"]="Stack";
+  m["可爱布谷"]="Cute Cuckoo";m["支付宝到账"]="Alipay Ding";
+  m["经典增命蘑菇"]="1-Up Shroom";m["经典金币"]="Classic Coin";
+  m["马里奥 1-UP"]="Mario 1-UP";m["马里奥叮叮声"]="Mario Ding";
+  m["清脆到账提示"]="Payment Ding";m["轻快提示音"]="Gentle Ping";
+  m["平米"]="sq ft";m["Pro"]="Pro";m["仅限 Pro 用户"]="Pro Only";
+  m["自定义名称"]="Name";m["目标金额"]="Target";m["换算单位"]="Unit";
+  m["每单位金额"]="Per Unit";
+  while(n=w.nextNode()){var t=n.textContent,ch=false;
+  for(var k in m){if(t.indexOf(k)>=0){t=t.split(k).join(m[k]);ch=true}}
+  if(ch)n.textContent=t}
 }
-mkIngots();mkStars();checkStreak();translateDOM();
-if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
-updSnd();updUI();translateDOM();
-setInterval(function(){updUI();translateDOM();},50);
-setInterval(()=>{lastInt=-1},60000);
-</script>
 
-<div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert('Payment system coming soon!')">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById(\'proOv\').classList.remove(\'show\')">Not now</button></div></div></div>
-</body>
-</html>
