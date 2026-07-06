@@ -7,6 +7,7 @@
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
 body.dark{--bg:linear-gradient(135deg,#050508,#0d0d1a 50%,#050510 100%);--tx:#c8c8d4;--tx2:#7a7a8a;--tx3:rgba(120,120,140,0.35);--cd:rgba(255,255,255,0.02);--bd:rgba(255,255,255,0.06);--hv:rgba(255,255,255,0.04);--sh:rgba(0,0,0,0.6);--g1:#b8974a;--g2:#a07830;--g3:#8a6420;--gr:#5a8a5c;--or:#b89440}
+.tz-badge{display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:10px;font-size:9px;background:var(--cd);border:1px solid var(--bd);color:var(--tx3);margin-left:2px}
 body.dark .amount-num,body.dark .amount-dec{background:linear-gradient(180deg,#d4d4e0 0%,#b8974a 45%,#8a6420 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 *{margin:0;padding:0;box-sizing:border-box}
 body{min-height:100vh;background:var(--bg);font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;display:flex;align-items:center;justify-content:center;overflow-x:hidden;position:relative;user-select:none;transition:background 0.6s}
@@ -282,7 +283,7 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="container">
   <div class="cat" id="cat" onclick="tapCat()">🐱</div>
-  <div class="title-row">今日搬砖收益 <span class="sb" id="sb">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
+  <div class="title-row">今日搬砖收益 <span class="sb" id="sb">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span> <span class="tz-badge" id="tzBadge"></span></div>
 
   <div class="cd-w" onclick="toggleCD()">
     <span class="cd-l" id="cdL">⏳ 距离下班</span>
@@ -945,6 +946,15 @@ m["\ud83e\uddf4 \u62a4\u80a4\u54c1"]="\ud83e\uddf4 Office survival kit: moisturi
 // Run translateDOM on a separate interval (existing setInterval runs updUI every 50ms)
 
 
+
+// Timezone detection
+try {
+  var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var offset = -new Date().getTimezoneOffset();
+  var offsetStr = "UTC" + (offset >= 0 ? "+" : "") + Math.floor(offset/60) + ":" + String(offset%60).padStart(2,"0");
+  var el = document.getElementById("tzBadge");
+  if (el) el.textContent = tz.split("/").pop().replace("_"," ") + " " + offsetStr;
+} catch(e) {}
 </script>
 
 <div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div>
