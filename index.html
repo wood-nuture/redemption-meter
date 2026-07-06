@@ -862,6 +862,41 @@ m["带薪放松结束！"]="Break Over!";
   m["日"]="Sun";m["周一"]="Mon";m["周二"]="Tue";m["周三"]="Wed";m["周四"]="Thu";m["周五"]="Fri";m["周六"]="Sat";
   m["星期日"]="Sunday";m["星期一"]="Monday";m["星期二"]="Tuesday";m["星期三"]="Wednesday";m["星期四"]="Thursday";m["星期五"]="Friday";m["星期六"]="Saturday";
   m["周日"]="Sun";
+  m["🎯 目标"]="🎯 Goal";
+  m["你赚的每一分钱，都是你未来说「不」的底气。"]="Every cent = your \'no\' fund.";
+  m["🌴 享受慢生活，你值得拥有"]="Slow living, you earned it.";
+  m["👑 搬砖王者"]="👑 Grind God";
+  m["⚙️ 设置"]="⚙️ Settings";
+  m["💰 日薪"]="💰 Daily";
+  m["⚡ 每秒"]="⚡ /Sec";
+  m["📅 本月"]="📅 Month";
+  m["📋 日报"]="📋 Report";
+  m["📋 今日打工报告"]="📋 Report";
+  m["😴 摸鱼"]="😴 Slack";
+  m["😴 摸鱼中"]="😴 Slackin\'";
+  m["🚽 带薪放松"]="🚽 Paid Break";
+  m["🚽 放松中"]="🚽 Chillin\'";
+  m["🎯 赚钱目标"]="🎯 Money Goals";
+  m["🎵 语音包"]="🎵 Sound";
+  m["🎭 今天打工心情怎么样？"]="🎭 How was work?";
+  m["📸 截图分享"]="📸 Screenshot";
+  m["⏳ 距离下班"]="⏳ Till Quit";
+  m["🕐 已上班"]="🕐 Clocked";
+  m["⏸️ 摸鱼中"]="⏸️ Slackin\'";
+  m["已够 0"]="Got 0";
+  m["已够 1"]="Got 1";
+  m["🔥 0天"]="🔥 0 days";
+  m["🔥 继续加油"]="🔥 Keep going";
+  m["结束放松，继续搬砖 →"]="End Break →";
+  m["继续搬砖 💪"]="Back 💪";
+  m["跳过，不想说"]="Skip";
+  m["0天"]="0 days";
+  m["当前: 马里奥 1-UP"]="Current: Mario 1-UP";
+  m["一分耕耘一分收获，今天的汗水是明天的奶茶 🌾"]="Sweat today, boba tomorrow 🌾";
+  m["加油，打工人！你的努力，¥¥¥在替你说话 💪"]="Hustle on! Your cash talks 💪";
+  m["你比自己想象的更值钱 —— 看，数字在证明 💰"]="You\'re worth more 💰";
+  m["下班快乐！今天也是丰收的一天"]="Happy hour! You killed it";
+  m["新的一天，新的¥¥¥在等你"]="New day, new $$$";
 var w = document.createTreeWalker(document.body, 4, null, false), n;
   while (n = w.nextNode()) {
     var t = n.textContent, ch = false;
@@ -871,6 +906,8 @@ var w = document.createTreeWalker(document.body, 4, null, false), n;
 }
 function showProPopup(){try{document.getElementById("proOv").classList.add("show")}catch(e){}}
 
+
+try{document.getElementById("pageTitle").textContent=curLang==="zh"?"🐱 赎身进度条":"🐱 Redemption Meter"}catch(e){}
 </script>
 <div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert(Payment system coming soon!)">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById(proOv).classList.remove(show)">Not now</button></div></div></div>
 
