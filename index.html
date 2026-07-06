@@ -708,7 +708,7 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-setInterval(updUI,50);
+setInterval(function(){updUI();if(curLang!=='zh')translateDOM();},50);
 setInterval(()=>{lastInt=-1},60000);
 
 // Language system (appended - does not modify any existing code)
@@ -943,8 +943,8 @@ m["\ud83e\uddf4 \u62a4\u80a4\u54c1"]="\ud83e\uddf4 Office survival kit: moisturi
 }
 
 // Run translateDOM on a separate interval (existing setInterval runs updUI every 50ms)
-setTimeout(translateDOM, 200);
-setInterval(translateDOM, 100);
+
+
 </script>
 
 <div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div>
