@@ -272,8 +272,11 @@ select option{background:#2d1810;color:#fceabb}
 <!-- 心情记录 -->
 <div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 今天打工心情怎么样？</h3><p>点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">跳过，不想说</div></div></div>
 
+<span id="tzBadge" style="font-size:9px;color:var(--tx3);position:fixed;top:20px;left:16px;z-index:5"></span>
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
+  <button class="top-btn" id="langBtn" onclick="toggleLang()">US</button>
+  <button class="top-btn" onclick="var p=document.getElementById('proOv');if(p)p.style.display='flex'">💎</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
@@ -707,8 +710,67 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-setInterval(updUI,50);
+setInterval(function(){updUI();if(curLang!=="zh")translateDOM();},50);
 setInterval(()=>{lastInt=-1},60000);
+
+// === i18n System ===
+var curLang = localStorage.getItem("salaryLang") || "zh";
+try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
+function toggleLang() {
+  curLang = curLang === "zh" ? "en" : "zh";
+  localStorage.setItem("salaryLang", curLang);
+  try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
+  location.reload();
+}
+function translateDOM() {
+  if (curLang === "zh") return;
+  var m = {
+    "今日搬砖收益":"Today's Grind", "日薪":"Daily", "每秒":"/Sec",
+    "本月":"Month", "日报":"Report", "满勤":"Attend.",
+    "总工时":"Hours", "总收入":"Earned", "时薪":"/Hour",
+    "连续打卡":"Streak", "今日打工报告":"Daily Report",
+    "今日收入相当于":"Today = ", "杯":"cups", "已够":"Got",
+    "全国":"", "位工友正在搬砖":"grindin'",
+    "今日全国平均时薪":"Nat'l avg", "位工友在摸鱼":"slackin'",
+    "已下班":"Outta", "搬砖中":"Grindin'", "摸鱼中":"Slackin'",
+    "摸鱼":"Slack", "休息日":"Day Off", "距离下班":"Till freedom",
+    "距上班":"Till start", "已上班":"On clock", "下班啦":"Done!",
+    "午休中":"Lunch", "未开工":"Pre-shift",
+    "带薪放松":"Paid Break", "放松中":"Chillin'", "暂停计时":"Paused",
+    "带薪放松中":"Chillin'", "开始搬砖赚小钱钱~":"Start earnin'~",
+    "当前:":"Current:", "至少选一天":"Pick",
+    "结束放松，继续搬砖 \u2192":"End Break \u2192",
+    "继续搬砖":"Back", "本次带薪价值":"Break Value",
+    "截图分享":"Screenshot",
+    "月薪（税前）":"Salary", "上班":"Start", "下班":"End",
+    "午休（小时）":"Lunch", "月计薪天数":"Work Days/Month",
+    "工作日":"Work Days", "语音包":"Sound",
+    "取消":"Cancel", "保存":"Save", "关闭":"Close",
+    "自定义名称":"Name", "目标金额":"Target", "换算单位":"Unit",
+    "每单位金额":"Per Unit", "赚钱目标":"Goals",
+    "靠工资攒够需要很久，想加速吗？":"Slow? Speed up?",
+    "这个目标不小，有没有想过副业？":"Big goal? Side hustle?",
+    "不想说":"Skip", "今天打工心情怎么样":"How was work?",
+    "点一下记录今日心情":"Log your mood",
+    "Pro":"Pro", "仅限 Pro 用户":"Pro Only",
+    "可爱布谷":"Cute Cuckoo", "支付宝到账":"Alipay Ding",
+    "经典增命蘑菇":"1-Up Shroom", "经典金币":"Classic Coin",
+    "马里奥 1-UP":"Mario 1-UP", "马里奥叮叮声":"Mario Ding",
+    "清脆到账提示":"Payment Ding", "轻快提示音":"Soft Ping",
+    "平米":"sq ft", "攒":"Stack",
+    "周一":"Mon","周二":"Tue","周三":"Wed","周四":"Thu","周五":"Fri","周六":"Sat","周日":"Sun",
+    "暂时没有":"None"
+  };
+  var w = document.createTreeWalker(document.body, 4, null, false), n;
+  while (n = w.nextNode()) {
+    var t = n.textContent, ch = false;
+    for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
+    if (ch) n.textContent = t;
+  }
+}
+// Timezone
+try { var tz = Intl.DateTimeFormat().resolvedOptions().timeZone; var off = -new Date().getTimezoneOffset(); var os = "UTC" + (off>=0?"+":"") + Math.floor(off/60) + ":" + String(off%60).padStart(2,"0"); var el = document.getElementById("tzBadge"); if (el) el.textContent = tz.split("/").pop().replace("_"," ") + " " + os; } catch(e) {}
 </script>
+<div class="ov" id="proOv" style="display:none"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert('Payment system coming soon!')">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="this.parentElement.parentElement.parentElement.style.display='none'">Not now</button></div></div></div>
 </body>
 </html>
