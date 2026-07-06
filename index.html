@@ -325,7 +325,8 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
-<div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
+<div class="fg"><label style="cursor:pointer;color:var(--g2)" onclick="showProPopup()">&#x2b50; Upgrade to Pro</label></div>
+    <div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
 </div></div>
 
 <script>
@@ -761,6 +762,24 @@ function translateDOM() {
     "清脆到账提示":"Payment Ding", "轻快提示音":"Soft Ping",
     "平米":"sq ft", "攒":"Stack"
   };
+m["设置"]="Settings";
+m["日薪 = 月薪 ÷ 计薪天数"]="Daily = Salary / Days";
+m["元"]=" yuan";
+m["天"]=" days";
+m["一平米房"]="House/m2";
+m["一支口红"]="Lipstick";
+m["美甲"]="Nail Art";
+m["一束花"]="Bouquet";
+m["看电影"]="Movie";
+m["下午茶"]="Afternoon Tea";
+m["一条裙子"]="Dress";
+m["护肤品"]="Skincare";
+m["演唱会"]="Concert";
+m["写真"]="Photo Shoot";
+m["短途旅行"]="Getaway";
+m["开始搬砖赚小钱钱"]="Start earnin'";
+m["再次截图"]="Screenshot Again";
+m["带薪放松结束！"]="Break Over!";
     m["下班后的时间，才是你的人生 🌆"]="After work, life begins 🌆";
   m["今天也在为更好的自己打工 ✨"]="Building a better me ✨";
   m["今天也是为自由积累筹码的一天 ✨"]="Stackin' freedom chips ✨";
