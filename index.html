@@ -818,13 +818,9 @@ m["连续打卡"]="Streak";
     if (ch) n.textContent = t;
   }
 }
-// Run translateDOM after initial render and on each update
-setTimeout(translateDOM, 100);
-// Patch the existing setInterval to also translate
-var _origInt = setInterval;
-setInterval = function(fn, ms) {
-  return _origInt(function() { fn(); translateDOM(); }, ms);
-};
+// Run translateDOM on a separate interval (existing setInterval runs updUI every 50ms)
+setTimeout(translateDOM, 200);
+setInterval(translateDOM, 100);
 </script>
 
 <div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div>
