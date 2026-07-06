@@ -746,6 +746,44 @@ if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').
 function translateDOM() {
   if(curLang==="zh")return;
   var m={
+    "今日搬砖收益":"Today's Grind","日薪":"Daily","每秒":"/Sec","本月":"Month","日报":"Report",
+    "满勤":"Attend.","总工时":"Hours","总收入":"Earned","时薪":"/Hour","连续打卡":"Streak",
+    "今日打工报告":"Daily Report","今日收入相当于":"= ","杯":"cups","已够":"Got","目标":"Goal",
+    "距上班":"T- shift","已下班":"Outta","搬砖中":"Hustlin'","摸鱼中":"Slackin'",
+    "未开工":"Pre-shift","午休中":"Lunch","下班啦":"Peace!","带薪放松":"Paid Chill",
+    "放松中":"Chillin'","暂停计时":"Paused","已上班":"On clock","距离下班":"Till freedom",
+    "距离上班":"Till clock","休息日":"Day Off","当前:":"Current:","至少选一天":"Pick a day",
+    "摸鱼":"Slack","带薪放松中":"Paid Chill","开始搬砖赚小钱钱~":"Start earnin'~",
+    "截图分享":"Screenshot","可爱布谷":"Cute Cuckoo","支付宝到账":"Alipay Ding",
+    "经典增命蘑菇":"1-Up Mushroom","经典金币":"Classic Coin","马里奥 1-UP":"Mario 1-UP",
+    "平米":"sq ft",
+    "月薪（税前）":"Salary","月薪":"Salary","上班":"Start","下班":"End",
+    "午休（小时）":"Lunch (hrs)","午休":"Lunch","工作日":"Work Days","每月计薪天数":"Work Days/Month",
+    "语音包":"Sound Pack","赚钱目标":"Money Goal","自定义":"Custom","名称":"Name",
+    "目标金额":"Target ($)","换算单位":"Unit","每单位金额":"Per Unit ($)",
+    "取消":"Cancel","保存":"Save","关闭":"Close",
+    "打工日报":"Daily Report","结束放松，继续搬砖 →":"End Chill, Back →",
+    "继续搬砖 💪":"Back to Grind 💪","本次带薪价值":"Break's Value",
+    "身心舒畅，可以继续搬砖了。":"Refreshed, back to grind.",
+    "放空的时候，钱也在为你打工":"Zone out, money works for you",
+    "带薪放松计时器":"Paid Chill Timer","这趟放松，已为你赚了":"Earned this break:",
+    "今日打工报告":"Hustle Report",
+    "总工时":"Hours","总收入":"Earned",
+    "全国":"","位工友正在搬砖":"grindin'",
+    "今日全国平均时薪":"Avg /hr",
+    "位工友在摸鱼":"nearby slackin'",
+    "靠工资攒够需要很久，想加速吗？":"Slow savings? Speed up?",
+    "这个目标不小，有没有想过副业？":"Big goal - side hustle?",
+    "Pro":"Pro","仅限 Pro 用户":"Pro Only","解锁全部功能":"Unlock All"
+  };
+  var w=document.createTreeWalker(document.body,4,null,false),n;
+  while(n=w.nextNode()){var t=n.textContent,ch=false;
+  for(var k in m){if(t.indexOf(k)>=0){t=t.split(k).join(m[k]);ch=true}}
+  if(ch)n.textContent=t}
+}
+() {
+  if(curLang==="zh")return;
+  var m={
     "今日搬砖收益":"Today's Grind","日薪":"Daily","每秒":"/Sec","本月":"Month","日报":"Report","满勤":"Attend.",
     "总工时":"Hours","总收入":"Earned","时薪":"/Hour","连续打卡":"Streak","今日打工报告":"Today's Report",
     "今日收入相当于":"Today's earnings =","杯":"cups","已够":"Got","目标":"Goal",
