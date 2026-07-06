@@ -271,12 +271,11 @@ select option{background:#2d1810;color:#fceabb}
 
 <!-- 心情记录 -->
 <div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 今天打工心情怎么样？</h3><p>点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">跳过，不想说</div></div></div>
-  <span id="tzBadge" style="font-size:9px;color:var(--tx3);position:fixed;top:20px;left:16px;z-index:5"></span>
+
 <div class="top-bar">
-  <button class="top-btn" id="langBtn" onclick="toggleLang()">US</button>
+  <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
-  <button class="top-btn" onclick="var p=document.getElementById('proOv');if(p)p.style.display='flex'" title="Pro">💎</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
 </div>
 
@@ -325,8 +324,7 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
-<div class="fg"><label style="cursor:pointer;color:var(--g2)" onclick="var p=document.getElementById('proOv');if(p)p.style.display='flex'">&#x2b50; Upgrade to Pro</label></div>
-    <div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
+<div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
 </div></div>
 
 <script>
@@ -709,208 +707,8 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-setInterval(function(){updUI();if(curLang!=='zh')translateDOM();},50);
+setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
-
-// i18n system
-var curLang = localStorage.getItem("salaryLang") || "zh";
-try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
-function toggleLang() {
-  curLang = curLang === "zh" ? "en" : "zh";
-  localStorage.setItem("salaryLang", curLang);
-  try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
-  location.reload();
-}
-function translateDOM() {
-  if (curLang === "zh") return;
-  var m = {
-    "今日搬砖收益":"Today's Grind", "日薪":"Daily", "每秒":"/Sec",
-    "本月":"Month", "日报":"Report", "满勤":"Attend.",
-    "总工时":"Hours", "总收入":"Earned", "时薪":"/Hour",
-    "连续打卡":"Streak", "今日打工报告":"Daily Report",
-    "今日收入相当于":"Today = ", "杯":"cups", "已够":"Got",
-    "全国":"", "位工友正在搬砖":"grindin'",
-    "今日全国平均时薪":"Nat'l avg", "位工友在摸鱼":"slackin'",
-    "已下班":"Outta", "搬砖中":"Grindin'", "摸鱼中":"Slackin'",
-    "摸鱼":"Slack", "休息日":"Day Off", "距离下班":"Till freedom",
-    "距上班":"Till start", "已上班":"On clock", "下班啦":"Done!",
-    "午休中":"Lunch", "未开工":"Pre-shift",
-    "带薪放松":"Paid Break", "放松中":"Chillin'", "暂停计时":"Paused",
-    "带薪放松中":"Chillin'", "开始搬砖赚小钱钱~":"Start earnin'~",
-    "当前:":"Current:", "至少选一天":"Pick",
-    "结束放松，继续搬砖 \u2192":"End Break \u2192",
-    "继续搬砖":"Back", "本次带薪价值":"Break Value",
-    "身心舒畅，可以继续搬砖了。":"Ready to work.",
-    "放空的时候，钱也在为你打工":"Money works while you chill",
-    "带薪放松计时器":"Paid Break Timer",
-    "这趟放松，已为你赚了":"This break: +",
-    "截图分享":"Screenshot", "当前":"Current",
-    "月薪（税前）":"Salary", "上班":"Start", "下班":"End",
-    "午休（小时）":"Lunch", "月计薪天数":"Work Days/Month",
-    "工作日":"Work Days", "语音包":"Sound",
-    "取消":"Cancel", "保存":"Save", "关闭":"Close",
-    "自定义名称":"Name", "目标金额":"Target", "换算单位":"Unit",
-    "每单位金额":"Per Unit", "赚钱目标":"Goals",
-    "靠工资攒够需要很久，想加速吗？":"Slow? Speed up?",
-    "这个目标不小，有没有想过副业？":"Big goal? Side hustle?",
-    "不想说":"Skip", "今天打工心情怎么样":"How was work?",
-    "点一下记录今日心情":"Log your mood",
-    "Pro":"Pro", "仅限 Pro 用户":"Pro Only", "解锁全部功能":"Unlock All",
-    "可爱布谷":"Cute Cuckoo", "支付宝到账":"Alipay Ding",
-    "经典增命蘑菇":"1-Up Shroom", "经典金币":"Classic Coin",
-    "马里奥 1-UP":"Mario 1-UP", "马里奥叮叮声":"Mario Ding",
-    "清脆到账提示":"Payment Ding", "轻快提示音":"Soft Ping",
-    "平米":"sq ft", "攒":"Stack"
-  };
-m["设置"]="Settings";
-m["日薪 = 月薪 ÷ 计薪天数"]="Daily = Salary / Days";
-m["元"]=" yuan";
-m["天"]=" days";
-m["一平米房"]="House/m2";
-m["一支口红"]="Lipstick";
-m["美甲"]="Nail Art";
-m["一束花"]="Bouquet";
-m["看电影"]="Movie";
-m["下午茶"]="Afternoon Tea";
-m["一条裙子"]="Dress";
-m["护肤品"]="Skincare";
-m["演唱会"]="Concert";
-m["写真"]="Photo Shoot";
-m["短途旅行"]="Getaway";
-m["开始搬砖赚小钱钱"]="Start earnin'";
-m["再次截图"]="Screenshot Again";
-m["带薪放松结束！"]="Break Over!";
-    m["下班后的时间，才是你的人生 🌆"]="After work, life begins 🌆";
-  m["今天也在为更好的自己打工 ✨"]="Building a better me ✨";
-  m["今天也是为自由积累筹码的一天 ✨"]="Stackin' freedom chips ✨";
-  m["今天忍住的奶茶，明天可能就是一杯自由 ☕"]="Boba skipped = freedom ☕";
-  m["今天忍住的消费，明天就是你的自由基金。"]="Skipped = freedom fund.";
-  m["今天的你，比昨天的你又贵了一点点 💰"]="Today > yesterday 💰";
-  m["今天的午饭格外香，因为是劳动换来的"]="Lunch hits different earned";
-  m["休息是为了走更远的路"]="Rest to go further";
-  m["你今天的劳动，已经兑换成了看得见的数字 📈"]="Labor = visible numbers 📈";
-  m["你比昨天又多了一个拒绝的筹码。"]="One more chip than yesterday.";
-  m["你比自己想象的更值钱"]="You're worth more";
-  m["你的每一次深呼吸，都在消耗公司的氧气。"]="Every breath burns O2.";
-  m["你认真工作的样子，真的很耀眼 ✨"]="Lookin' sharp on the grind ✨";
-  m["你赚的每一分钱，都是你未来说不的底气。"]="Every cent = your 'no' fund.";
-  m["养精蓄锐，准备开赚！"]="Rest up, time to earn!";
-  m["加油，打工人！"]="Hustle on!";
-  m["午休时间，让大脑充个电"]="Brain recharge time";
-  m["去享受属于你的时间吧，你今天很棒"]="Go enjoy, you crushed it!";
-  m["又熬过了一天，你真棒 🌈"]="You survived - awesome! 🌈";
-  m["吃饱了才有力气搬砖~"]="Fuel up for the grind~";
-  m["周末愉快，钱的事明天再说"]="Weekend! Money can wait";
-  m["夕阳为你加冕，明天继续加油"]="Sunset crowns you, see you tomorrow";
-  m["好好吃饭，下午继续赚钱！"]="Eat up, more grind!";
-  m["存钱不是为了省钱，是为了攒底气。"]="Save for backbone.";
-  m["存钱罐越来越重了，离梦想又近了一步 🪙"]="Piggy bank's heavier 🪙";
-  m["工作是为了生活，但生活不是为了工作 🌈"]="Work to live, don't live to work 🌈";
-  m["带薪拉屎，是打工人最优雅的叛逆。"]="Paid poopin' = elegant defiance.";
-  m["时间在走，钱在涨，你在爽。"]="Time ticks, cash stacks, you chill.";
-  m["这不是摸鱼，这是战略性休整。"]="Strategic regrouping.";
-  m["别刷手机，专心致志，对钱尊重。"]="Stop scrollin', respect the cash.";
-  m["慢慢来，老板正在为你买单。"]="Slow down, boss is payin'.";
-  m["每一秒的放空，都是对资本的温柔反抗。"]="Gentle rebellion.";
-  m["蹲自己的坑，让老板的会等等。"]="Own your throne, meetings wait.";
-  m["恭喜，老板又帮你报销了今天的通勤费。"]="Boss paid your commute.";
-  m["这杯奶茶，没有植脂末，全是你的血汗。"]="Pure sweat boba.";
-  m["别小看这几块钱，这是你未来的"]="Those few bucks =";
-  m["摸鱼赚的钱，最香。"]="Slack cash hits different.";
-  m["老板的梦想是上市，你的梦想是老板给你涨工资。"]="IPO vs raise.";
-  m["赚钱的意义不是现在花，而是以后可以花得理直气壮。"]="Guilt-free spend later.";
-  m["每一块钱都在投票你想要的生活。"]="Every dollar votes.";
-  m["打工人，打工魂，打工都是人上人。"]="Workers = MVPs.";
-  m["摸鱼也是一种生活智慧"]="Slackin' is wisdom";
-  m["适当的休息，是为了更好地出发"]="Rest before the push";
-  m["摸鱼使我快乐，快乐使我更有效率"]="Happy = productive";
-  m["鱼都摸了，快乐就完事了"]="Life is good";
-  m["一分耕耘一分收获，今天的汗水是明天的奶茶"]="Sweat today, boba tomorrow";
-  m["每分每秒都在增值，你值得更好的生活 📈"]="Every sec = value. You deserve better 📈";
-  m["摸鱼是为了更好地搬砖，搬砖是为了早日不搬砖 😎"]="Slack to stop the grind 😎";
-  m["每一块钱都是自由的选票，积累它，兑换未来 🌟"]="Every dollar = freedom vote 🌟";
-  m["赚钱的意义不是为了现在，而是为了以后可以说"]="Money = the power to say no";
-  m["搬的每一块砖，都在构建你想要的生活 🏗️"]="Brick by brick, building your dream 🏗️";
-  m["累的时候看看数字，它不会骗你 ❤️"]="Tired? Numbers don't lie ❤️";
-  m["每一分钟的坚持，都在为未来的选择权充值 ⏳"]="Every minute = future choice ⏳";
-  m["每一天都是赚钱的好日子"]="Every day's a payday";
-  m["辛苦了，明天继续发光 🌟"]="Good work, shine again 🌟";
-  m["打工很累，但你在一点点变强大 💪"]="Work's tough, you're stronger 💪";
-  m["记住：你不是在打工，你是在买自己的未来 🎫"]="You're buying your future 🎫";
-  m["新的一天，新的"]="New day, new";
-  m["在替你说话"]="speaks for you";
-  m["在等你"]="waitin'";
-  m["看，数字在证明"]="numbers prove it";
-  m["已复制"]="Copied";
-  m["继续加油"]="Keep going";
-  m["平均每小时"]="Avg /hr";
-  m["今天赚了"]="Today:";
-  m["解锁成就：搬砖王者"]="Achievement: Grind God";
-  m["钱已入账"]="Money in!";
-  m["距离上班"]="Till start";
-  m["已打过卡"]="Checked in";
-  m["新打卡"]="New day";
-  m["计薪天数"]="Work Days";
-  m["午休金额暂停增长"]="Pause during lunch";
-  m["你的工位附近有"]="Near your desk:";
-  m["来自赎身进度条"]="- Redemption Meter";
-  m["下班庆祝"]="After work";
-  m["月心情总结"]="Monthly mood";
-  m["本月你最常"]="Mostly";
-  m["结束放松，继续搬砖"]="End break";
-  m["招财工资表"]="Meter";
-  m["日"]="Sun";m["周一"]="Mon";m["周二"]="Tue";m["周三"]="Wed";m["周四"]="Thu";m["周五"]="Fri";m["周六"]="Sat";
-  m["星期日"]="Sunday";m["星期一"]="Monday";m["星期二"]="Tuesday";m["星期三"]="Wednesday";m["星期四"]="Thursday";m["星期五"]="Friday";m["星期六"]="Saturday";
-  m["周日"]="Sun";
-  m["🎯 目标"]="🎯 Goal";
-  m["你赚的每一分钱，都是你未来说「不」的底气。"]="Every cent = your \'no\' fund.";
-  m["🌴 享受慢生活，你值得拥有"]="Slow living, you earned it.";
-  m["👑 搬砖王者"]="👑 Grind God";
-  m["⚙️ 设置"]="⚙️ Settings";
-  m["💰 日薪"]="💰 Daily";
-  m["⚡ 每秒"]="⚡ /Sec";
-  m["📅 本月"]="📅 Month";
-  m["📋 日报"]="📋 Report";
-  m["📋 今日打工报告"]="📋 Report";
-  m["😴 摸鱼"]="😴 Slack";
-  m["😴 摸鱼中"]="😴 Slackin\'";
-  m["🚽 带薪放松"]="🚽 Paid Break";
-  m["🚽 放松中"]="🚽 Chillin\'";
-  m["🎯 赚钱目标"]="🎯 Money Goals";
-  m["🎵 语音包"]="🎵 Sound";
-  m["🎭 今天打工心情怎么样？"]="🎭 How was work?";
-  m["📸 截图分享"]="📸 Screenshot";
-  m["⏳ 距离下班"]="⏳ Till Quit";
-  m["🕐 已上班"]="🕐 Clocked";
-  m["⏸️ 摸鱼中"]="⏸️ Slackin\'";
-  m["已够 0"]="Got 0";
-  m["已够 1"]="Got 1";
-  m["🔥 0天"]="🔥 0 days";
-  m["🔥 继续加油"]="🔥 Keep going";
-  m["结束放松，继续搬砖 →"]="End Break →";
-  m["继续搬砖 💪"]="Back 💪";
-  m["跳过，不想说"]="Skip";
-  m["0天"]="0 days";
-  m["当前: 马里奥 1-UP"]="Current: Mario 1-UP";
-  m["一分耕耘一分收获，今天的汗水是明天的奶茶 🌾"]="Sweat today, boba tomorrow 🌾";
-  m["加油，打工人！你的努力，¥¥¥在替你说话 💪"]="Hustle on! Your cash talks 💪";
-  m["你比自己想象的更值钱 —— 看，数字在证明 💰"]="You\'re worth more 💰";
-  m["下班快乐！今天也是丰收的一天"]="Happy hour! You killed it";
-  m["新的一天，新的¥¥¥在等你"]="New day, new $$$";
-var w = document.createTreeWalker(document.body, 4, null, false), n;
-  while (n = w.nextNode()) {
-    var t = n.textContent, ch = false;
-    for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
-    if (ch) n.textContent = t;
-  }
-}
-function showProPopup(){try{document.getElementById("proOv").classList.add("show")}catch(e){}}
-
-
-try{document.getElementById("pageTitle").textContent=curLang==="zh"?"🐱 赎身进度条":"🐱 Redemption Meter"}catch(e){}
-
-try{document.getElementById("pageTitle").textContent=curLang==="zh"?"🐱 赎身进度条":"🐱 Redem
-
-<div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert('Payment system coming soon!')">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById('proOv').style.display='none'">Not now</button></div></div></div>
+</script>
 </body>
 </html>
