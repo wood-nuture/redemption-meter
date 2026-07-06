@@ -7,7 +7,6 @@
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
 body.dark{--bg:linear-gradient(135deg,#050508,#0d0d1a 50%,#050510 100%);--tx:#c8c8d4;--tx2:#7a7a8a;--tx3:rgba(120,120,140,0.35);--cd:rgba(255,255,255,0.02);--bd:rgba(255,255,255,0.06);--hv:rgba(255,255,255,0.04);--sh:rgba(0,0,0,0.6);--g1:#b8974a;--g2:#a07830;--g3:#8a6420;--gr:#5a8a5c;--or:#b89440}
-.tz-badge{font-size:9px;color:var(--tx3);margin-left:2px;display:inline}
 body.dark .amount-num,body.dark .amount-dec{background:linear-gradient(180deg,#d4d4e0 0%,#b8974a 45%,#8a6420 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 *{margin:0;padding:0;box-sizing:border-box}
 body{min-height:100vh;background:var(--bg);font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;display:flex;align-items:center;justify-content:center;overflow-x:hidden;position:relative;user-select:none;transition:background 0.6s}
@@ -275,7 +274,6 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
-  <button class="top-btn" id="langBtn" onclick="toggleLang()">US</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
@@ -709,92 +707,8 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-setInterval(function(){updUI();if(curLang!=="zh")translateDOM();},50);
+setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
-
-// === Language System ===
-var curLang = localStorage.getItem("salaryLang") || "zh";
-try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
-function toggleLang() {
-  curLang = curLang === "zh" ? "en" : "zh";
-  localStorage.setItem("salaryLang", curLang);
-  try { document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN"; } catch(e) {}
-  location.reload();
-}
-function showProPopup() {
-  var el = document.getElementById("proOv");
-  if (el) el.classList.add("show");
-}
-function translateDOM() {
-  if (curLang === "zh") return;
-  var m = {"今日搬砖收益":"Today\'s Earnings","日薪":"Daily","每秒":"/Sec","本月":"This Month","日报":"Report","满勤":"Attend.","总工时":"Hours","总收入":"Total","时薪":"/Hr","连续打卡":"Streak","今日打工报告":"Daily Report","今日收入相当于":"Today = ","杯":"cups","已够":"Got","目标":"Goal","已下班":"Off","搬砖中":"Working","摸鱼中":"Slacking","摸鱼":"Slack","未开工":"Pre-Shift","午休中":"Lunch","下班啦":"Done!","带薪放松":"Paid Break","放松中":"On Break","暂停计时":"Paused","已上班":"On Clock","距离下班":"Till Quit","休息日":"Day Off","距上班":"Till Start","带薪放松中":"On Break","开始搬砖赚小钱钱~":"Start earning~","当前:":"Current:","至少选一天":"Pick","结束放松，继续搬砖 \u2192":"End Break \u2192","继续搬砖":"Back","本次带薪价值":"Break Value","身心舒畅，可以继续搬砖了。":"Ready to work.","放空的时候，钱也在为你打工":"Your money works while you chill","带薪放松计时器":"Paid Break Timer","这趟放松，已为你赚了":"This break: +","截图分享":"Screenshot","当前":"Current","攒":"Save","月薪（税前）":"Salary","上班":"Start","下班":"End","午休（小时）":"Lunch","月计薪天数":"Work Days/Month","工作日":"Work Days","语音包":"Sound","取消":"Cancel","保存":"Save","关闭":"Close","自定义名称":"Name","目标金额":"Target","换算单位":"Unit","每单位金额":"Per Unit","赚钱目标":"Goals","全国":"","位工友正在搬砖":"working","今日全国平均时薪":"Nat\'l avg","位工友在摸鱼":"slacking","靠工资攒够需要很久，想加速吗？":"Slow? Speed up?","这个目标不小，有没有想过副业？":"Big goal? Side hustle?","不想说":"Skip","今天打工心情怎么样":"How was work?","点一下记录今日心情":"Log your mood","Pro":"Pro","仅限 Pro 用户":"Pro Only","解锁全部功能":"Unlock All","结束放松":"End Break","已为你赚了":"You earned:","这趟放松":"This break","可以继续搬砖了":"Ready to work","可爱布谷":"Cute Cuckoo","支付宝到账":"Alipay Ding","经典增命蘑菇":"1-Up Mushroom","经典金币":"Classic Coin","马里奥 1-UP":"Mario 1-UP","马里奥叮叮声":"Mario Ding","清脆到账提示":"Payment Ping","轻快提示音":"Soft Ping","平米":"sq ft"};
-  m["已复制"]="Copied";
-  m["继续加油"]="Keep going";
-  m["平均每小时"]="Avg /hr";
-  m["今天赚了"]="Earned ";
-  m["在等你"]="waitin\'";
-  m["在看"]="shows";
-  m["在替你说话"]="= your voice";
-  m["解锁成就：搬砖王者"]="Achievement: Grind God";
-  m["钱已入账"]="Money in!";
-  m["距离上班"]="Till start";
-  m["已打过卡"]="Checked in";
-  m["新打卡"]="New check-in";
-  m["计薪天数"]="Work Days";
-  m["午休金额暂停增长"]="Pause during lunch";
-  m["跳过，不想说"]="Skip";
-  m["你的工位附近有"]="Near your desk:";
-  m["杯奶茶"]="cups";
-  m["次美甲"]="sessions";
-  m["做美甲"]="Nail art";
-  m["马里奥"]="Mario";
-  m["来自招财工资表"]="- Meter";
-  m["下班庆祝"]="After work";
-  m["月心情总结"]="Monthly mood";
-  m["本月你最常"]="Mostly";
-  m["结束放松，继续搬砖"]="End break";
-  m["招财工资表"]="Meter";
-  m["加油，打工人！你的努力"]="Hustle on!";
-  m["别小看这几块钱，这是你未来的"]="Those few bucks = ";
-  m["你赚的每一分钱，都是你未来说「不」的底气。"]="Every cent = your \'no\' fund.";
-  m["存钱不是为了省钱，是为了攒底气。"]="Save for backbone, not for cheap.";
-  m["摸鱼赚的钱，最香。"]="Slack cash hits different.";
-  m["老板的梦想是上市，你的梦想是老板给你涨工资。"]="IPO vs raise.";
-  m["赚钱的意义不是现在花，而是以后可以花得理直气壮。"]="Guilt-free spend later.";
-  m["今天忍住的消费，明天就是你的自由基金。"]="Skipped = freedom fund.";
-  m["每一块钱都在投票你想要的生活。"]="Every dollar votes.";
-  m["打工人，打工魂，打工都是人上人。"]="Workers = MVPs.";
-  m["你比昨天又多了一个拒绝的筹码。"]="More chips than yesterday.";
-  m["恭喜，老板又帮你报销了今天的通勤费。"]="Boss paid your commute.";
-  m["这杯奶茶，没有植脂末，全是你的血汗。"]="Pure sweat boba.";
-  m["时间在走，钱在涨，你在爽。"]="Time ticks, cash stacks.";
-  m["带薪拉屎，是打工人最优雅的叛逆。"]="Paid poopin\' = defiance.";
-  m["这不是摸鱼，这是战略性休整。"]="Strategic regrouping.";
-  m["你的每一次深呼吸，都在消耗公司的氧气。"]="Every breath burns O2.";
-  m["别刷手机，专心致志，对钱尊重。"]="Stop scrollin\', respect cash.";
-  m["慢慢来，老板正在为你买单。"]="Slow down, boss footin\' bill.";
-  m["每一秒的放空，都是对资本的温柔反抗。"]="Gentle rebellion.";
-  m["蹲自己的坑，让老板的会等等。"]="Own throne, meetings wait.";
-  m["摸鱼也是一种生活智慧"]="Slackin\' = wisdom";
-  m["适当的休息，是为了更好地出发"]="Rest before push";
-  m["摸鱼使我快乐，快乐使我更有效率"]="Happy = productive";
-  m["鱼都摸了，快乐就完事了"]="Life is good";
-  m["累了"]="Tired";
-  var w = document.createTreeWalker(document.body, 4, null, false), n;
-  while (n = w.nextNode()) {
-    var t = n.textContent, ch = false;
-    for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
-    if (ch) n.textContent = t;
-  }
-}
-// Timezone
-try {
-  var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  var off = -new Date().getTimezoneOffset();
-  var os = "UTC" + (off>=0?"+":"") + Math.floor(off/60) + ":" + String(off%60).padStart(2,"0");
-  var el = document.getElementById("tzBadge");
-  if (el) el.textContent = tz.split("/").pop().replace("_"," ") + " " + os;
-} catch(e) {}
 </script>
 </body>
 </html>
