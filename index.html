@@ -276,7 +276,7 @@ select option{background:#2d1810;color:#fceabb}
   <button class="top-btn" id="langBtn" onclick="toggleLang()">US</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
-  <button class="top-btn" onclick="document.getElementById('proOv').classList.add('show')" title="Pro">💎</button>
+  <button class="top-btn" onclick="var p=document.getElementById('proOv');if(p)p.style.display='flex'" title="Pro">💎</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
 </div>
 
@@ -325,7 +325,7 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
-<div class="fg"><label style="cursor:pointer;color:var(--g2)" onclick="document.getElementById('proOv').classList.add('show')">&#x2b50; Upgrade to Pro</label></div>
+<div class="fg"><label style="cursor:pointer;color:var(--g2)" onclick="var p=document.getElementById('proOv');if(p)p.style.display='flex'">&#x2b50; Upgrade to Pro</label></div>
     <div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
 </div></div>
 
@@ -908,9 +908,11 @@ function showProPopup(){try{document.getElementById("proOv").classList.add("show
 
 
 try{document.getElementById("pageTitle").textContent=curLang==="zh"?"🐱 赎身进度条":"🐱 Redemption Meter"}catch(e){}
+
+try{document.getElementById("pageTitle").textContent=curLang==="zh"?"🐱 赎身进度条":"🐱 Redemption Meter"}catch(e){}
 </script>
 <div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert(Payment system coming soon!)">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById(proOv).classList.remove(show)">Not now</button></div></div></div>
 
-<div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert('Payment system coming soon!')">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById('proOv').classList.remove('show')">Not now</button></div></div></div>
+<div class="ov" id="proOv"><div class="modal" style="max-width:380px;text-align:center"><div class="mh" style="justify-content:center"><h2>Pro</h2></div><p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">Unlimited Goals<br>More Sound Packs<br>Permanent History<br>Annual Report<br>Custom Themes</p><div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div><div style="font-size:11px;color:var(--tx3)">or $49.99/year (save 16%)</div></div><button class="btn btn-p" style="width:100%;padding:10px" onclick="alert('Payment system coming soon!')">Upgrade Pro</button><div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById('proOv').style.display='none'">Not now</button></div></div></div>
 </body>
 </html>
