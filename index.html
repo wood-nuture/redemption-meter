@@ -541,7 +541,7 @@ function showReport(){
     <div class="report-item"><div class="l">时薪</div><div class="v">¥${(r.wrk>0?(r.earn/(r.wrk/3600000)):0).toFixed(2)}</div><div class="s">平均每小时</div></div>
     <div class="report-item"><div class="l">连续打卡</div><div class="v">${streak}天</div><div class="s">${streak>=7?'👑 搬砖王者':'🔥 继续加油'}</div></div>`;
   document.getElementById('rMsg').textContent=REPORT_MSGS[Math.floor(Math.random()*REPORT_MSGS.length)]+' — 来自招财工资表';
-  document.getElementById('reportOv').classList.add('on');
+  document.getElementById('reportOv').classList.add('on');if(curLang!=='zh')setTimeout(translateDOM,10);
 }
 function closeReport(){document.getElementById('reportOv').classList.remove('on')}
 function shareReport(){
@@ -708,8 +708,7 @@ function showCai(){
   const gs=['🧧','🪙','💰','✨','💎'];
   for(let i=0;i<50;i++){const g=document.createElement('div');g.className='caishen-g';g.textContent=gs[Math.floor(Math.random()*gs.length)];g.style.left=Math.random()*100+'%';g.style.fontSize=(12+Math.random()*18)+'px';g.style.animationDuration=(3+Math.random()*4)+'s';g.style.animationDelay=(Math.random()*3)+'s';ov.appendChild(g);setTimeout(()=>g.remove(),8000)}
   playCai();for(let i=0;i<8;i++)setTimeout(()=>burst(10+Math.floor(Math.random()*6)),i*400);
-  setTimeout(()=>{ov.className='caishen'},10000)
-}
+  setTimeout(()=>{ov.className='caishen'},10000);if(curLang!=='zh')setTimeout(translateDOM,100)}
 
 // ===== 设置 =====
 function openSet(){
@@ -719,7 +718,7 @@ function openSet(){
   const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent='当前: '+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent='当前: '+SPK[spk].n+' — '+SPK[spk].d;
   const gp=document.getElementById('goalPresets');gp.innerHTML='';GOAL_PRESETS.forEach((p,i)=>{const l=document.createElement('label');l.className='gp-l'+(goalIdx===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='goal';ip.checked=goalIdx===i;ip.addEventListener('change',()=>{document.querySelectorAll('.gp-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');goalIdx=i;document.getElementById('gName').value='';document.getElementById('gAmt').value='';document.getElementById('gUnit').value='';document.getElementById('gUnitAmt').value=''});l.appendChild(ip);l.appendChild(document.createTextNode(p.n));gp.appendChild(l)});
   if(goalIdx>=GOAL_PRESETS.length&&goals.length>0){const g=goals[goalIdx-GOAL_PRESETS.length];if(g){document.getElementById('gName').value=g.n||'';document.getElementById('gAmt').value=g.a||'';document.getElementById('gUnit').value=g.u||'';document.getElementById('gUnitAmt').value=g.ua||''}}
-  document.getElementById('setOv').classList.add('show')
+  document.getElementById('setOv').classList.add('show');if(curLang!=='zh')setTimeout(translateDOM,10)
 }
 function closeSet(){document.getElementById('setOv').classList.remove('show')}
 function saveSet(){
@@ -760,7 +759,7 @@ function translateDOM() {
     "月薪（税前）":"Salary","月薪":"Salary","上班":"Start","下班":"End",
     "午休（小时）":"Lunch (hrs)","午休":"Lunch","工作日":"Work Days","每月计薪天数":"Work Days/Month",
     "语音包":"Sound Pack","赚钱目标":"Money Goal","自定义":"Custom","名称":"Name",
-    "目标金额":"Target ($)","换算单位":"Unit","每单位金额":"Per Unit ($)",
+    "目标金额":"Target ($)","金额":"Amount","单位":"Unit","全部":"All","设置":"Settings","总计":"Total","换算单位":"Unit","每单位金额":"Per Unit ($)",
     "取消":"Cancel","保存":"Save","关闭":"Close",
     "打工日报":"Daily Report","结束放松，继续搬砖 →":"End Chill, Back →",
     "继续搬砖 💪":"Back to Grind 💪","本次带薪价值":"Break's Value",
@@ -779,6 +778,13 @@ function translateDOM() {
   var w=document.createTreeWalker(document.body,4,null,false),n;
   while(n=w.nextNode()){var t=n.textContent,ch=false;
   for(var k in m){if(t.indexOf(k)>=0){t=t.split(k).join(m[k]);ch=true}}
+  if(ch)n.textContent=t}
+}
+() {
+  if(curLang==="zh")return;
+  var m={
+    "今日搬砖收益":"Today's Grind","日薪":"Daily","每秒":"/Sec","本月":"Month","日报":"Report","满勤":"Attend.",
+    "总工时":"Hours","总收入":"Earned}
   if(ch)n.textContent=t}
 }
 () {
