@@ -354,13 +354,41 @@ function load(){
   }catch(e){}
 }
 load();
-let lang=localStorage.getItem("salaryLang")||"zh",isPro=localStorage.getItem("salaryPro")==="true";
-const LANG={zh:{title:"赎身进度条",todayEarn:"今日搬砖收益",cdRemain:"距离下班",cdWorked:"已上班",slack:"摸鱼",slackOn:"摸鱼中",paidRelax:"带薪放松",working:"搬砖中",rest:"休息日",notStarted:"未开工",afterWork:"已下班",lunch:"午休中",done:"下班啦",paused:"暂停计时",startEarn:"开始搬砖赚小钱钱~",stWorking:"● 搬砖中",stSlack:"● 摸鱼中",stRest:"● 休息日",stNotStarted:"● 未开工",stAfter:"● 已下班 🎉",stLunch:"● 午休中",stPoop:"● 带薪放松中",dailyWage:"日薪",perSec:"每秒",thisMonth:"本月",dailyRpt:"日报",fullAtt:"满勤",totalHours:"总工时",totalIncome:"总收入",hourlyWage:"时薪",streak:"连续打卡",enough:"已够",saveUp:"攒",goal:"目标",nationwide:"全国",workersGrinding:"位工友正在搬砖",avgHourly:"今日全国平均时薪",workersNearby:"位工友在摸鱼",goalSlow:"靠工资攒够需要很久，想加速吗？",goalBig:"这个目标不小，有没有想过副业？",incomeEq:"今日收入相当于",cupsOf:"杯",pro:"Pro",proLock:"Pro",proOnly:"仅限 Pro 用户",proTag:"Pro",gtBubble:"奶茶",gtLip:"一支口红",gtNail:"美甲",gtFlower:"一束花",gtMovie:"看电影",gtTea:"下午茶",gtDress:"一条裙子",gtSkin:"护肤品",gtConcert:"演唱会",gtPhoto:"写真",gtTrip:"短途旅行",gtHouse:"一平米房"},
-en:{title:"Redemption Meter",todayEarn:"Today's Grind",cdRemain:"Till Quittin' Time",cdWorked:"Clocked",slack:"Slack Off",slackOn:"Slackin'",paidRelax:"Paid Chill",working:"Grindin'",rest:"Day Off",notStarted:"Not Started",afterWork:"Off Work",lunch:"Lunch",done:"Peace Out!",paused:"Paused",startEarn:"Start earnin' sweet cash~",stWorking:"● Grindin'",stSlack:"● Slackin'",stRest:"● Day Off",stNotStarted:"● Not Started",stAfter:"● Off Work 🎉",stLunch:"● Lunch Break",stPoop:"● Paid Chill",dailyWage:"Daily",perSec:"/Sec",thisMonth:"Monthly",dailyRpt:"Report",fullAtt:"Attend.",totalHours:"Hours",totalIncome:"Earned",hourlyWage:"/Hour",streak:"Streak",enough:"Got",saveUp:"Save",goal:"Goal",nationwide:"",workersGrinding:"workers are grindin'",avgHourly:"National Avg/Hr",workersNearby:"nearby are slackin'",goalSlow:"Salary savings? That'll take forever. Speed it up?",goalBig:"Big goal - side hustle?",incomeEq:"Today's earnings =",cupsOf:"cups of",pro:"Pro",proLock:"Pro",proOnly:"Pro only",proTag:"Pro",gtBubble:"Bubble Tea",gtLip:"Lipstick",gtNail:"Nail Art",gtFlower:"Bouquet",gtMovie:"Movie",gtTea:"Afternoon Tea",gtDress:"Dress",gtSkin:"Skincare",gtConcert:"Concert",gtPhoto:"Photo Shoot",gtTrip:"Getaway",gtHouse:"House/m2",}};
-function t(k){return LANG[lang]&&LANG[lang][k]!==undefined?LANG[lang][k]:LANG.zh[k]||k}
-function toggleLang(){lang=lang==="zh"?"en":"zh";localStorage.setItem("salaryLang",lang);document.getElementById("langBtn").textContent=lang==="zh"?"US":"CN";location.reload()}
-function showProPopup(){const o=document.getElementById("proOv");if(o)o.classList.add("show")}
-function hasFeature(f){const m={unlimitedGoals:isPro,themes:isPro,history:isPro,annualRpt:isPro,extraSounds:isPro};return m[f]||false}
+
+// Language system
+var curLang = localStorage.getItem("salaryLang") || "zh";
+var isProUser = localStorage.getItem("salaryPro") === "true";
+var LANG = {
+  zh: {
+    stPoop:"● 带薪放松中", stSlack:"● 摸鱼中", stRest:"● 休息日",
+    stLunch:"● 午休中", stNotStarted:"● 未开工", stAfter:"● 已下班",
+    stWorking:"● 搬砖中"
+  },
+  en: {
+    stPoop:"● Paid Chill", stSlack:"● Slackin'", stRest:"● Day Off",
+    stLunch:"● Lunch Break", stNotStarted:"● Not Started", stAfter:"● Off Work",
+    stWorking:"● Grindin'"
+  }
+};
+function t(key) {
+  var txt = LANG[curLang] && LANG[curLang][key];
+  if (txt !== undefined && txt !== null) return txt;
+  var fallback = LANG["zh"] && LANG["zh"][key];
+  return fallback !== undefined ? fallback : key;
+}
+function toggleLang() {
+  curLang = curLang === "zh" ? "en" : "zh";
+  localStorage.setItem("salaryLang", curLang);
+  document.getElementById("langBtn").textContent = curLang === "zh" ? "US" : "CN";
+  location.reload();
+}
+function showProPopup() {
+  var el = document.getElementById("proOv");
+  if (el) el.classList.add("show");
+}
+function hasFeature(f) {
+  return isProUser;
+}
 
 function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC}
 document.addEventListener('click',()=>{if(AC&&AC.state==='suspended')AC.resume()},{once:true});
