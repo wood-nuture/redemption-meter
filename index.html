@@ -276,6 +276,7 @@ select option{background:#2d1810;color:#fceabb}
   <button class="top-btn" id="langBtn" onclick="toggleLang()">US</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
+  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
 </div>
 
@@ -760,7 +761,86 @@ function translateDOM() {
     "清脆到账提示":"Payment Ding", "轻快提示音":"Soft Ping",
     "平米":"sq ft", "攒":"Stack"
   };
-  var w = document.createTreeWalker(document.body, 4, null, false), n;
+    m["下班后的时间，才是你的人生 🌆"]="After work, life begins 🌆";
+  m["今天也在为更好的自己打工 ✨"]="Building a better me ✨";
+  m["今天也是为自由积累筹码的一天 ✨"]="Stackin' freedom chips ✨";
+  m["今天忍住的奶茶，明天可能就是一杯自由 ☕"]="Boba skipped = freedom ☕";
+  m["今天忍住的消费，明天就是你的自由基金。"]="Skipped = freedom fund.";
+  m["今天的你，比昨天的你又贵了一点点 💰"]="Today > yesterday 💰";
+  m["今天的午饭格外香，因为是劳动换来的"]="Lunch hits different earned";
+  m["休息是为了走更远的路"]="Rest to go further";
+  m["你今天的劳动，已经兑换成了看得见的数字 📈"]="Labor = visible numbers 📈";
+  m["你比昨天又多了一个拒绝的筹码。"]="One more chip than yesterday.";
+  m["你比自己想象的更值钱"]="You're worth more";
+  m["你的每一次深呼吸，都在消耗公司的氧气。"]="Every breath burns O2.";
+  m["你认真工作的样子，真的很耀眼 ✨"]="Lookin' sharp on the grind ✨";
+  m["你赚的每一分钱，都是你未来说不的底气。"]="Every cent = your 'no' fund.";
+  m["养精蓄锐，准备开赚！"]="Rest up, time to earn!";
+  m["加油，打工人！"]="Hustle on!";
+  m["午休时间，让大脑充个电"]="Brain recharge time";
+  m["去享受属于你的时间吧，你今天很棒"]="Go enjoy, you crushed it!";
+  m["又熬过了一天，你真棒 🌈"]="You survived - awesome! 🌈";
+  m["吃饱了才有力气搬砖~"]="Fuel up for the grind~";
+  m["周末愉快，钱的事明天再说"]="Weekend! Money can wait";
+  m["夕阳为你加冕，明天继续加油"]="Sunset crowns you, see you tomorrow";
+  m["好好吃饭，下午继续赚钱！"]="Eat up, more grind!";
+  m["存钱不是为了省钱，是为了攒底气。"]="Save for backbone.";
+  m["存钱罐越来越重了，离梦想又近了一步 🪙"]="Piggy bank's heavier 🪙";
+  m["工作是为了生活，但生活不是为了工作 🌈"]="Work to live, don't live to work 🌈";
+  m["带薪拉屎，是打工人最优雅的叛逆。"]="Paid poopin' = elegant defiance.";
+  m["时间在走，钱在涨，你在爽。"]="Time ticks, cash stacks, you chill.";
+  m["这不是摸鱼，这是战略性休整。"]="Strategic regrouping.";
+  m["别刷手机，专心致志，对钱尊重。"]="Stop scrollin', respect the cash.";
+  m["慢慢来，老板正在为你买单。"]="Slow down, boss is payin'.";
+  m["每一秒的放空，都是对资本的温柔反抗。"]="Gentle rebellion.";
+  m["蹲自己的坑，让老板的会等等。"]="Own your throne, meetings wait.";
+  m["恭喜，老板又帮你报销了今天的通勤费。"]="Boss paid your commute.";
+  m["这杯奶茶，没有植脂末，全是你的血汗。"]="Pure sweat boba.";
+  m["别小看这几块钱，这是你未来的"]="Those few bucks =";
+  m["摸鱼赚的钱，最香。"]="Slack cash hits different.";
+  m["老板的梦想是上市，你的梦想是老板给你涨工资。"]="IPO vs raise.";
+  m["赚钱的意义不是现在花，而是以后可以花得理直气壮。"]="Guilt-free spend later.";
+  m["每一块钱都在投票你想要的生活。"]="Every dollar votes.";
+  m["打工人，打工魂，打工都是人上人。"]="Workers = MVPs.";
+  m["摸鱼也是一种生活智慧"]="Slackin' is wisdom";
+  m["适当的休息，是为了更好地出发"]="Rest before the push";
+  m["摸鱼使我快乐，快乐使我更有效率"]="Happy = productive";
+  m["鱼都摸了，快乐就完事了"]="Life is good";
+  m["一分耕耘一分收获，今天的汗水是明天的奶茶"]="Sweat today, boba tomorrow";
+  m["每分每秒都在增值，你值得更好的生活 📈"]="Every sec = value. You deserve better 📈";
+  m["摸鱼是为了更好地搬砖，搬砖是为了早日不搬砖 😎"]="Slack to stop the grind 😎";
+  m["每一块钱都是自由的选票，积累它，兑换未来 🌟"]="Every dollar = freedom vote 🌟";
+  m["赚钱的意义不是为了现在，而是为了以后可以说"]="Money = the power to say no";
+  m["搬的每一块砖，都在构建你想要的生活 🏗️"]="Brick by brick, building your dream 🏗️";
+  m["累的时候看看数字，它不会骗你 ❤️"]="Tired? Numbers don't lie ❤️";
+  m["每一分钟的坚持，都在为未来的选择权充值 ⏳"]="Every minute = future choice ⏳";
+  m["每一天都是赚钱的好日子"]="Every day's a payday";
+  m["辛苦了，明天继续发光 🌟"]="Good work, shine again 🌟";
+  m["打工很累，但你在一点点变强大 💪"]="Work's tough, you're stronger 💪";
+  m["记住：你不是在打工，你是在买自己的未来 🎫"]="You're buying your future 🎫";
+  m["新的一天，新的"]="New day, new";
+  m["在替你说话"]="speaks for you";
+  m["在等你"]="waitin'";
+  m["看，数字在证明"]="numbers prove it";
+  m["已复制"]="Copied";
+  m["继续加油"]="Keep going";
+  m["平均每小时"]="Avg /hr";
+  m["今天赚了"]="Today:";
+  m["解锁成就：搬砖王者"]="Achievement: Grind God";
+  m["钱已入账"]="Money in!";
+  m["距离上班"]="Till start";
+  m["已打过卡"]="Checked in";
+  m["新打卡"]="New day";
+  m["计薪天数"]="Work Days";
+  m["午休金额暂停增长"]="Pause during lunch";
+  m["你的工位附近有"]="Near your desk:";
+  m["来自赎身进度条"]="- Redemption Meter";
+  m["下班庆祝"]="After work";
+  m["月心情总结"]="Monthly mood";
+  m["本月你最常"]="Mostly";
+  m["结束放松，继续搬砖"]="End break";
+  m["招财工资表"]="Meter";
+var w = document.createTreeWalker(document.body, 4, null, false), n;
   while (n = w.nextNode()) {
     var t = n.textContent, ch = false;
     for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
