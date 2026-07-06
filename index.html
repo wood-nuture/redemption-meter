@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>🐱 招财工资表</title>
+<title>🐱 赎身进度条</title>
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
 body.dark{--bg:linear-gradient(135deg,#050508,#0d0d1a 50%,#050510 100%);--tx:#c8c8d4;--tx2:#7a7a8a;--tx3:rgba(120,120,140,0.35);--cd:rgba(255,255,255,0.02);--bd:rgba(255,255,255,0.06);--hv:rgba(255,255,255,0.04);--sh:rgba(0,0,0,0.6);--g1:#b8974a;--g2:#a07830;--g3:#8a6420;--gr:#5a8a5c;--or:#b89440}
@@ -709,6 +709,129 @@ if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').
 updSnd();updUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
+
+/* === i18n System (appended - does not modify any existing code) === */
+(function(){
+var curLang = localStorage.getItem("salaryLang") || "zh";
+
+// Add language button to top bar
+var tb = document.querySelector(".top-bar");
+if (tb) {
+  var btn = document.createElement("button");
+  btn.className = "top-btn";
+  btn.id = "langBtn";
+  btn.textContent = curLang === "zh" ? "US" : "CN";
+  btn.onclick = function(){
+    var l = localStorage.getItem("salaryLang") || "zh";
+    l = l === "zh" ? "en" : "zh";
+    localStorage.setItem("salaryLang", l);
+    location.reload();
+  };
+  tb.insertBefore(btn, tb.firstChild);
+}
+
+// Add timezone display
+try {
+  var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var off = -new Date().getTimezoneOffset();
+  var os = "UTC" + (off>=0?"+":"") + Math.floor(off/60) + ":" + String(off%60).padStart(2,"0");
+  var el = document.createElement("span");
+  el.id = "tzBadge";
+  el.style.cssText = "font-size:9px;color:var(--tx3);position:fixed;top:20px;left:16px;z-index:5";
+  el.textContent = tz.split("/").pop().replace("_"," ") + " " + os;
+  document.body.appendChild(el);
+} catch(e){}
+
+// Translation engine
+function translateDOM() {
+  if (curLang === "zh") return;
+  var m = {
+    "今日搬砖收益":"Today's Grind","日薪":"Daily","每秒":"/Sec","本月":"Month",
+    "日报":"Report","满勤":"Attend.","总工时":"Hours","总收入":"Earned",
+    "时薪":"/Hour","连续打卡":"Streak","今日打工报告":"Daily Report",
+    "今日收入相当于":"Today = ","杯":"cups","已够":"Got","全国":"",
+    "位工友正在搬砖":" grindin'","今日全国平均时薪":"Nat'l avg",
+    "位工友在摸鱼":" slackin'","已下班":"Off","搬砖中":"Grindin'",
+    "摸鱼中":"Slackin'","摸鱼":"Slack","休息日":"Day Off",
+    "距离下班":"Till freedom","距上班":"Till start","已上班":"On clock",
+    "下班啦":"Done!","午休中":"Lunch","未开工":"Pre-shift",
+    "带薪放松":"Paid Break","放松中":"Chillin'","暂停计时":"Paused",
+    "带薪放松中":"Chillin'","开始搬砖赚小钱钱~":"Start earnin'~",
+    "当前:":"Current:","至少选一天":"Pick",
+    "结束放松，继续搬砖 \u2192":"End Break \u2192","继续搬砖":"Back",
+    "本次带薪价值":"Break Value","身心舒畅，可以继续搬砖了。":"Ready to work.",
+    "放空的时候，钱也在为你打工":"Money works while you chill",
+    "带薪放松计时器":"Paid Break Timer","这趟放松，已为你赚了":"This break: +",
+    "截图分享":"Screenshot","当前":"Current","月薪（税前）":"Salary",
+    "上班":"Start","下班":"End","午休（小时）":"Lunch",
+    "月计薪天数":"Work Days/Month","工作日":"Work Days","语音包":"Sound",
+    "取消":"Cancel","保存":"Save","关闭":"Close","自定义名称":"Name",
+    "目标金额":"Target","换算单位":"Unit","每单位金额":"Per Unit",
+    "赚钱目标":"Goals","靠工资攒够需要很久，想加速吗？":"Slow? Speed up?",
+    "这个目标不小，有没有想过副业？":"Big goal? Side hustle?",
+    "不想说":"Skip","今天打工心情怎么样":"How was work?",
+    "点一下记录今日心情":"Log your mood","Pro":"Pro","仅限 Pro 用户":"Pro Only",
+    "可爱布谷":"Cute Cuckoo","支付宝到账":"Alipay Ding",
+    "经典增命蘑菇":"1-Up Shroom","经典金币":"Classic Coin",
+    "马里奥 1-UP":"Mario 1-UP","马里奥叮叮声":"Mario Ding",
+    "清脆到账提示":"Payment Ding","轻快提示音":"Soft Ping","平米":"sq ft",
+    "攒":"Stack","周一":"Mon","周二":"Tue","周三":"Wed","周四":"Thu",
+    "周五":"Fri","周六":"Sat","周日":"Sun","天":" days","元":"",
+    "当前: ":"Current: ","设置":"Settings","⚙️ 设置":"\u2699\ufe0f Settings",
+    "💰 日薪":"💰 Daily","⚡ 每秒":"\u26a1 /Sec","📅 本月":"\ud83d\udcc5 Month",
+    "📋 日报":"\ud83d\udccb Report","📋 今日打工报告":"\ud83d\udccb Report",
+    "😴 摸鱼":"\ud83d\ude34 Slack","🚽 带薪放松":"\ud83d\udebd Paid Break",
+    "🎯 赚钱目标":"\ud83c\udfaf Goals","🎵 语音包":"\ud83c\udfb5 Sound",
+    "🕐 已上班":"\ud83d\udd50 Clocked",
+    "⏳ 距离下班":"\u23f3 Till Quit","⏸️ 摸鱼中":"\u23f8\ufe0f Slackin'",
+    "🔥 0天":"\ud83d\udd25 0 days","🔥 继续加油":"\ud83d\udd25 Keep going",
+    "📸 截图分享":"\ud83d\udcf8 Screenshot"
+  };
+  var w = document.createTreeWalker(document.body, 4, null, false), n;
+  while (n = w.nextNode()) {
+    var t = n.textContent, ch = false;
+    for (var k in m) { if (t.indexOf(k) >= 0) { t = t.split(k).join(m[k]); ch = true; } }
+    if (ch) n.textContent = t;
+  }
+}
+
+// Run translateDOM after page loads and on interval
+if (curLang !== "zh") {
+  setTimeout(translateDOM, 100);
+}
+setInterval(function(){
+  if (localStorage.getItem("salaryLang") !== "zh") translateDOM();
+}, 100);
+
+// Pro popup
+window.showProPopup = function() {
+  var existing = document.getElementById("proOv");
+  if (existing) { existing.style.display = "flex"; return; }
+  var isEn = (localStorage.getItem("salaryLang") || "zh") !== "zh";
+  var html = '<div class="ov" id="proOv" style="display:none"><div class="modal" style="max-width:380px;text-align:center">' +
+    '<div class="mh" style="justify-content:center"><h2>'+(isEn?"Upgrade Pro":"升级 Pro")+'</h2></div>' +
+    '<p style="color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8">'+(isEn?"Unlimited Goals<br>More Sounds<br>Permanent History<br>Annual Report<br>Themes":"无限目标<br>更多音效<br>永久数据<br>年度报告<br>自定义主题")+'</p>' +
+    '<div style="background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px">' +
+    '<div style="font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px">$4.99<span style="font-size:14px;font-weight:400;color:var(--tx3)">/month</span></div>' +
+    '<div style="font-size:11px;color:var(--tx3)">'+(isEn?"or $49.99/year":"或 $49.99/年")+'</div></div>' +
+    '<button class="btn btn-p" style="width:100%;padding:10px" onclick="alert(\''+(isEn?"Coming soon!":"即将推出！")+'\')">'+(isEn?"Upgrade Pro":"升级 Pro")+'</button>' +
+    '<div class="mf" style="margin-top:8px"><button class="btn btn-s" onclick="document.getElementById(\'proOv\').style.display=\'none\'">'+(isEn?"Not now":"稍后再说")+'</button></div></div></div>';
+  document.body.insertAdjacentHTML("beforeend", html);
+  document.getElementById("proOv").style.display = "flex";
+};
+
+// Add diamond button
+var tb2 = document.querySelector(".top-bar");
+if (tb2) {
+  var db = document.createElement("button");
+  db.className = "top-btn";
+  db.textContent = "\ud83d\udc8e";
+  db.title = "Pro";
+  db.onclick = window.showProPopup;
+  tb2.appendChild(db);
+}
+
+})();
 </script>
 </body>
 </html>
