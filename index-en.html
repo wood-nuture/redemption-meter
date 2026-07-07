@@ -409,14 +409,14 @@ const FUN_LINES=[
   'Every cent is future Fuck You Money.','Every dollar you earn buys the right to say no.',
   'Slackin\' money hits different.','Boss dreams of IPO, you dream of a raise.',
   'Earn not to spend now, but to spend with pride later.','A skip today = freedom fund tomorrow.',
-  'Every dollar votes for the life you want.','Grind hard, stay hard, we're all kings.',
+  'Every dollar votes for the life you want.','Grind hard, stay hard, we\'re all kings.',
   'One more chip on the table than yesterday.','Saving isn't pinching — it's building swagger.',
 ];
 
 const DAILY_MSGS=[
   'One more day of freedom tokens ✨','Great work today, shine again tomorrow 🌟',
-  'Your labor became real numbers 📈','Grind is hard but you're growing 💪',
-  'After work is YOUR time 🌆','Remember: you're buying your future 🎫',
+  'Your labor became real numbers 📈','Grind is hard but you\'re growing 💪',
+  'After work is YOUR time 🌆','Remember: you\'re buying your future 🎫',
 ];
 
 function updGoal(earn){
@@ -483,9 +483,9 @@ function checkStreak(){
 // ===== Report =====
 const REPORT_MSGS=[
   'One more day of freedom tokens ✨','Great work today, shine again tomorrow 🌟',
-  'Your labor became real numbers 📈','Grind is hard but you're growing 💪',
-  'After work is YOUR time 🌆','Remember: you're buying your future 🎫',
-  'You made it through another day 🌈','Today you're worth a bit more than yesterday 💰',
+  'Your labor became real numbers 📈','Grind is hard but you\'re growing 💪',
+  'After work is YOUR time 🌆','Remember: you\'re buying your future 🎫',
+  'You made it through another day 🌈','Today you\'re worth a bit more than yesterday 💰',
 ];
 
 function showReport(){
@@ -583,13 +583,13 @@ function calc(){
 function fmt(m){if(m<=0)return'00:00:00';const ts=Math.floor(m/1000);return`${String(Math.floor(ts/3600)).padStart(2,'0')}:${String(Math.floor((ts%3600)/60)).padStart(2,'0')}:${String(ts%60).padStart(2,'0')}`}
 
 // ===== Quotes =====
-const QT={wk:['Sow today, sip tomorrow 🌾','Every second counts, you deserve better 📈','Slack to grind, grind to quit someday 😎','Keep going! Your money speaks for you 💪','Piggy bank's heavier, dream's closer 🪙','Building a better you, one shift at a time ✨','Every dollar's a vote for freedom 🌟','You working hard? That's the glow up ✨','Earning isn't for now, it's for the future "no" 💎','The boba you skipped = freedom tomorrow ☕','Every brick builds the life you dream of 🏗️','Tired? Look at the numbers, they never lie ❤️','You're worth more than you think — look 💰','Every minute buys future freedom ⏳','Work to live, not live to work 🌈'],
+const QT={wk:['Sow today, sip tomorrow 🌾','Every second counts, you deserve better 📈','Slack to grind, grind to quit someday 😎','Keep going! Your money speaks for you 💪','Piggy bank\'s heavier, dream\'s closer 🪙','Building a better you, one shift at a time ✨','Every dollar\'s a vote for freedom 🌟','You working hard? That\'s the glow up ✨','Earning isn\'t for now, it\'s for the future "no" 💎','The boba you skipped = freedom tomorrow ☕','Every brick builds the life you dream of 🏗️','Tired? Look at the numbers, they never lie ❤️','You\'re worth more than you think — look 💰','Every minute buys future freedom ⏳','Work to live, not live to work 🌈'],
 lunch:['🍱 Eat well, earn more!','🍚 Full belly = strong grind~','☕ Recharge those brain cells','🥟 Lunch tastes better when earned'],
-before:['⏰ Rested & ready to earn!','☕ New day, new money waiting','🌅 Every day's a payday'],
+before:['⏰ Rested & ready to earn!','☕ New day, new money waiting','🌅 Every day\'s a payday'],
 after:['🎉 Happy quitting time! Good harvest today','🌇 Sunset crowns your grind, see you tomorrow','🍻 Go enjoy your time, you killed it today'],
 rest:['🎉 Rest to go the distance','☀️ Happy weekend, money can wait','🌴 Enjoy the slow life, you deserve it'],
 slack:['😴 Slackin\' is a life skill','🐟 Slacked already, just vibe','😌 Rest well, go hard later','🛋️ Slack makes me happy, happy = productive'],};
-const POOP_TIPS=['Stay focused, respect the money.','Take your time, boss is paying.','Every idle second is gentle rebellion.','Do your biz, let the meeting wait.','Paid pooping: a worker's finest rebellion.','Clock ticks, money grows, you vibe.','This isn't slacking, it's strategic reset.','Every deep breath burns company oxygen.'];
+const POOP_TIPS=['Stay focused, respect the money.','Take your time, boss is paying.','Every idle second is gentle rebellion.','Do your biz, let the meeting wait.','Paid pooping: a worker\'s finest rebellion.','Clock ticks, money grows, you vibe.','This isn\'t slacking, it\'s strategic reset.','Every deep breath burns company oxygen.'];
 let qIdx={},qKey='';
 
 // ===== UI 更新 =====
