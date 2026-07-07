@@ -785,7 +785,19 @@ function translateDOM() {
     "🕐 已上班":"\ud83d\udd50 Clocked",
     "⏳ 距离下班":"\u23f3 Till Quit","⏸️ 摸鱼中":"\u23f8\ufe0f Slackin'",
     "🔥 0天":"\ud83d\udd25 0 days","🔥 继续加油":"\ud83d\udd25 Keep going",
-    "📸 截图分享":"\ud83d\udcf8 Screenshot"
+    "📸 截图分享":"\ud83d\udcf8 Screenshot",
+    "午休金额暂停增长":"No earnings during lunch",
+    "日薪 = 月薪 ÷ 计薪天数":"Daily = Salary \xf7 Work Days",
+    "例: 做美甲":"e.g. Manicure",
+    "例: 做头发":"e.g. Haircut",
+    "例: 200":"e.g. 200",
+    "例: 次美甲":"e.g. sessions",
+    "例: 150":"e.g. 150",
+    "别刷手机，专心致志，对钱尊重。":"Stay focused, respect the money.",
+    "🎭 今天打工心情怎么样？":"\ud83c\udfad How was work?","跳过，不想说":"Skip",
+    "继续搬砖 \ud83d\udcaa":"Back \ud83d\udcaa","带薪放松结束！":"Paid Break Done!",
+    "本次带薪价值":"Break Value","恭喜，老板又帮你报销了今天的通勤费。":"Boss paid your commute today!",
+    "¥/":"\xa5/"
   };
   var w = document.createTreeWalker(document.body, 4, null, false), n;
   while (n = w.nextNode()) {
@@ -795,13 +807,27 @@ function translateDOM() {
   }
 }
 
-// Run translateDOM after page loads and on interval
+// Run translateDOM after page loads + RAF loop (no flicker)
 if (curLang !== "zh") {
   setTimeout(translateDOM, 100);
 }
-setInterval(function(){
-  if (localStorage.getItem("salaryLang") !== "zh") translateDOM();
-}, 100);
+// Use requestAnimationFrame instead of setInterval to avoid layout fighting
+// RAF runs right before browser paint, so text flicker is invisible
+(function() {
+  var lastTranslated = 0;
+  function rafTranslate() {
+    if (localStorage.getItem("salaryLang") !== "zh") {
+      var now = Date.now();
+      // Throttle to ~16ms intervals (match 60fps), but never skip twice
+      if (now - lastTranslated > 15) {
+        translateDOM();
+        lastTranslated = now;
+      }
+    }
+    requestAnimationFrame(rafTranslate);
+  }
+  requestAnimationFrame(rafTranslate);
+})();
 
 // Pro popup
 window.showProPopup = function() {
