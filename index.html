@@ -929,15 +929,17 @@ function renderThemes(){
 }
 
 
-// ===== Pro 解锁（开发用——双击猫头） =====
-document.addEventListener("dblclick", function(e){
-  if(e.target.id==="cat"){
+// ===== Pro 解锁（开发用——双击猫头解锁主题） =====
+var catEl = document.getElementById("cat");
+if(catEl){
+  catEl.addEventListener("dblclick", function(){
     proUnlocked = !proUnlocked;
     localStorage.setItem("salaryPro", proUnlocked);
-    document.getElementById("proBadge").textContent = proUnlocked ? "✨ Pro" : "🔒 Pro";
+    var badge = document.getElementById("proBadge");
+    if(badge) badge.textContent = proUnlocked ? "✨ Pro" : "🔒 Pro";
     if(document.getElementById("themeList")) renderThemes();
-  }
-});
+  });
+}
 
 </script>
 </body>
