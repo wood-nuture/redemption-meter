@@ -460,8 +460,9 @@ function updGoal(earn){
 }
 
 function updFunLine(){
-  funIdx=(funIdx+1)%FUN_LINES.length;
-  document.getElementById('funLine').textContent=FUN_LINES[funIdx];
+  var qArr=window._themeQuotes&&window._themeQuotes.length>0?window._themeQuotes:FUN_LINES;
+  funIdx=(funIdx+1)%qArr.length;
+  document.getElementById('funLine').textContent=qArr[funIdx];
 }
 
 // ===== Worker Circle ===== =====
