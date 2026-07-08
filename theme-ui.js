@@ -27,6 +27,8 @@ function applyTheme(id) {
   // 这两个变量在 index.html 的 burst() 和 mkIngots() 中读取
   window._burstEm = t.burstEm;
   window._decorEm = t.decorEm;
+  window._themeQuotes = t.quotes || [];
+  window._themeStatusQuotes = t.statusQuotes || {};
 }
 
 // ===== 页面加载时恢复上次皮肤 =====
