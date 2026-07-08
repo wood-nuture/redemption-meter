@@ -27,7 +27,7 @@ function applyTheme(id) {
   window._themeStatusQuotes = t.statusQuotes || {};
 }
 
-// ===== 页面加载时恢复上次皮肤 =====
+// ===== 页面加载时恢复上次皮肤 + 绑定Pro解锁 =====
 function initTheme() {
   if (curTheme !== "default") { applyTheme(curTheme); }
   else {
@@ -37,10 +37,8 @@ function initTheme() {
     window._themeQuotes = t.quotes || [];
     window._themeStatusQuotes = t.statusQuotes || {};
   }
-}
 
-// ===== Pro 解锁（双击猫头） =====
-document.addEventListener("DOMContentLoaded", function() {
+  // Pro解锁：双击猫头（此时DOM已就绪）
   var cat = document.getElementById("cat");
   if (cat) {
     cat.addEventListener("dblclick", function() {
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (document.getElementById("themeList")) renderThemes();
     });
   }
-});
+}
 
 // ===== 渲染皮肤选择器 =====
 function renderThemes() {
