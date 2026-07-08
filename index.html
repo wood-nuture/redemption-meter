@@ -277,6 +277,7 @@ select option{background:#2d1810;color:#fceabb}
   <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
+  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
 </div>
 
@@ -712,6 +713,35 @@ setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
 
 /* === i18n System (appended - does not modify any existing code) === */
+
+
+// ===== Pro 弹窗 =====
+function showProPopup(){
+  var ex=document.getElementById("proOv");
+  if(ex){ex.style.display="flex";return;}
+  var isEn=localStorage.getItem("salaryLang")==="en";
+  var btn=isEn?"Upgrade Pro":"升级 Pro";
+  var ft1=isEn?"Unlimited Goals":"无限目标";
+  var ft2=isEn?"More Sounds":"更多音效";
+  var ft3=isEn?"Permanent History":"永久数据";
+  var ft4=isEn?"Custom Themes":"自定义主题";
+  var ft5=isEn?"Annual Report":"年度报告";
+  var price=isEn?"/month":"/月";
+  var year=isEn?"or $49.99/year":"或 $49.99/年";
+  var later=isEn?"Not now":"稍后再说";
+  var coming=isEn?"Coming soon!":"即将推出！";
+  var h="<div class=ov id=proOv style=display:none><div class=modal style=max-width:380px;text-align:center>"+
+    "<div class=mh style=justify-content:center><h2>"+btn+"</h2></div>"+
+    "<p style=color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8>"+
+    ft1+"<br>"+ft2+"<br>"+ft3+"<br>"+ft4+"<br>"+ft5+"</p>"+
+    "<div style=background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px>"+
+    "<div style=font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px>$4.99<span style=font-size:14px;font-weight:400;color:var(--tx3)>"+price+"</span></div>"+
+    "<div style=font-size:11px;color:var(--tx3)>"+year+"</div></div>"+
+    "<button class=btn-p style=width:100%;padding:10px;border:none;border-radius:10px;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;font-weight:600 onclick=alert('"+coming+"')>"+btn+"</button>"+
+    "<div style=margin-top:8px><button class=btn-s style=padding:7px 18px;border:1px solid var(--bd);border-radius:10px;font-size:12px;cursor:pointer;background:var(--cd);color:var(--tx2);font-family:inherit onclick=document.getElementById('proOv').style.display='none'>"+later+"</button></div></div></div>";
+  document.body.insertAdjacentHTML("beforeend",h);
+  document.getElementById("proOv").style.display="flex";
+}
 
 </script>
 </body>
