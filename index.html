@@ -240,6 +240,7 @@ select option{background:#2d1810;color:#fceabb}
 .gp-l:hover{border-color:var(--g2)}
 .gp-l.on{background:rgba(249,217,118,0.08);border-color:var(--g2);color:var(--g1)}
 .gp-l input{display:none}
+.gp-l.disabled{opacity:0.4;cursor:not-allowed}
 
 @media(max-width:530px){
   .cat{font-size:48px}.amount-num{font-size:42px}.amount-dec{font-size:17px}.aws{font-size:20px}
@@ -725,7 +726,26 @@ document.addEventListener("dblclick", function(e){
     proUnlocked=!proUnlocked;
     localStorage.setItem("salaryPro",proUnlocked);
     document.getElementById("proBadge").textContent=proUnlocked?"✨ Pro":"🔒 Pro";
-    // Rebuild theme list
+    // Update unlocked themes in settings if open
+    var list=document.getElementById("themeList");
+    if(list){
+      var labels=list.querySelectorAll("label");
+      labels.forEach(function(lb,i){
+        var keys=Object.keys(THEMES);
+        if(i<keys.length){
+          var t=THEMES[keys[i]];
+          if(t.pro&&!proUnlocked){
+            lb.classList.add("disabled");
+            lb.querySelector("input").disabled=true;
+            if(lb.textContent.indexOf("🔒")<0)lb.textContent+=" 🔒";
+          }else{
+            lb.classList.remove("disabled");
+            lb.querySelector("input").disabled=false;
+            lb.textContent=lb.textContent.replace(" 🔒","");
+          }
+        }
+      });
+    }
     renderThemes();
   }
 });
