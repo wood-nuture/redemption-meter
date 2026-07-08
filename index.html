@@ -240,7 +240,6 @@ select option{background:#2d1810;color:#fceabb}
 .gp-l:hover{border-color:var(--g2)}
 .gp-l.on{background:rgba(249,217,118,0.08);border-color:var(--g2);color:var(--g1)}
 .gp-l input{display:none}
-.gp-l.disabled{opacity:0.4;cursor:not-allowed}
 
 @media(max-width:530px){
   .cat{font-size:48px}.amount-num{font-size:42px}.amount-dec{font-size:17px}.aws{font-size:20px}
@@ -326,12 +325,6 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>工作日</label><div class="dc" id="dayCb"></div></div>
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
-<div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)">
-  <label style="display:flex;align-items:center;gap:4px">🎨 皮肤主题 <span id="proBadge" style="font-size:9px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;padding:1px 6px;border-radius:8px;font-weight:600">🔒 Pro</span></label>
-  <div class="gp" id="themeList"></div>
-  <div class="spk-pr" id="themeStatus">当前: 默认经典</div>
-</div>
-
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
 <div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
 </div></div>
@@ -692,7 +685,7 @@ function openSet(){
   const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent='当前: '+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent='当前: '+SPK[spk].n+' — '+SPK[spk].d;
   const gp=document.getElementById('goalPresets');gp.innerHTML='';GOAL_PRESETS.forEach((p,i)=>{const l=document.createElement('label');l.className='gp-l'+(goalIdx===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='goal';ip.checked=goalIdx===i;ip.addEventListener('change',()=>{document.querySelectorAll('.gp-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');goalIdx=i;document.getElementById('gName').value='';document.getElementById('gAmt').value='';document.getElementById('gUnit').value='';document.getElementById('gUnitAmt').value=''});l.appendChild(ip);l.appendChild(document.createTextNode(p.n));gp.appendChild(l)});
   if(goalIdx>=GOAL_PRESETS.length&&goals.length>0){const g=goals[goalIdx-GOAL_PRESETS.length];if(g){document.getElementById('gName').value=g.n||'';document.getElementById('gAmt').value=g.a||'';document.getElementById('gUnit').value=g.u||'';document.getElementById('gUnitAmt').value=g.ua||''}}
-  document.getElementById('setOv').classList.add('show');if(document.getElementById("themeList"))renderThemes();
+  document.getElementById('setOv').classList.add('show')
 }
 function closeSet(){document.getElementById('setOv').classList.remove('show')}
 function saveSet(){
@@ -718,77 +711,11 @@ if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').
 updSnd();updUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
-initTheme();
-
-// ===== Pro 解锁（开发用：双击猫头切换） =====
-document.addEventListener("dblclick", function(e){
-  if(e.target.id==="cat"){
-    proUnlocked=!proUnlocked;
-    localStorage.setItem("salaryPro",proUnlocked);
-    document.getElementById("proBadge").textContent=proUnlocked?"✨ Pro":"🔒 Pro";
-    // Update unlocked themes in settings if open
-    var list=document.getElementById("themeList");
-    if(list){
-      var labels=list.querySelectorAll("label");
-      labels.forEach(function(lb,i){
-        var keys=Object.keys(THEMES);
-        if(i<keys.length){
-          var t=THEMES[keys[i]];
-          if(t.pro&&!proUnlocked){
-            lb.classList.add("disabled");
-            lb.querySelector("input").disabled=true;
-            if(lb.textContent.indexOf("🔒")<0)lb.textContent+=" 🔒";
-          }else{
-            lb.classList.remove("disabled");
-            lb.querySelector("input").disabled=false;
-            lb.textContent=lb.textContent.replace(" 🔒","");
-          }
-        }
-      });
-    }
-    renderThemes();
-  }
-});
-
 
 /* === i18n System (appended - does not modify any existing code) === */
 
 
 // ===== Pro 弹窗 =====
-
-
-function renderThemes() {
-  var list = document.getElementById("themeList");
-  if (!list) return;
-  list.innerHTML = "";
-  var isEn = localStorage.getItem("salaryLang") === "en";
-  for (var k in THEMES) {
-    var t = THEMES[k];
-    var label = document.createElement("label");
-    label.className = "gp-l" + (currentTheme === k ? " on" : "");
-    if (t.pro && !proUnlocked) label.className += " gp-l";
-    var input = document.createElement("input");
-    input.type = "radio";
-    input.name = "theme";
-    input.checked = currentTheme === k;
-    input.disabled = t.pro && !proUnlocked;
-    input.addEventListener("change", function(key, theme){
-      return function(){
-        if (theme.pro && !proUnlocked) return;
-        applyTheme(key);
-        renderThemes();
-        document.getElementById("themeStatus").textContent = (isEn ? "Current: " : "当前: ") + (isEn ? theme.nameEn : theme.name);
-      };
-    }(k, t));
-    label.appendChild(input);
-    var txt = t.icon + " " + (isEn ? t.nameEn : t.name);
-    if (t.pro && !proUnlocked) txt += " 🔒";
-    label.appendChild(document.createTextNode(txt));
-    list.appendChild(label);
-  }
-  document.getElementById("themeStatus").textContent = (isEn ? "Current: " : "当前: ") + (isEn ? THEMES[currentTheme].nameEn : THEMES[currentTheme].name);
-}
-
 function showProPopup(){
   var ex=document.getElementById("proOv");
   if(ex){ex.style.display="flex";return;}
@@ -814,153 +741,6 @@ function showProPopup(){
     "<div style=margin-top:8px><button class=btn-s style=padding:7px 18px;border:1px solid var(--bd);border-radius:10px;font-size:12px;cursor:pointer;background:var(--cd);color:var(--tx2);font-family:inherit onclick=document.getElementById('proOv').style.display='none'>"+later+"</button></div></div></div>";
   document.body.insertAdjacentHTML("beforeend",h);
   document.getElementById("proOv").style.display="flex";
-}
-
-
-
-// ===== 主题系统 (Pro 功能) =====
-var THEMES = {
-  "default": {
-    name: "默认经典",
-    nameEn: "Classic",
-    css: {
-      "--g1": "#f9d976","--g2": "#f39c12","--g3": "#e67e22",
-      "--tx": "#fceabb","--tx2": "#c9a96e","--tx3": "rgba(201,169,110,0.4)",
-      "--cd": "rgba(255,215,150,0.06)","--bd": "rgba(255,215,150,0.15)",
-      "--hv": "rgba(255,215,150,0.12)","--sh": "rgba(0,0,0,0.4)",
-      "--gr": "#81c784","--or": "#ffb74d","--bg": "linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%)"
-    },
-    icon: "👑", gender: "all", pro: false
-  },
-  "ox": {
-    name: "🐂 牛马本色",
-    nameEn: "🐂 Original Grinder",
-    css: {
-      "--g1": "#DAA520","--g2": "#B8860B","--g3": "#8B6914",
-      "--tx": "#F5DEB3","--tx2": "#D2B48C","--tx3": "rgba(210,180,140,0.4)",
-      "--cd": "rgba(139,105,20,0.08)","--bd": "rgba(184,134,11,0.2)",
-      "--hv": "rgba(184,134,11,0.15)","--sh": "rgba(0,0,0,0.5)",
-      "--gr": "#8B7355","--or": "#DAA520",
-      "--bg": "linear-gradient(135deg,#1a0f05,#2d1a0a 25%,#3d2817 50%,#2d1a0a 75%,#1a0f05 100%)"
-    },
-    icon: "🐂", gender: "all", pro: true
-  },
-  "office": {
-    name: "💼 社畜日常",
-    nameEn: "💼 Corporate Slave",
-    css: {
-      "--g1": "#A0AEC0","--g2": "#718096","--g3": "#4A5568",
-      "--tx": "#E2E8F0","--tx2": "#A0AEC0","--tx3": "rgba(160,174,192,0.4)",
-      "--cd": "rgba(74,85,104,0.08)","--bd": "rgba(113,128,150,0.2)",
-      "--hv": "rgba(113,128,150,0.15)","--sh": "rgba(0,0,0,0.5)",
-      "--gr": "#68D391","--or": "#F6AD55",
-      "--bg": "linear-gradient(135deg,#1a202c,#2a3040 25%,#3d4a60 50%,#2a3040 75%,#1a202c 100%)"
-    },
-    icon: "💼", gender: "all", pro: true
-  },
-  "coffee": {
-    name: "☕ 咖啡续命",
-    nameEn: "☕ Coffee IV",
-    css: {
-      "--g1": "#A1887F","--g2": "#6D4C41","--g3": "#4E342E",
-      "--tx": "#D7CCC8","--tx2": "#A1887F","--tx3": "rgba(161,136,127,0.4)",
-      "--cd": "rgba(78,52,46,0.08)","--bd": "rgba(109,76,65,0.2)",
-      "--hv": "rgba(109,76,65,0.15)","--sh": "rgba(0,0,0,0.5)",
-      "--gr": "#81C784","--or": "#FFB74D",
-      "--bg": "linear-gradient(135deg,#1a0e05,#2d1a0a 25%,#3e2723 50%,#2d1a0a 75%,#1a0e05 100%)"
-    },
-    icon: "☕", gender: "f", pro: true
-  },
-  "night": {
-    name: "🌙 夜猫子",
-    nameEn: "🌙 Night Owl",
-    css: {
-      "--g1": "#7986CB","--g2": "#3949AB","--g3": "#283593",
-      "--tx": "#C5CAE9","--tx2": "#7986CB","--tx3": "rgba(121,134,203,0.4)",
-      "--cd": "rgba(40,53,147,0.08)","--bd": "rgba(57,73,171,0.2)",
-      "--hv": "rgba(57,73,171,0.15)","--sh": "rgba(0,0,0,0.6)",
-      "--gr": "#69F0AE","--or": "#FFD740",
-      "--bg": "linear-gradient(135deg,#0a0a1a,#1a0a2d 25%,#283593 50%,#1a0a2d 75%,#0a0a1a 100%)"
-    },
-    icon: "🌙", gender: "all", pro: true
-  },
-  "fairy": {
-    name: "🌸 打工仙女",
-    nameEn: "🌸 Working Fairy",
-    css: {
-      "--g1": "#F48FB1","--g2": "#D81B60","--g3": "#AD1457",
-      "--tx": "#F8BBD0","--tx2": "#F48FB1","--tx3": "rgba(244,143,177,0.4)",
-      "--cd": "rgba(173,20,87,0.06)","--bd": "rgba(216,27,96,0.15)",
-      "--hv": "rgba(216,27,96,0.12)","--sh": "rgba(0,0,0,0.4)",
-      "--gr": "#81C784","--or": "#FFB74D",
-      "--bg": "linear-gradient(135deg,#1a0a12,#2d1520 25%,#4d2a3d 50%,#2d1520 75%,#1a0a12 100%)"
-    },
-    icon: "🌸", gender: "f", pro: true
-  },
-  "geek": {
-    name: "💻 极客工位",
-    nameEn: "💻 Geek Station",
-    css: {
-      "--g1": "#81C784","--g2": "#43A047","--g3": "#2E7D32",
-      "--tx": "#C8E6C9","--tx2": "#81C784","--tx3": "rgba(129,199,132,0.4)",
-      "--cd": "rgba(27,94,32,0.08)","--bd": "rgba(46,125,50,0.2)",
-      "--hv": "rgba(46,125,50,0.15)","--sh": "rgba(0,0,0,0.5)",
-      "--gr": "#69F0AE","--or": "#FFD740",
-      "--bg": "linear-gradient(135deg,#050d05,#0a1a0a 25%,#1a3d1a 50%,#0a1a0a 75%,#050d05 100%)"
-    },
-    icon: "💻", gender: "m", pro: true
-  },
-  "chill": {
-    name: "🛌 躺平主义",
-    nameEn: "🛌 Lying Flat",
-    css: {
-      "--g1": "#FBC02D","--g2": "#F9A825","--g3": "#F57F17",
-      "--tx": "#FFF9C4","--tx2": "#FBC02D","--tx3": "rgba(251,192,45,0.4)",
-      "--cd": "rgba(245,127,23,0.06)","--bd": "rgba(249,168,37,0.15)",
-      "--hv": "rgba(249,168,37,0.12)","--sh": "rgba(0,0,0,0.4)",
-      "--gr": "#81C784","--or": "#FFB74D",
-      "--bg": "linear-gradient(135deg,#1a1508,#2d2815 25%,#4a3d1a 50%,#2d2815 75%,#1a1508 100%)"
-    },
-    icon: "🛌", gender: "all", pro: true
-  },
-  "rich": {
-    name: "🧧 暴富",
-    nameEn: "🧧 Get Rich",
-    css: {
-      "--g1": "#FF5252","--g2": "#D32F2F","--g3": "#B71C1C",
-      "--tx": "#FFCDD2","--tx2": "#EF9A9A","--tx3": "rgba(239,154,154,0.3)",
-      "--cd": "rgba(183,28,28,0.08)","--bd": "rgba(211,47,47,0.2)",
-      "--hv": "rgba(211,47,47,0.15)","--sh": "rgba(0,0,0,0.5)",
-      "--gr": "#FFB74D","--or": "#FF5252",
-      "--bg": "linear-gradient(135deg,#1a0505,#2d1005 25%,#5a1a0a 50%,#2d1005 75%,#1a0505 100%)"
-    },
-    icon: "🧧", gender: "all", pro: true
-  }
-};
-
-var currentTheme = localStorage.getItem("salaryTheme") || "default";
-var proUnlocked = localStorage.getItem("salaryPro") === "true";
-
-function applyTheme(name) {
-  var t = THEMES[name];
-  if (!t) return;
-  if (t.pro && !proUnlocked) return;
-  currentTheme = name;
-  localStorage.setItem("salaryTheme", name);
-  var root = document.documentElement;
-  for (var k in t.css) {
-    root.style.setProperty(k, t.css[k]);
-  }
-  // Also update dark mode
-  if (document.body.classList.contains("dark")) {
-    // Dark mode will be re-applied by toggleDark
-  }
-}
-
-function initTheme() {
-  if (currentTheme !== "default") {
-    applyTheme(currentTheme);
-  }
 }
 
 </script>
