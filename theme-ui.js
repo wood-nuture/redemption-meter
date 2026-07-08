@@ -40,7 +40,7 @@ function initTheme() {
 }
 
 // ===== Pro 解锁（双击猫头） =====
-(function() {
+document.addEventListener("DOMContentLoaded", function() {
   var cat = document.getElementById("cat");
   if (cat) {
     cat.addEventListener("dblclick", function() {
@@ -51,7 +51,7 @@ function initTheme() {
       if (document.getElementById("themeList")) renderThemes();
     });
   }
-})();
+});
 
 // ===== 渲染皮肤选择器 =====
 function renderThemes() {
