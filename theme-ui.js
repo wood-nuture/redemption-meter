@@ -2,7 +2,7 @@
 // 依赖: theme-config.js (THEMES), theme-effects.js (getThemeBurstEm)
 
 var curTheme = localStorage.getItem("salaryTheme") || "default";
-var proUnlocked = localStorage.getItem("salaryPro") === "true";
+var proUnlocked = true;
 
 // ===== 切换皮肤 =====
 function applyTheme(id) {
