@@ -358,6 +358,7 @@ let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
   try{
+    localStorage.setItem("salaryLang","zh");
     let r=localStorage.getItem('salarySet');if(r)Object.assign(S,JSON.parse(r));
     sndOn=localStorage.getItem('salarySnd')!=='false';
     dark=localStorage.getItem('salaryDrk')==='true';
