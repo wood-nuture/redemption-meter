@@ -399,32 +399,24 @@ var LANG={
 function t(k){var v=LANG[k];return v?v[curLang]:k;}
 function toggleLang(){curLang=curLang==="zh"?"en":"zh";localStorage.setItem("salaryLang",curLang);location.reload();}
 
+
 function showProPopup(){
   var ex=document.getElementById("proOv");
   if(ex){ex.style.display="flex";return;}
-  var h="<div class='ov' id='proOv' style='display:none'><div class='modal' style='max-width:380px;text-align:center'>"+
-    "<div class='mh' style='justify-content:center'><h2>"+t("proTitle")+"</h2></div>"+
-    "<p style='color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8'>"+
+  var H="<div class=ov id=proOv style=display:none><div class=modal style=max-width:380px;text-align:center>"+
+    "<div class=mh style=justify-content:center><h2>"+t("proTitle")+"</h2></div>"+
+    "<p style=color:var\(--tx2\);font-size:13px;margin-bottom:14px;line-height:1.8>"+
     t("proFeature1")+"<br>"+t("proFeature2")+"<br>"+t("proFeature3")+"<br>"+
     t("proFeature4")+"<br>"+t("proFeature5")+"</p>"+
-    "<div style='background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px'>"+
-    "<div style='font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px'>$4.99<span style='font-size:14px;font-weight:400;color:var(--tx3)'>"+t("proMonth")+"</span></div>"+
-    "<div style='font-size:11px;color:var(--tx3)'>"+t("proYear")+"</div></div>"+
-    "<button class='btn btn-p' style='width:100%;padding:10px' onclick="alert('"+t("proComing")+"')">"+t("proBtn")+"</button>"+
-    "<div class='mf' style='margin-top:8px'><button class='btn btn-s' onclick="document.getElementById('proOv').style.display='none'">"+t("proNotNow")+"</button></div></div></div>";
-  document.body.insertAdjacentHTML("beforeend",h);
+    "<div style=background:var\(--cd\);border:1px\ solid\ var\(--bd\);border-radius:12px;padding:14px;margin-bottom:14px>"+
+    "<div style=font-size:24px;font-weight:700;color:var\(--g1\);margin-bottom:2px>$4.99<span style=font-size:14px;font-weight:400;color:var\(--tx3\)>"+t("proMonth")+"</span></div>"+
+    "<div style=font-size:11px;color:var\(--tx3\)>"+t("proYear")+"</div></div>"+
+    "<button class=\"btn btn-p\" style=width:100%;padding:10px onclick=\"clickPro()\">"+t("proBtn")+"</button>"+
+    "<div class=mf style=margin-top:8px><button class=\"btn btn-s\" onclick=\"document.getElementById(\'proOv\').style.display=\'none\'\">"+t("proNotNow")+"</button></div></div></div>";
+  document.body.insertAdjacentHTML("beforeend",H);
+  window.clickPro=function(){alert(t("proComing"));};
   document.getElementById("proOv").style.display="flex";
 }
-
-let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
-let lastInt=-1,lastDaily=-1,celebAct=false,lastSt='',attTrig=false;
-let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
-let goalIdx=-1,goals=[],lastUnitCount=0;
-let funIdx=0,streak=0,moodData=[];
-
-const DAY_ZH=['日','一','二','三','四','五','六'];
-var DAY=curLang==='en'?['Sun','Mon','Tue','Wed','Thu','Fri','Sat']:DAY_ZH;
-let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
   try{
