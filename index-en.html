@@ -123,7 +123,7 @@ body.dark .poop-exit{color:#d8c8b0;border-color:#6a5540;background:rgba(0,0,0,0.
 .summary-box .btn{padding:9px 26px;border:none;border-radius:30px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;transition:0.2s}
 .summary-box .btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(243,156,18,0.2)}
 
-/* ===== Report ===== */
+/* ===== 打工日报 ===== */
 .report-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:35;display:none;align-items:center;justify-content:center;padding:16px}
 .report-overlay.on{display:flex}
 .report-card{width:380px;max-width:100%;border-radius:20px;padding:28px 24px 20px;background:linear-gradient(160deg,#2d1810 0%,#1a0e0a 100%);border:1px solid var(--bd);box-shadow:0 20px 60px rgba(0,0,0,0.5);text-align:center;position:relative;overflow:hidden}
@@ -261,19 +261,19 @@ select option{background:#2d1810;color:#fceabb}
 
 <!-- 带薪拉屎 -->
 <div class="poop-overlay" id="poopOv"><div class="poop-bg"></div>
-<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title">Money works while you chill</div><div class="poop-sub">Paid Break Timer</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn">This break earned you <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips">Stay focused, respect the money.</div><button class="poop-exit" onclick="exitPoop()">End Break →</button></div></div>
+<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title" data-i18n="poopTitle">Money works while you chill</div><div class="poop-sub" data-i18n="poopSub">Paid Break Timer</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn" data-i18n="poopEarnPrefix">This break earned you <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips" data-i18n="poopDefTip">Stay focused, respect the money.</div><button class="poop-exit" onclick="exitPoop()" data-i18n="poopExit">End Break →</button></div></div>
 
 <!-- 总结弹窗 -->
-<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3>Paid Break Done!</h3><p>Break Value</p><div class="v" id="summaryVal">¥ 0.00</div><p>Refreshed & ready to work.</p><button class="btn" onclick="closeSummary()">Get back 💪</button></div></div>
+<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3 data-i18n="summaryTitle">Paid Break Done!</h3><p data-i18n="summaryValue">Break Value</p><div class="v" id="summaryVal">¥ 0.00</div><p data-i18n="summaryMsg">Refreshed & ready to work.</p><button class="btn" onclick="closeSummary()" data-i18n="summaryBtn">Get back 💪</button></div></div>
 
 <!-- Report -->
-<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle">📋 Daily Report</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">Close</button><button class="pri" onclick="shareReport()">📸 Screenshot</button></div></div></div>
+<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle" data-i18n="reportTitle">📋 Daily Report</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">Close</button><button class="pri" onclick="shareReport()">📸 Screenshot</button></div></div></div>
 
 <!-- 心情记录 -->
-<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 How was work today?</h3><p>Tap to log your mood</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">Skip</div></div></div>
+<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3 data-i18n="moodTitle">🎭 How was work today?</h3><p data-i18n="moodSub">Tap to log your mood</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()" data-i18n="moodSkip">Skip</div></div></div>
 
 <div class="top-bar">
-  <button class="top-btn" id="reportBtn" onclick="showReport()" title="Report">📋</button>
+  <button class="top-btn" id="reportBtn" onclick="showReport()"  data-i18n-title="reportBtnTooltip" title="Report">📋</button>
   <button class="top-btn" onclick="showProPopup()"  data-i18n-title="proDiamond" title="Pro">💎</button>
   <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN/CN">🌐</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
@@ -283,33 +283,33 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="container">
   <div class="cat" id="cat" onclick="tapCat()">🐱</div>
-  <div class="title-row">Today's Grind <span class="sb" id="sb">● Grindin'</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
+  <div class="title-row" data-i18n="titleGrind">Today's Grind <span class="sb" id="sb" data-i18n="statusWorking">● Grindin'</span><span class="streak-badge" id="streakBadge">🔥 0 days</span></div>
 
   <div class="cd-w" onclick="toggleCD()">
-    <span class="cd-l" id="cdL">⏳ 距离End</span>
+    <span class="cd-l" id="cdL" data-i18n="labelTillFreedom">⏳ Till Freedom</span>
     <span class="cd" id="cd">00:00:00</span>
-    <button class="slack-btn" id="slackBtn" onclick="event.stopPropagation();toggleSlack()">😴 Slack</button>
-    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()">🚽 Paid Break</button>
+    <button class="slack-btn" id="slackBtn" onclick="event.stopPropagation();toggleSlack()" data-i18n="labelSlack">😴 Slack</button>
+    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()" data-i18n="labelPaidBreak">🚽 Paid Break</button>
   </div>
 
   <div class="aw" id="aw">
     <div><span class="aws">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
-    <div class="aft" id="aft">Start earnin'~</div>
+    <div class="aft" id="aft" data-i18n="startEarning">Start earnin'~</div>
     <div class="goal-bar" id="goalBar" style="display:none">
-      <div class="goal-h"><span class="l" id="goalL">🎯 Goal</span><span class="r" id="goalR">0%</span></div>
+      <div class="goal-h"><span class="l" id="goalL" data-i18n="goalLabel">🎯 Goal</span><span class="r" id="goalR">0%</span></div>
       <div class="goal-tr"><div class="goal-fl" id="goalFl" style="width:0%"></div></div>
-      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText">Got 0</div>
+      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText" data-i18n="goalGot">Got 0</div>
       <div class="goal-acc" id="goalAcc" style="display:none"></div>
     </div>
-    <div class="fun-line" id="funLine">Boss paid your commute today!</div>
+    <div class="fun-line" id="funLine" data-i18n="funDefault">Boss paid your commute today!</div>
     <div class="brick-area" id="brickArea"></div>
     <div class="worker-line" id="workerLine"></div>
   </div>
 
   <div class="sr">
-    <div class="sc">💰 Daily <span class="sv" id="svDaily">--</span></div>
-    <div class="sc">⚡ /Sec <span class="sv" id="svPS">--</span></div>
-    <div class="sc">📅 Month <span class="sv" id="svMonth">--</span></div>
+    <div class="sc" data-i18n="statDaily">💰 Daily <span class="sv" id="svDaily">--</span></div>
+    <div class="sc" data-i18n="statPerSec">⚡ /Sec <span class="sv" id="svPS">--</span></div>
+    <div class="sc" data-i18n="statMonth">📅 Month <span class="sv" id="svMonth">--</span></div>
     
   </div>
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
@@ -324,19 +324,21 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>Lunch (hrs)</label><div class="ti"><input type="number" id="sLH" min="0" max="3" value="1"></div><div class="h">No earnings during lunch</div></div>
 <div class="fg"><label>Work Days</label><div class="dc" id="dayCb"></div></div>
 <div class="fg"><label>Work Days/Month</label><input type="number" id="sWD" min="1" max="31"><div class="h">Daily = Salary / Work Days</div></div>
-<div class="fg"><label>🎵 Sound Pack</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">Current: 马里奥 1-UP</div></div>
+<div class="fg"><label>🎵 Sound Pack</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">Current: Mario 1-UP</div></div>
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 Goals</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>Name</label><input type="text" id="gName" placeholder="e.g. Manicure"></div><div class="fg"><label>Target</label><input type="number" id="gAmt" min="0" step="1" placeholder="e.g. 200"></div></div><div class="fr"><div class="fg"><label>Unit</label><input type="text" id="gUnit" placeholder="e.g. sessions"></div><div class="fg"><label>Per Unit</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="e.g. 150"></div></div></div>
 <div class="mf"><button class="btn btn-s" onclick="closeSet()">Cancel</button><button class="btn btn-p" onclick="saveSet()">✓ Save</button></div>
 </div></div>
 
 <script>
+
+
 // ===== 初始化 =====
 
 // ===== LANG System =====
 var curLang=localStorage.getItem("salaryLang")||"en";
 var LANG={
 "pageTitle":{"zh":"🐱 赎身进度条","en":"🐱 Redemption Meter"},
-"labelTillFreedom":{"zh":"⏳ 距离End","en":"⏳ Till Freedom"},
+"labelTillFreedom":{"zh":"⏳ Till Freedom","en":"⏳ Till Freedom"},
 "startEarning":{"zh":"Start earnin'~","en":"Start earnin'~"},
 "statusPaidBreak":{"zh":"● 带薪放松中","en":"● Paid Break"},
 "statusSlacking":{"zh":"● 摸鱼中","en":"● Slackin'"},
@@ -354,11 +356,11 @@ var LANG={
 "labelPaidBreakCd":{"zh":"⏳ 带薪放松","en":"⏳ Paid Break"},
 "labelChillin":{"zh":"🚽 放松中","en":"🚽 Chillin'"},
 "labelDoneExclaim":{"zh":"🎉 已End！","en":"🎉 Done!"},
-"statDaily":{"zh":"💰 日薪","en":"💰 Daily"},
-"statPerSec":{"zh":"⚡ 每秒","en":"⚡ /Sec"},
-"statMonth":{"zh":"📅 本月","en":"📅 Month"},
+"statDaily":{"zh":"💰 Daily","en":"💰 Daily"},
+"statPerSec":{"zh":"⚡ /Sec","en":"⚡ /Sec"},
+"statMonth":{"zh":"📅 Month","en":"📅 Month"},
 "goalLabel":{"zh":"🎯 Goal","en":"🎯 Goal"},
-"goalGot":{"zh":"Got ","en":"Got "},
+"goalGot":{"zh":"已够 ","en":"Got "},
 "goalEarned":{"zh":"钱已入账！","en":" paid off!"},
 "goalHintSlow":{"zh":"💡 靠工资攒够需要很久，想加速吗？","en":"💡 Slow? Side hustle?"},
 "goalHintBig":{"zh":"💡 这个目标不小，有没有想过副业？","en":"💡 Big goal? Side hustle?"},
@@ -376,30 +378,31 @@ var LANG={
 "reportCopyDone":{"zh":"✅ 已复制！","en":"✅ Copied!"},
 "reportFrom":{"zh":"— 来自招财工资表","en":"— Salary Meter"},
 "shareTitle":{"zh":"今日打工报告","en":"Daily Report"},
-"settingsPickDay":{"zh":"Pick at least one day","en":"Pick at least one day"},,
-"poopDefTip":{"zh":"别刷手机，专心致志，对钱尊重。","en":"Stay focused, respect the money."},
+"settingsPickDay":{"zh":"至少选一天","en":"Pick at least one day"},,
+"poopDefTip":{"zh":"Stay focused, respect the money.","en":"Stay focused, respect the money."},
 "proDiamond":{"zh":"Pro","en":"Pro"},
-"reportBtnTooltip":{"zh":"打工日报","en":"Report"},
-"goalGot":{"zh":"已够 0","en":"Got 0"},
-"titleGrind":{"zh":"今日搬砖收益","en":"Today\'s Grind"},
-"labelSlack":{"zh":"😴 摸鱼","en":"😴 Slack"},
-"labelPaidBreak":{"zh":"🚽 带薪放松","en":"🚽 Paid Break"},
-"reportTitle":{"zh":"📋 今日打工报告","en":"📋 Daily Report"},
-"poopTitle":{"zh":"放空的时候，钱也在为你打工","en":"Money works while you chill"},
-"poopSub":{"zh":"带薪放松计时器","en":"Paid Break Timer"},
-"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "},
-"poopExit":{"zh":"结束放松，继续搬砖 →","en":"End Break →"},
-"summaryTitle":{"zh":"带薪放松结束！","en":"Paid Break Done!"},
-"summaryValue":{"zh":"本次带薪价值","en":"Break Value"},
-"summaryMsg":{"zh":"身心舒畅，可以继续搬砖了。","en":"Refreshed & ready to work."},
-"summaryBtn":{"zh":"继续搬砖 💪","en":"Get back 💪"},
-"moodTitle":{"zh":"🎭 今天打工心情怎么样？","en":"🎭 How was work today?"},
-"moodSub":{"zh":"点一下记录今日心情","en":"Tap to log your mood"},
-"moodSkip":{"zh":"跳过，不想说","en":"Skip"},
-"funDefault":{"zh":"恭喜，老板又帮你报销了今天的通勤费。","en":"Boss paid your commute today!"},
-"goalLabel":{"zh":"🎯 目标","en":"🎯 Goal"},
-"startEarning":{"zh":"开始搬砖赚小钱钱~","en":"Start earnin'~"},
-"settingsCurrent":{"zh":"Current: ","en":"Current: "},
+"reportBtnTooltip":{"zh":"Report","en":"Report"},
+"goalGot":{"zh":"Got 0","en":"Got 0"},
+"titleGrind":{"zh":"Today's Grind","en":"Today\'s Grind"},
+"labelSlack":{"zh":"😴 Slack","en":"😴 Slack"},
+"labelPaidBreak":{"zh":"🚽 Paid Break","en":"🚽 Paid Break"},
+"reportTitle":{"zh":"📋 Daily Report","en":"📋 Daily Report"},
+"poopTitle":{"zh":"Money works while you chill","en":"Money works while you chill"},
+"poopSub":{"zh":"Paid Break Timer","en":"Paid Break Timer"},
+"poopEarnPrefix":{"zh":"This break earned you ","en":"This break earned you "},
+"poopExit":{"zh":"End Break →","en":"End Break →"},
+"summaryTitle":{"zh":"Paid Break Done!","en":"Paid Break Done!"},
+"summaryValue":{"zh":"Break Value","en":"Break Value"},
+"summaryMsg":{"zh":"Refreshed & ready to work.","en":"Refreshed & ready to work."},
+"summaryBtn":{"zh":"Get back 💪","en":"Get back 💪"},
+"moodTitle":{"zh":"🎭 How was work today?","en":"🎭 How was work today?"},
+"moodSub":{"zh":"Tap to log your mood","en":"Tap to log your mood"},
+"moodSkip":{"zh":"Skip","en":"Skip"},
+"funDefault":{"zh":"Boss paid your commute today!","en":"Boss paid your commute today!"},
+"goalLabel":{"zh":"🎯 Goal","en":"🎯 Goal"},
+"startEarning":{"zh":"Start earnin'~","en":"Start earnin'~"},
+"poopEarnPrefix":{"zh":"This break earned you ","en":"This break earned you "}
+"settingsCurrent":{"zh":"当前: ","en":"Current: "},
 
 "proTitle":{"zh":"升级 Pro","en":"Upgrade Pro"},
 "proFeature1":{"zh":"无限目标","en":"Unlimited Goals"},
@@ -615,7 +618,7 @@ const REPORT_MSGS=[
 
 function showReport(){
   const r=calc();const n=new Date();
-  document.getElementById('rDate').textContent=n.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  document.getElementById('rDate').textContent=n.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   const conv=getGoal();let convText='';
   if(conv&&conv.a>0){
     const cups=(r.earn/conv.ua).toFixed(1);
@@ -804,7 +807,7 @@ function showCai(){
 // ===== 设置 =====
 function openSet(){
   document.getElementById('sSal').value=S.salary;document.getElementById('sSH').value=S.sH;document.getElementById('sSM').value=S.sM;document.getElementById('sEH').value=S.eH;document.getElementById('sEM').value=S.eM;document.getElementById('sLH').value=S.lH;document.getElementById('sWD').value=S.mwd;
-  const db=document.getElementById('dayCb');db.innerHTML='';DAY.forEach((n,i)=>{const l=document.createElement('label');l.className='dc-lb'+(S.wd.includes(i)?' on':'');const ip=document.createElement('input');ip.type='checkbox';ip.checked=S.wd.includes(i);ip.dataset.day=i;ip.addEventListener('change',()=>l.classList.toggle('on'));l.appendChild(ip);l.appendChild(document.createTextNode('周'+n));db.appendChild(l)});
+  const db=document.getElementById('dayCb');db.innerHTML='';DAY.forEach((n,i)=>{const l=document.createElement('label');l.className='dc-lb'+(S.wd.includes(i)?' on':'');const ip=document.createElement('input');ip.type='checkbox';ip.checked=S.wd.includes(i);ip.dataset.day=i;ip.addEventListener('change',()=>l.classList.toggle('on'));l.appendChild(ip);l.appendChild(document.createTextNode(n));db.appendChild(l)});
   const SPK=[{n:'马里奥 1-UP',i:'🎮',d:'经典增命蘑菇'},{n:'支付宝到账',i:'📱',d:'清脆到账提示'},{n:'经典金币',i:'🪙',d:'马里奥叮叮声'},{n:'可爱布谷',i:'🐤',d:'轻快提示音'}];
   const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent=t('settingsCurrent')+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent=t('settingsCurrent')+SPK[spk].n+' — '+SPK[spk].d;
   const gp=document.getElementById('goalPresets');gp.innerHTML='';GOAL_PRESETS.forEach((p,i)=>{const l=document.createElement('label');l.className='gp-l'+(goalIdx===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='goal';ip.checked=goalIdx===i;ip.addEventListener('change',()=>{document.querySelectorAll('.gp-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');goalIdx=i;document.getElementById('gName').value='';document.getElementById('gAmt').value='';document.getElementById('gUnit').value='';document.getElementById('gUnitAmt').value=''});l.appendChild(ip);l.appendChild(document.createTextNode(p.n));gp.appendChild(l)});
@@ -833,9 +836,10 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-if(curLang!=='zh')document.title=t('pageTitle');
+if(curLang!=='zh')rebuildUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
+console.log('App ready, buttons should work');
 
 /* === i18n System (appended - does not modify any existing code) === */
 
