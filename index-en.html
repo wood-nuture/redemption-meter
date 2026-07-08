@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script src="theme-config.js">
+initTheme();
+</script>
+<script src="theme-effects.js">
+initTheme();
+</script>
+<script src="theme-ui.js">
+initTheme();
+</script>
 <title>🐱 Redemption Meter</title>
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
@@ -253,33 +262,7 @@ select option{background:#2d1810;color:#fceabb}
 
 
 
-/* ===== Nine Themes ===== */
-body.theme-ox{--g1:#DAA520;--g2:#B8860B;--g3:#8B6914;--tx:#F5DEB3;--tx2:#D2B48C;--tx3:rgba(210,180,140,0.4);--cd:rgba(139,105,20,0.08);--bd:rgba(184,134,11,0.2);--hv:rgba(184,134,11,0.15);--sh:rgba(0,0,0,0.5);--gr:#8B7355;--or:#DAA520;background:linear-gradient(135deg,#1a0f05,#2d1a0a 25%,#3d2817 50%,#2d1a0a 75%,#1a0f05 100%)}
-body.theme-ox.dark{background:linear-gradient(135deg,#0f0802,#1a0f05 25%,#2d1a0a 50%,#1a0f05 75%,#0f0802 100%)}
-body.theme-ox .amount-num,body.theme-ox .amount-dec{background:linear-gradient(180deg,#F5DEB3 0%,#DAA520 40%,#B8860B 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-office{--g1:#A0AEC0;--g2:#718096;--g3:#4A5568;--tx:#E2E8F0;--tx2:#A0AEC0;--tx3:rgba(160,174,192,0.4);--cd:rgba(74,85,104,0.08);--bd:rgba(113,128,150,0.2);--hv:rgba(113,128,150,0.15);--sh:rgba(0,0,0,0.5);--gr:#68D391;--or:#F6AD55;background:linear-gradient(135deg,#1a202c,#2a3040 25%,#3d4a60 50%,#2a3040 75%,#1a202c 100%)}
-body.theme-office.dark{background:linear-gradient(135deg,#0f1520,#1a202c 25%,#2a3040 50%,#1a202c 75%,#0f1520 100%)}
-body.theme-office .amount-num,body.theme-office .amount-dec{background:linear-gradient(180deg,#E2E8F0 0%,#A0AEC0 40%,#718096 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-coffee{--g1:#A1887F;--g2:#6D4C41;--g3:#4E342E;--tx:#D7CCC8;--tx2:#A1887F;--tx3:rgba(161,136,127,0.4);--cd:rgba(78,52,46,0.08);--bd:rgba(109,76,65,0.2);--hv:rgba(109,76,65,0.15);--sh:rgba(0,0,0,0.5);--gr:#81C784;--or:#FFB74D;background:linear-gradient(135deg,#1a0e05,#2d1a0a 25%,#3e2723 50%,#2d1a0a 75%,#1a0e05 100%)}
-body.theme-coffee.dark{background:linear-gradient(135deg,#0f0802,#1a0e05 25%,#2d1a0a 50%,#1a0e05 75%,#0f0802 100%)}
-body.theme-coffee .amount-num,body.theme-coffee .amount-dec{background:linear-gradient(180deg,#D7CCC8 0%,#A1887F 40%,#6D4C41 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-night{--g1:#7986CB;--g2:#5C6BC0;--g3:#3949AB;--tx:#C5CAE9;--tx2:#9FA8DA;--tx3:rgba(159,168,218,0.35);--cd:rgba(92,107,192,0.1);--bd:rgba(121,134,203,0.25);--hv:rgba(121,134,203,0.18);--sh:rgba(0,0,20,0.6);--gr:#69F0AE;--or:#FFD740;background:linear-gradient(135deg,#05051a,#0d0d2a 25%,#1a1a4a 50%,#0d0d2a 75%,#05051a 100%)}
-body.theme-night.dark{background:linear-gradient(135deg,#030310,#080825 25%,#12124a 50%,#080825 75%,#030310 100%)}
-body.theme-night .amount-num,body.theme-night .amount-dec{background:linear-gradient(180deg,#E8EAF6 0%,#9FA8DA 40%,#5C6BC0 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-night .cat::after{content:"🦉"}body.theme-night .aw{border-color:rgba(121,134,203,0.3)}body.theme-night .cd{text-shadow:0 0 30px rgba(121,134,203,0.25)}body.theme-night .top-btn{border-color:rgba(121,134,203,0.2)}
-body.theme-fairy{--g1:#F48FB1;--g2:#D81B60;--g3:#AD1457;--tx:#F8BBD0;--tx2:#F48FB1;--tx3:rgba(244,143,177,0.35);--cd:rgba(173,20,87,0.06);--bd:rgba(216,27,96,0.15);--hv:rgba(216,27,96,0.12);--sh:rgba(0,0,0,0.4);--gr:#81C784;--or:#FFB74D;background:linear-gradient(135deg,#1a0a12,#2d1520 25%,#4d2a3d 50%,#2d1520 75%,#1a0a12 100%)}
-body.theme-fairy.dark{background:linear-gradient(135deg,#0f050a,#1a0a12 25%,#2d1520 50%,#1a0a12 75%,#0f050a 100%)}
-body.theme-fairy .amount-num,body.theme-fairy .amount-dec{background:linear-gradient(180deg,#F8BBD0 0%,#F48FB1 40%,#D81B60 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-geek{--g1:#81C784;--g2:#43A047;--g3:#2E7D32;--tx:#C8E6C9;--tx2:#81C784;--tx3:rgba(129,199,132,0.4);--cd:rgba(27,94,32,0.08);--bd:rgba(46,125,50,0.2);--hv:rgba(46,125,50,0.15);--sh:rgba(0,0,0,0.5);--gr:#69F0AE;--or:#FFD740;background:linear-gradient(135deg,#050d05,#0a1a0a 25%,#1a3d1a 50%,#0a1a0a 75%,#050d05 100%)}
-body.theme-geek.dark{background:linear-gradient(135deg,#020802,#050d05 25%,#0a1a0a 50%,#050d05 75%,#020802 100%)}
-body.theme-geek .amount-num,body.theme-geek .amount-dec{background:linear-gradient(180deg,#C8E6C9 0%,#81C784 40%,#43A047 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-chill{--g1:#FBC02D;--g2:#F9A825;--g3:#F57F17;--tx:#FFF9C4;--tx2:#FBC02D;--tx3:rgba(251,192,45,0.35);--cd:rgba(245,127,23,0.06);--bd:rgba(249,168,37,0.15);--hv:rgba(249,168,37,0.12);--sh:rgba(0,0,0,0.4);--gr:#81C784;--or:#FFB74D;background:linear-gradient(135deg,#1a1508,#2d2815 25%,#4a3d1a 50%,#2d2815 75%,#1a1508 100%)}
-body.theme-chill.dark{background:linear-gradient(135deg,#0f0a04,#1a1508 25%,#2d2815 50%,#1a1508 75%,#0f0a04 100%)}
-body.theme-chill .amount-num,body.theme-chill .amount-dec{background:linear-gradient(180deg,#FFF9C4 0%,#FBC02D 40%,#F9A825 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-body.theme-rich{--g1:#FF5252;--g2:#D32F2F;--g3:#B71C1C;--tx:#FFCDD2;--tx2:#EF9A9A;--tx3:rgba(239,154,154,0.3);--cd:rgba(183,28,28,0.08);--bd:rgba(211,47,47,0.2);--hv:rgba(211,47,47,0.15);--sh:rgba(0,0,0,0.5);--gr:#FFB74D;--or:#FF5252;background:linear-gradient(135deg,#1a0505,#2d1005 25%,#5a1a0a 50%,#2d1005 75%,#1a0505 100%)}
-body.theme-rich.dark{background:linear-gradient(135deg,#0f0202,#1a0505 25%,#2d1005 50%,#1a0505 75%,#0f0202 100%)}
-body.theme-rich .amount-num,body.theme-rich .amount-dec{background:linear-gradient(180deg,#FFCDD2 0%,#FF5252 40%,#D32F2F 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
-
+body.theme-night .cat::after{content:"🦉"}
 </style>
 </head>
 <body>
@@ -306,7 +289,6 @@ body.theme-rich .amount-num,body.theme-rich .amount-dec{background:linear-gradie
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="Report">📋</button>
   <button class="top-btn" id="langBtn" onclick="window.location.href='index.html'" title="中文">🇨🇳</button>
-  <button class="top-btn" onclick="toggleNight()" title="Night Owl" id="nightBtn">🌃</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
@@ -357,7 +339,7 @@ body.theme-rich .amount-num,body.theme-rich .amount-dec{background:linear-gradie
 <div class="fg"><label>Work Days</label><div class="dc" id="dayCb"></div></div>
 <div class="fg"><label>Work Days/Month</label><input type="number" id="sWD" min="1" max="31"><div class="h">Daily = Salary ÷ Work Days</div></div>
 <div class="fg"><label>🎵 Sound Pack</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">Current: Mario 1-UP</div></div>
-<div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label style="display:flex;align-items:center;gap:4px">🎨 Theme <span id="proBadge" style="font-size:9px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;padding:1px 6px;border-radius:8px">🔒 Pro</span></label><div class="gp" id="themeList"></div><div class="spk-pr" id="themeStatus">Current: Classic</div></div>
+<div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label style="display:flex;align-items:center;gap:4px">🎨 Theme <span id="proBadge" style="font-size:9px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;padding:1px 6px;border-radius:8px">Pro</span></label><div class="gp" id="themeList"></div><div class="spk-pr" id="themeStatus">Current: Classic</div></div>
 
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 Goals</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>Name</label><input type="text" id="gName" placeholder="e.g. Manicure"></div><div class="fg"><label>Target</label><input type="number" id="gAmt" min="0" step="1" placeholder="e.g. 200"></div></div><div class="fr"><div class="fg"><label>Unit</label><input type="text" id="gUnit" placeholder="e.g. sessions"></div><div class="fg"><label>Per Unit</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="e.g. 150"></div></div></div>
 <div class="mf"><button class="btn btn-s" onclick="closeSet()">Cancel</button><button class="btn btn-p" onclick="saveSet()">✓ Save</button></div>
@@ -680,7 +662,7 @@ function updUI(){
 
 // ===== 金币爆发 =====
 function burst(c){
-  const box=document.getElementById('burstBox');var em=(function(){var t=themeList.find(function(x){return document.body.classList.contains('theme-'+x.id);});return t?t.burstEm:themeList[0].burstEm;})();
+  const box=document.getElementById('burstBox');var em=window._burstEm||['🪙','💰','✨','🌟','💫','🤑','💎','👛'];
   for(let i=0;i<c;i++){
     const el=document.createElement('div');el.className='burst-p';
     el.textContent=em[Math.floor(Math.random()*em.length)];
@@ -740,7 +722,7 @@ function saveSet(){
 function tapCat(){const c=document.getElementById('cat');c.className='cat tap';setTimeout(()=>{c.className='cat'},350);burst(8);playCoin()}
 
 // ===== 背景 =====
-function mkIngots(){const c=document.getElementById('ingotRain');var is=(function(){var t=themeList.find(function(x){return document.body.classList.contains('theme-'+x.id);});return t?t.decorEm:themeList[0].decorEm;})();for(let i=0;i<30;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
+function mkIngots(){const c=document.getElementById('ingotRain');var is=window._decorEm||['🪙','💰','🥇','✨'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
 function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<40;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
 
 // ===== Init =====
@@ -754,9 +736,6 @@ setInterval(()=>{lastInt=-1},60000);
 
 
 // ===== Pro Popup =====
-
-function renderThemes(){var list=document.getElementById("themeList");if(!list)return;list.innerHTML="";var isEn=localStorage.getItem("salaryLang")==="en";themeList.forEach(function(t){var lb=document.createElement("label");lb.className="gp-l";if(curTheme===t.id)lb.className+=" on";if(t.pro&&!proUnlocked)lb.className+=" disabled";var ip=document.createElement("input");ip.type="radio";ip.name="theme";ip.checked=(curTheme===t.id);ip.disabled=(t.pro&&!proUnlocked);ip.addEventListener("change",function(id){return function(){if(proUnlocked||id==="default")applyTheme(id);renderThemes();document.getElementById("themeStatus").textContent=(isEn?"Current: ":"当前: ")+(themeList.find(function(x){return x.id===id})||{}).name;};}(t.id));lb.appendChild(ip);var txt=t.icon+" "+(isEn?t.nameEn:t.name);if(t.pro&&!proUnlocked)txt+=" 🔒";lb.appendChild(document.createTextNode(txt));list.appendChild(lb);});var ct=themeList.find(function(x){return x.id===curTheme;});document.getElementById("themeStatus").textContent=(isEn?"Current: ":"当前: ")+(ct?ct.name:"");}
-
 function showProPopup(){
   var ex=document.getElementById("proOv");
   if(ex){ex.style.display="flex";return;}
@@ -787,25 +766,7 @@ function showProPopup(){
 
 
 
-var curTheme = localStorage.getItem("salaryTheme") || "default";
-var themeList = [
-  {id:"default",name:"默认经典",nameEn:"Classic",icon:"👑",gender:"all",pro:false,burstEm:["🪙","💰","✨","🌟","💫","🤑","💎","👛"],decorEm:["🪙","💰","🥇","✨"]},
-  {id:"ox",name:"🐂 牛马本色",nameEn:"🐂 Grinder",gender:"all",pro:true,burstEm:["🌾","🔗","🪵","💧","🧑‍🌾","🐂","🥾","🪓"],decorEm:["🌾","🔗","🪵","💧"]},
-  {id:"office",name:"💼 社畜日常",nameEn:"💼 Corporate",gender:"all",pro:true,burstEm:["📎","📊","☕","📋","🖇️","📉","🖨️","🔔"],decorEm:["📎","📊","☕","📋"]},
-  {id:"coffee",name:"☕ 咖啡续命",nameEn:"☕ Coffee",gender:"f",pro:true,burstEm:["☕","🧋","🧊","🥤","💊","🍩","🧁","🥐"],decorEm:["☕","🧋","🧊","🥤"]},
-  {id:"night",name:"🌙 夜猫子",nameEn:"🌙 Night Owl",gender:"all",pro:true,burstEm:["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"],decorEm:["🌙","⭐","🦉","💡"]},
-  {id:"fairy",name:"🌸 打工仙女",nameEn:"🌸 Fairy",gender:"f",pro:true,burstEm:["🌸","💄","👜","👠","🎀","💅","🧴","💐"],decorEm:["🌸","💄","👜","🎀"]},
-  {id:"geek",name:"💻 极客工位",nameEn:"💻 Geek",gender:"m",pro:true,burstEm:["⌨️","🖥️","🐧","🤖","⚡","💾","🖱️","📟"],decorEm:["⌨️","🖥️","🐧","⚡"]},
-  {id:"chill",name:"🛌 躺平主义",nameEn:"🛌 Chill",gender:"all",pro:true,burstEm:["🛌","🧸","📱","🍜","🐈","☁️","🧦","🫖"],decorEm:["🛌","🧸","☁️","🐈"]},
-  {id:"rich",name:"🧧 暴富",nameEn:"🧧 Rich",gender:"all",pro:true,burstEm:["🧨","🧧","🏮","🐉","🎊","💵","🥇","🎆"],decorEm:["🧨","🧧","🏮","🎊"]}
-];
-var proUnlocked = localStorage.getItem("salaryPro")==="true";
-function applyTheme(id){curTheme=id;localStorage.setItem("salaryTheme",id);document.body.className=document.body.className.replace(/theme-\w+/g,"").trim();if(id!=="default")document.body.classList.add("theme-"+id);}
-function initTheme(){if(curTheme!=="default")applyTheme(curTheme);}
-document.getElementById("cat").addEventListener("dblclick",function(){proUnlocked=!proUnlocked;localStorage.setItem("salaryPro",proUnlocked);var b=document.getElementById("proBadge");if(b)b.textContent=proUnlocked?"✨ Pro":"🔒 Pro";if(document.getElementById("themeList"))renderThemes();});
-
 initTheme();
-
 </script>
 </body>
 </html>
