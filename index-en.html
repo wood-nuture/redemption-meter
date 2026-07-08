@@ -330,6 +330,8 @@ select option{background:#2d1810;color:#fceabb}
 </div></div>
 
 <script>
+var isEnglishPage=true;
+
 // ===== Init =====
 let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
 let lastInt=-1,lastDaily=-1,celebAct=false,lastSt='',attTrig=false;
@@ -719,7 +721,7 @@ setInterval(()=>{lastInt=-1},60000);
 function showProPopup(){
   var ex=document.getElementById("proOv");
   if(ex){ex.style.display="flex";return;}
-  var isEn=localStorage.getItem("salaryLang")==="en";
+  var isEn=isEnglishPage||localStorage.getItem("salaryLang")==="en";
   var btn=isEn?"Upgrade Pro":"升级 Pro";
   var ft1=isEn?"Unlimited Goals":"无限目标";
   var ft2=isEn?"More Sounds":"更多音效";
