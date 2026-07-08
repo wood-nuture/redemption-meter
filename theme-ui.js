@@ -33,7 +33,14 @@ function applyTheme(id) {
 
 // ===== 页面加载时恢复上次皮肤 =====
 function initTheme() {
-  if (curTheme !== "default") applyTheme(curTheme);
+  if (curTheme !== "default") { applyTheme(curTheme); }
+  else {
+    var t = THEMES["default"];
+    window._burstEm = t.burstEm;
+    window._decorEm = t.decorEm;
+    window._themeQuotes = t.quotes || [];
+    window._themeStatusQuotes = t.statusQuotes || {};
+  }
 }
 
 // ===== Pro 解锁（双击猫头） =====
