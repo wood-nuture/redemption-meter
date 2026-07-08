@@ -88,3 +88,23 @@ function playPerDollarSound() {
     osc.stop(now + 0.2);
   } catch(e) {}
 }
+
+
+// ===== 主题语录 =====
+// 获取当前主题的趣味语录
+function getThemeQuote(index) {
+  var t = getCurrentTheme();
+  if (t && t.quotes && t.quotes.length > 0) {
+    return t.quotes[index % t.quotes.length];
+  }
+  return "";
+}
+
+// 获取当前主题的状态语录（根据工作状态）
+function getThemeStatusQuote(state, index) {
+  var t = getCurrentTheme();
+  if (t && t.statusQuotes && t.statusQuotes[state] && t.statusQuotes[state].length > 0) {
+    return t.statusQuotes[state][index % t.statusQuotes[state].length];
+  }
+  return "";
+}
