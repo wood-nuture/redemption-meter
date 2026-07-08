@@ -274,7 +274,7 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="Report">📋</button>
-  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
+  <button class="top-btn" onclick="showProPopup()"  data-i18n-title="proDiamond" title="Pro">💎</button>
   <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN/CN">🌐</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
@@ -376,7 +376,29 @@ var LANG={
 "reportCopyDone":{"zh":"✅ 已复制！","en":"✅ Copied!"},
 "reportFrom":{"zh":"— 来自招财工资表","en":"— Salary Meter"},
 "shareTitle":{"zh":"今日打工报告","en":"Daily Report"},
-"settingsPickDay":{"zh":"Pick at least one day","en":"Pick at least one day"},
+"settingsPickDay":{"zh":"Pick at least one day","en":"Pick at least one day"},,
+"poopDefTip":{"zh":"别刷手机，专心致志，对钱尊重。","en":"Stay focused, respect the money."},
+"proDiamond":{"zh":"Pro","en":"Pro"},
+"reportBtnTooltip":{"zh":"打工日报","en":"Report"},
+"goalGot":{"zh":"已够 0","en":"Got 0"},
+"titleGrind":{"zh":"今日搬砖收益","en":"Today\'s Grind"},
+"labelSlack":{"zh":"😴 摸鱼","en":"😴 Slack"},
+"labelPaidBreak":{"zh":"🚽 带薪放松","en":"🚽 Paid Break"},
+"reportTitle":{"zh":"📋 今日打工报告","en":"📋 Daily Report"},
+"poopTitle":{"zh":"放空的时候，钱也在为你打工","en":"Money works while you chill"},
+"poopSub":{"zh":"带薪放松计时器","en":"Paid Break Timer"},
+"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "},
+"poopExit":{"zh":"结束放松，继续搬砖 →","en":"End Break →"},
+"summaryTitle":{"zh":"带薪放松结束！","en":"Paid Break Done!"},
+"summaryValue":{"zh":"本次带薪价值","en":"Break Value"},
+"summaryMsg":{"zh":"身心舒畅，可以继续搬砖了。","en":"Refreshed & ready to work."},
+"summaryBtn":{"zh":"继续搬砖 💪","en":"Get back 💪"},
+"moodTitle":{"zh":"🎭 今天打工心情怎么样？","en":"🎭 How was work today?"},
+"moodSub":{"zh":"点一下记录今日心情","en":"Tap to log your mood"},
+"moodSkip":{"zh":"跳过，不想说","en":"Skip"},
+"funDefault":{"zh":"恭喜，老板又帮你报销了今天的通勤费。","en":"Boss paid your commute today!"},
+"goalLabel":{"zh":"🎯 目标","en":"🎯 Goal"},
+"startEarning":{"zh":"开始搬砖赚小钱钱~","en":"Start earnin'~"},
 "settingsCurrent":{"zh":"Current: ","en":"Current: "},
 
 "proTitle":{"zh":"升级 Pro","en":"Upgrade Pro"},
@@ -398,6 +420,19 @@ var LANG={
 };
 function t(k){var v=LANG[k];return v?v[curLang]:k;}
 function toggleLang(){curLang=curLang==="zh"?"en":"zh";localStorage.setItem("salaryLang",curLang);location.reload();}
+
+function rebuildUI() {
+  document.title = t('pageTitle');
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(key) el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-title');
+    if(key) el.title = t(key);
+  });
+}
+
 
 
 function showProPopup(){
