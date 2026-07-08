@@ -267,15 +267,15 @@ select option{background:#2d1810;color:#fceabb}
 <div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3>带薪放松结束！</h3><p>本次带薪价值</p><div class="v" id="summaryVal">¥ 0.00</div><p>身心舒畅，可以继续搬砖了。</p><button class="btn" onclick="closeSummary()">继续搬砖 💪</button></div></div>
 
 <!-- 打工日报 -->
-<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
+<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
 
 <!-- 心情记录 -->
 <div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 今天打工心情怎么样？</h3><p>点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">跳过，不想说</div></div></div>
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
-  <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
-  <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN">🌐</button>
+  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
+  <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN/CN">🌐</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
@@ -310,7 +310,7 @@ select option{background:#2d1810;color:#fceabb}
     <div class="sc">💰 日薪 <span class="sv" id="svDaily">--</span></div>
     <div class="sc">⚡ 每秒 <span class="sv" id="svPS">--</span></div>
     <div class="sc">📅 本月 <span class="sv" id="svMonth">--</span></div>
-    <div class="sc report-mini-btn" onclick="showReport()">📋 日报</div>
+    
   </div>
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
 </div>
@@ -378,12 +378,44 @@ var LANG={
 "shareTitle":{"zh":"今日打工报告","en":"Daily Report"},
 "settingsPickDay":{"zh":"至少选一天","en":"Pick at least one day"},
 "settingsCurrent":{"zh":"当前: ","en":"Current: "},
+
+"proTitle":{"zh":"升级 Pro","en":"Upgrade Pro"},
+"proFeature1":{"zh":"无限目标","en":"Unlimited Goals"},
+"proFeature2":{"zh":"更多音效","en":"More Sounds"},
+"proFeature3":{"zh":"永久数据","en":"Permanent History"},
+"proFeature4":{"zh":"自定义主题","en":"Custom Themes"},
+"proFeature5":{"zh":"年度报告","en":"Annual Report"},
+"proMonth":{"zh":"/月","en":"/month"},
+"proYear":{"zh":"或 $49.99/年","en":"or $49.99/year"},
+"proBtn":{"zh":"升级 Pro","en":"Upgrade Pro"},
+"proNotNow":{"zh":"稍后再说","en":"Not now"},
+"proComing":{"zh":"即将推出！","en":"Coming soon!"},
+"proDiamond":{"zh":"Pro","en":"Pro"},
+
 "moodSummaryPrefix":{"zh":"📊 本月你最常 ","en":"📊 This month: "},
 "moodSummarySuffix":{"zh":"，共 ","en":" x"},
 "moodSummaryDays":{"zh":" 天","en":" days"},
 };
 function t(k){var v=LANG[k];return v?v[curLang]:k;}
 function toggleLang(){curLang=curLang==="zh"?"en":"zh";localStorage.setItem("salaryLang",curLang);location.reload();}
+
+function showProPopup(){
+  var ex=document.getElementById("proOv");
+  if(ex){ex.style.display="flex";return;}
+  var h="<div class='ov' id='proOv' style='display:none'><div class='modal' style='max-width:380px;text-align:center'>"+
+    "<div class='mh' style='justify-content:center'><h2>"+t("proTitle")+"</h2></div>"+
+    "<p style='color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8'>"+
+    t("proFeature1")+"<br>"+t("proFeature2")+"<br>"+t("proFeature3")+"<br>"+
+    t("proFeature4")+"<br>"+t("proFeature5")+"</p>"+
+    "<div style='background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px'>"+
+    "<div style='font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px'>$4.99<span style='font-size:14px;font-weight:400;color:var(--tx3)'>"+t("proMonth")+"</span></div>"+
+    "<div style='font-size:11px;color:var(--tx3)'>"+t("proYear")+"</div></div>"+
+    "<button class='btn btn-p' style='width:100%;padding:10px' onclick="alert('"+t("proComing")+"')">"+t("proBtn")+"</button>"+
+    "<div class='mf' style='margin-top:8px'><button class='btn btn-s' onclick="document.getElementById('proOv').style.display='none'">"+t("proNotNow")+"</button></div></div></div>";
+  document.body.insertAdjacentHTML("beforeend",h);
+  document.getElementById("proOv").style.display="flex";
+}
+
 let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
 let lastInt=-1,lastDaily=-1,celebAct=false,lastSt='',attTrig=false;
 let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
