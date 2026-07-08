@@ -261,21 +261,20 @@ select option{background:#2d1810;color:#fceabb}
 
 <!-- 带薪拉屎 -->
 <div class="poop-overlay" id="poopOv"><div class="poop-bg"></div>
-<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title" data-i18n="poopTitle">放空的时候，钱也在为你打工</div><div class="poop-sub" data-i18n="poopSub">带薪放松计时器</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn" data-i18n="poopEarnPrefix">这趟放松，已为你赚了 <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips" data-i18n="poopDefTip">别刷手机，专心致志，对钱尊重。</div><button class="poop-exit" onclick="exitPoop()" data-i18n="poopExit">结束放松，继续搬砖 →</button></div></div>
+<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title">放空的时候，钱也在为你打工</div><div class="poop-sub">带薪放松计时器</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn">这趟放松，已为你赚了 <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips">别刷手机，专心致志，对钱尊重。</div><button class="poop-exit" onclick="exitPoop()">结束放松，继续搬砖 →</button></div></div>
 
 <!-- 总结弹窗 -->
-<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3 data-i18n="summaryTitle">带薪放松结束！</h3><p data-i18n="summaryValue">本次带薪价值</p><div class="v" id="summaryVal">¥ 0.00</div><p data-i18n="summaryMsg">身心舒畅，可以继续搬砖了。</p><button class="btn" onclick="closeSummary()" data-i18n="summaryBtn">继续搬砖 💪</button></div></div>
+<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3>带薪放松结束！</h3><p>本次带薪价值</p><div class="v" id="summaryVal">¥ 0.00</div><p>身心舒畅，可以继续搬砖了。</p><button class="btn" onclick="closeSummary()">继续搬砖 💪</button></div></div>
 
 <!-- 打工日报 -->
-<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle" data-i18n="reportTitle">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
+<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
 
 <!-- 心情记录 -->
-<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3 data-i18n="moodTitle">🎭 今天打工心情怎么样？</h3><p data-i18n="moodSub">点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()" data-i18n="moodSkip">跳过，不想说</div></div></div>
+<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 今天打工心情怎么样？</h3><p>点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">跳过，不想说</div></div></div>
 
 <div class="top-bar">
-  <button class="top-btn" id="reportBtn" onclick="showReport()"  data-i18n-title="reportBtnTooltip" title="打工日报">📋</button>
-  <button class="top-btn" onclick="showProPopup()"  data-i18n-title="proDiamond" title="Pro">💎</button>
-  <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN/CN">🌐</button>
+  <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
+  <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
@@ -283,34 +282,34 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="container">
   <div class="cat" id="cat" onclick="tapCat()">🐱</div>
-  <div class="title-row" data-i18n="titleGrind">今日搬砖收益 <span class="sb" id="sb" data-i18n="statusWorking">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
+  <div class="title-row">今日搬砖收益 <span class="sb" id="sb">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
 
   <div class="cd-w" onclick="toggleCD()">
-    <span class="cd-l" id="cdL" data-i18n="labelTillFreedom">⏳ 距离下班</span>
+    <span class="cd-l" id="cdL">⏳ 距离下班</span>
     <span class="cd" id="cd">00:00:00</span>
-    <button class="slack-btn" id="slackBtn" onclick="event.stopPropagation();toggleSlack()" data-i18n="labelSlack">😴 摸鱼</button>
-    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()" data-i18n="labelPaidBreak">🚽 带薪放松</button>
+    <button class="slack-btn" onclick="event.stopPropagation();toggleSlack()">😴 摸鱼</button>
+    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()">🚽 带薪放松</button>
   </div>
 
   <div class="aw" id="aw">
     <div><span class="aws">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
-    <div class="aft" id="aft" data-i18n="startEarning">开始搬砖赚小钱钱~</div>
+    <div class="aft" id="aft">开始搬砖赚小钱钱~</div>
     <div class="goal-bar" id="goalBar" style="display:none">
-      <div class="goal-h"><span class="l" id="goalL" data-i18n="goalLabel">🎯 目标</span><span class="r" id="goalR">0%</span></div>
+      <div class="goal-h"><span class="l" id="goalL">🎯 目标</span><span class="r" id="goalR">0%</span></div>
       <div class="goal-tr"><div class="goal-fl" id="goalFl" style="width:0%"></div></div>
-      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText" data-i18n="goalGot">已够 0</div>
+      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText">已够 0</div>
       <div class="goal-acc" id="goalAcc" style="display:none"></div>
     </div>
-    <div class="fun-line" id="funLine" data-i18n="funDefault">恭喜，老板又帮你报销了今天的通勤费。</div>
+    <div class="fun-line" id="funLine">恭喜，老板又帮你报销了今天的通勤费。</div>
     <div class="brick-area" id="brickArea"></div>
     <div class="worker-line" id="workerLine"></div>
   </div>
 
   <div class="sr">
-    <div class="sc" data-i18n="statDaily">💰 日薪 <span class="sv" id="svDaily">--</span></div>
-    <div class="sc" data-i18n="statPerSec">⚡ 每秒 <span class="sv" id="svPS">--</span></div>
-    <div class="sc" data-i18n="statMonth">📅 本月 <span class="sv" id="svMonth">--</span></div>
-    
+    <div class="sc">💰 日薪 <span class="sv" id="svDaily">--</span></div>
+    <div class="sc">⚡ 每秒 <span class="sv" id="svPS">--</span></div>
+    <div class="sc">📅 本月 <span class="sv" id="svMonth">--</span></div>
+    <div class="sc report-mini-btn" onclick="showReport()">📋 日报</div>
   </div>
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
 </div>
@@ -330,141 +329,14 @@ select option{background:#2d1810;color:#fceabb}
 </div></div>
 
 <script>
-
-
 // ===== 初始化 =====
-
-// ===== LANG System =====
-var curLang=localStorage.getItem("salaryLang")||"zh";
-var LANG={
-"pageTitle":{"zh":"🐱 赎身进度条","en":"🐱 Redemption Meter"},
-"labelTillFreedom":{"zh":"⏳ 距离下班","en":"⏳ Till Freedom"},
-"startEarning":{"zh":"开始搬砖赚小钱钱~","en":"Start earnin'~"},
-"statusPaidBreak":{"zh":"● 带薪放松中","en":"● Paid Break"},
-"statusSlacking":{"zh":"● 摸鱼中","en":"● Slackin'"},
-"statusDayOff":{"zh":"● 休息日","en":"● Day Off"},
-"statusLunch":{"zh":"● 午休中","en":"● Lunch"},
-"statusPreshift":{"zh":"● 未开工","en":"● Pre-shift"},
-"statusDone":{"zh":"● 已下班 🎉","en":"● Done! 🎉"},
-"statusWorking":{"zh":"● 搬砖中","en":"● Grindin'"},
-"labelOnClock":{"zh":"🕐 已上班","en":"🕐 On Clock"},
-"labelDone":{"zh":"🎉 下班啦","en":"🎉 Clocked Out"},
-"labelDayOff":{"zh":"🎉 休息日","en":"🎉 Day Off"},
-"labelPaused":{"zh":"😴 暂停计时","en":"😴 Paused"},
-"labelSlacking":{"zh":"⏸️ 摸鱼中","en":"⏸️ Slackin'"},
-"labelTillStart":{"zh":"距上班 ","en":"Till Start "},
-"labelPaidBreakCd":{"zh":"⏳ 带薪放松","en":"⏳ Paid Break"},
-"labelChillin":{"zh":"🚽 放松中","en":"🚽 Chillin'"},
-"labelDoneExclaim":{"zh":"🎉 已下班！","en":"🎉 Done!"},
-"statDaily":{"zh":"💰 日薪","en":"💰 Daily"},
-"statPerSec":{"zh":"⚡ 每秒","en":"⚡ /Sec"},
-"statMonth":{"zh":"📅 本月","en":"📅 Month"},
-"goalLabel":{"zh":"🎯 目标","en":"🎯 Goal"},
-"goalGot":{"zh":"已够 ","en":"Got "},
-"goalEarned":{"zh":"钱已入账！","en":" paid off!"},
-"goalHintSlow":{"zh":"💡 靠工资攒够需要很久，想加速吗？","en":"💡 Slow? Side hustle?"},
-"goalHintBig":{"zh":"💡 这个目标不小，有没有想过副业？","en":"💡 Big goal? Side hustle?"},
-"funDefault":{"zh":"恭喜，老板又帮你报销了今天的通勤费。","en":"Boss paid your commute today!"},
-"celebOffWork":{"zh":"🎉 下班啦！🎉","en":"🎉 Quitting Time! 🎉"},
-"celebEarned":{"zh":"今天赚了 ¥","en":"Today earned ¥"},
-"celebAttendance":{"zh":"🎊 恭喜满勤！财神来贺 🎊","en":"🎊 Perfect Attendance! 🎊"},
-"celebStreak7":{"zh":"👑 解锁成就：搬砖王者！","en":"👑 Achievement: Grind King!"},
-"workerPrefix":{"zh":"👥 全国 ","en":"👥 Nationwide "},
-"workerSuffix":{"zh":" 位工友正在搬砖","en":" workers grindin'"},
-"workerAvg":{"zh":"📊 今日全国平均","en":"📊 Nat'l avg"},
-"workerNearby":{"zh":"🏢 你的工位附近有 ","en":"🏢 "},
-"workerNearbySuffix":{"zh":" 位工友在摸鱼","en":" slackers near you"},
-"streakDays":{"zh":"天","en":" days"},
-"reportCopyDone":{"zh":"✅ 已复制！","en":"✅ Copied!"},
-"reportFrom":{"zh":"— 来自招财工资表","en":"— Salary Meter"},
-"shareTitle":{"zh":"今日打工报告","en":"Daily Report"},
-"settingsPickDay":{"zh":"至少选一天","en":"Pick at least one day"},,
-"poopDefTip":{"zh":"别刷手机，专心致志，对钱尊重。","en":"Stay focused, respect the money."},
-"proDiamond":{"zh":"Pro","en":"Pro"},
-"reportBtnTooltip":{"zh":"打工日报","en":"Report"},
-"goalGot":{"zh":"已够 0","en":"Got 0"},
-"titleGrind":{"zh":"今日搬砖收益","en":"Today\'s Grind"},
-"labelSlack":{"zh":"😴 摸鱼","en":"😴 Slack"},
-"labelPaidBreak":{"zh":"🚽 带薪放松","en":"🚽 Paid Break"},
-"reportTitle":{"zh":"📋 今日打工报告","en":"📋 Daily Report"},
-"poopTitle":{"zh":"放空的时候，钱也在为你打工","en":"Money works while you chill"},
-"poopSub":{"zh":"带薪放松计时器","en":"Paid Break Timer"},
-"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "},
-"poopExit":{"zh":"结束放松，继续搬砖 →","en":"End Break →"},
-"summaryTitle":{"zh":"带薪放松结束！","en":"Paid Break Done!"},
-"summaryValue":{"zh":"本次带薪价值","en":"Break Value"},
-"summaryMsg":{"zh":"身心舒畅，可以继续搬砖了。","en":"Refreshed & ready to work."},
-"summaryBtn":{"zh":"继续搬砖 💪","en":"Get back 💪"},
-"moodTitle":{"zh":"🎭 今天打工心情怎么样？","en":"🎭 How was work today?"},
-"moodSub":{"zh":"点一下记录今日心情","en":"Tap to log your mood"},
-"moodSkip":{"zh":"跳过，不想说","en":"Skip"},
-"funDefault":{"zh":"恭喜，老板又帮你报销了今天的通勤费。","en":"Boss paid your commute today!"},
-"goalLabel":{"zh":"🎯 目标","en":"🎯 Goal"},
-"startEarning":{"zh":"开始搬砖赚小钱钱~","en":"Start earnin'~"},
-"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "}
-"settingsCurrent":{"zh":"当前: ","en":"Current: "},
-
-"proTitle":{"zh":"升级 Pro","en":"Upgrade Pro"},
-"proFeature1":{"zh":"无限目标","en":"Unlimited Goals"},
-"proFeature2":{"zh":"更多音效","en":"More Sounds"},
-"proFeature3":{"zh":"永久数据","en":"Permanent History"},
-"proFeature4":{"zh":"自定义主题","en":"Custom Themes"},
-"proFeature5":{"zh":"年度报告","en":"Annual Report"},
-"proMonth":{"zh":"/月","en":"/month"},
-"proYear":{"zh":"或 $49.99/年","en":"or $49.99/year"},
-"proBtn":{"zh":"升级 Pro","en":"Upgrade Pro"},
-"proNotNow":{"zh":"稍后再说","en":"Not now"},
-"proComing":{"zh":"即将推出！","en":"Coming soon!"},
-"proDiamond":{"zh":"Pro","en":"Pro"},
-
-"moodSummaryPrefix":{"zh":"📊 本月你最常 ","en":"📊 This month: "},
-"moodSummarySuffix":{"zh":"，共 ","en":" x"},
-"moodSummaryDays":{"zh":" 天","en":" days"},
-};
-function t(k){var v=LANG[k];return v?v[curLang]:k;}
-function toggleLang(){curLang=curLang==="zh"?"en":"zh";localStorage.setItem("salaryLang",curLang);location.reload();}
-
-function rebuildUI() {
-  document.title = t('pageTitle');
-  document.querySelectorAll('[data-i18n]').forEach(function(el){
-    var key = el.getAttribute('data-i18n');
-    if(key) el.textContent = t(key);
-  });
-  document.querySelectorAll('[data-i18n-title]').forEach(function(el){
-    var key = el.getAttribute('data-i18n-title');
-    if(key) el.title = t(key);
-  });
-}
-
-
-
-function showProPopup(){
-  var ex=document.getElementById("proOv");
-  if(ex){ex.style.display="flex";return;}
-  var H="<div class=ov id=proOv style=display:none><div class=modal style=max-width:380px;text-align:center>"+
-    "<div class=mh style=justify-content:center><h2>"+t("proTitle")+"</h2></div>"+
-    "<p style=color:var\(--tx2\);font-size:13px;margin-bottom:14px;line-height:1.8>"+
-    t("proFeature1")+"<br>"+t("proFeature2")+"<br>"+t("proFeature3")+"<br>"+
-    t("proFeature4")+"<br>"+t("proFeature5")+"</p>"+
-    "<div style=background:var\(--cd\);border:1px\ solid\ var\(--bd\);border-radius:12px;padding:14px;margin-bottom:14px>"+
-    "<div style=font-size:24px;font-weight:700;color:var\(--g1\);margin-bottom:2px>$4.99<span style=font-size:14px;font-weight:400;color:var\(--tx3\)>"+t("proMonth")+"</span></div>"+
-    "<div style=font-size:11px;color:var\(--tx3\)>"+t("proYear")+"</div></div>"+
-    "<button class=\"btn btn-p\" style=width:100%;padding:10px onclick=\"clickPro()\">"+t("proBtn")+"</button>"+
-    "<div class=mf style=margin-top:8px><button class=\"btn btn-s\" onclick=\"document.getElementById(\'proOv\').style.display=\'none\'\">"+t("proNotNow")+"</button></div></div></div>";
-  document.body.insertAdjacentHTML("beforeend",H);
-  window.clickPro=function(){alert(t("proComing"));};
-  document.getElementById("proOv").style.display="flex";
-}
-
-
 let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
 let lastInt=-1,lastDaily=-1,celebAct=false,lastSt='',attTrig=false;
 let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
 let goalIdx=-1,goals=[],lastUnitCount=0;
 let funIdx=0,streak=0,moodData=[];
 
-const DAY_ZH=['日','一','二','三','四','五','六'];
-var DAY=curLang==='en'?['Sun','Mon','Tue','Wed','Thu','Fri','Sat']:DAY_ZH;
+const DAY=['日','一','二','三','四','五','六'];
 let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
@@ -510,7 +382,7 @@ function toggleSnd(){sndOn=!sndOn;localStorage.setItem('salarySnd',sndOn);updSnd
 function updSnd(){const b=document.getElementById('soundBtn');b.textContent=sndOn?'🔊':'🔇';b.className='top-btn'+(sndOn?'':' so')}
 function toggleDark(){dark=!dark;localStorage.setItem('salaryDrk',dark);document.body.classList.toggle('dark',dark);const b=document.getElementById('darkBtn');b.textContent=dark?'☀️':'🌙';b.className='top-btn'+(dark?' do':'')}
 function toggleCD(){cdMode=cdMode?0:1;localStorage.setItem('salaryCD',cdMode)}
-function toggleSlack(){slack=!slack;const b=document.getElementById('slackBtn');b.textContent=slack?t('labelSlacking'):t('labelSlack');b.classList.toggle('on',slack)}
+function toggleSlack(){slack=!slack;const b=document.getElementById('slackBtn');b.textContent=slack?'😴 摸鱼中':'😴 摸鱼';b.classList.toggle('on',slack)}
 
 // ===== 带薪拉屎 =====
 function enterPoop(){if(poop)return;poop=true;poopStart=Date.now();const r=calc();poopEarnAtStart=r.earn;document.getElementById('poopOv').classList.add('on')}
@@ -552,17 +424,17 @@ function updGoal(earn){
   if(!g||!g.a||g.a<=0){gb.style.display='none';return}
   gb.style.display='block';
   const pct=Math.min(100,(earn/g.a)*100);
-  document.getElementById('goalL').textContent=t('goalLabel')+' '+g.n;
+  document.getElementById('goalL').textContent='🎯 攒'+g.n;
   document.getElementById('goalR').textContent=pct.toFixed(1)+'%';
   document.getElementById('goalFl').style.width=pct+'%';
   const unitAmt=g.ua||g.a;const units=Math.floor(earn/unitAmt);
-  document.getElementById('goalText').textContent=t('goalGot')+units.toFixed(1)+' '+g.u;
+  document.getElementById('goalText').textContent=`已够 ${units.toFixed(1)} ${g.u}`;
   if(units>lastUnitCount){const add=units-lastUnitCount;const ba=document.getElementById('brickArea');for(let i=0;i<Math.min(add,10);i++){const el=document.createElement('span');el.className='brick-icon';el.textContent='🧱';ba.appendChild(el);setTimeout(()=>el.remove(),2000)}lastUnitCount=units;if(add>0&&g.ua){playHua();burst(5)}}
-  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+t('goalEarned');document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
+  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+'钱已入账！';document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
   // 加速引导（大目标进度慢时）
   const ga=document.getElementById('goalAcc');
-  if(g.a>=30000&&pct<5){ga.style.display='block';ga.textContent=t('goalHintSlow')}
-  else if(g.a>=5000&&pct<3){ga.style.display='block';ga.textContent=t('goalHintBig')}
+  if(g.a>=30000&&pct<5){ga.style.display='block';ga.textContent='💡 靠工资攒够需要很久，想加速吗？'}
+  else if(g.a>=5000&&pct<3){ga.style.display='block';ga.textContent='💡 这个目标不小，有没有想过副业？'}
   else ga.style.display='none';
 }
 
@@ -578,9 +450,9 @@ function updWorkerLine(){
   const avgSalary=(40+Math.random()*20).toFixed(1);
   const mins=document.querySelectorAll('.sr .sc').length;
   const lines=[
-    t('workerPrefix')+workers+t('workerSuffix'),
-    t('workerAvg')+' ¥'+avgSalary,
-    t('workerNearby')+Math.floor(Math.random()*20+5)+t('workerNearbySuffix'),
+    `👥 全国 ${workers} 位工友正在搬砖`,
+    `📊 今日全国平均时薪 ¥${avgSalary}`,
+    `🏢 你的工位附近有 ${Math.floor(Math.random()*20+5)} 位工友在摸鱼`,
   ];
   wl.textContent=lines[Math.floor(Math.random()*lines.length)];
 }
@@ -592,7 +464,7 @@ function checkStreak(){
   const sb=document.getElementById('streakBadge');
   if(last===today){// 已打过卡
     if(streak>=7)sb.innerHTML=`🔥 ${streak}天 <span class="king">👑</span>`;
-    else sb.textContent='🔥 '+streak+t('streakDays');
+    else sb.textContent=`🔥 ${streak}天`;
     if(streak>=7)sb.className='streak-badge hot';
     return;
   }
@@ -604,8 +476,8 @@ function checkStreak(){
   localStorage.setItem('salaryStreak',streak);
   localStorage.setItem('salaryLastVisit',today);
   if(streak>=7){sb.innerHTML=`🔥 ${streak}天 <span class="king">👑</span>`;sb.className='streak-badge hot';burst(10);playHua();}
-  else{sb.textContent='🔥 '+streak+t('streakDays');sb.className='streak-badge';}
-  if(streak===7)setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:38%;left:50%;transform:translate(-50%,-50%);font-size:30px;font-weight:800;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 30px rgba(249,217,118,0.3)';b.textContent=t('celebStreak7');document.body.appendChild(b);setTimeout(()=>b.remove(),2500)},200);
+  else{sb.textContent=`🔥 ${streak}天`;sb.className='streak-badge';}
+  if(streak===7)setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:38%;left:50%;transform:translate(-50%,-50%);font-size:30px;font-weight:800;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 30px rgba(249,217,118,0.3)';b.textContent='👑 解锁成就：搬砖王者！';document.body.appendChild(b);setTimeout(()=>b.remove(),2500)},200);
 }
 
 // ===== 打工日报 =====
@@ -633,7 +505,7 @@ function showReport(){
     <div class="report-item"><div class="l">总收入</div><div class="v">¥${r.earn.toFixed(2)}</div><div class="s">日薪 ¥${r.daily.toFixed(2)}</div></div>
     <div class="report-item"><div class="l">时薪</div><div class="v">¥${(r.wrk>0?(r.earn/(r.wrk/3600000)):0).toFixed(2)}</div><div class="s">平均每小时</div></div>
     <div class="report-item"><div class="l">连续打卡</div><div class="v">${streak}天</div><div class="s">${streak>=7?'👑 搬砖王者':'🔥 继续加油'}</div></div>`;
-  document.getElementById('rMsg').textContent=REPORT_MSGS[Math.floor(Math.random()*REPORT_MSGS.length)]+t('reportFrom');
+  document.getElementById('rMsg').textContent=REPORT_MSGS[Math.floor(Math.random()*REPORT_MSGS.length)]+' — 来自招财工资表';
   document.getElementById('reportOv').classList.add('on');
 }
 function closeReport(){document.getElementById('reportOv').classList.remove('on')}
@@ -642,13 +514,13 @@ function shareReport(){
   // Use native share if available, otherwise copy text
   if(navigator.share){
     const text=document.getElementById('rMsg').textContent;
-    navigator.share({title:t('shareTitle'),text:text});
+    navigator.share({title:'今日打工报告',text:text});
   }else{
     // Copy to clipboard as fallback
     const text=document.querySelector('#rStats').innerText+'\n'+document.getElementById('rConvert').textContent+'\n'+document.getElementById('rMsg').textContent;
     navigator.clipboard.writeText(text).then(()=>{
       const btn=document.querySelector('.report-actions .pri');
-      btn.textContent=t('reportCopyDone');setTimeout(()=>btn.textContent=t('reportShare'),1500);
+      btn.textContent='✅ 已复制！';setTimeout(()=>btn.textContent='📸 截图分享',1500);
     });
   }
 }
@@ -733,21 +605,21 @@ function updUI(){
   else{if('wk'!==qKey){qKey='wk';qIdx.wk=((qIdx.wk||0)+1)%QT.wk.length;ft.textContent=QT.wk[qIdx.wk]}}
   if(!updUI._funT||updUI._funT+30<Date.now()/1000){updUI._funT=Date.now()/1000;updFunLine()}
   const cd=document.getElementById('cd'),cl=document.getElementById('cdL');
-  if(poop){const el=Math.floor((Date.now()-poopStart)/1000);const m=Math.floor(el/60),s=el%60;document.getElementById('poopTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('poopEarn').textContent=(earn-poopEarnAtStart).toFixed(2);if(!updUI._pT||updUI._pT+8<Date.now()/1000){updUI._pT=Date.now()/1000;document.getElementById('poopTips').textContent=POOP_TIPS[Math.floor(Math.random()*POOP_TIPS.length)]}cd.textContent=t('labelChillin');cd.className='cd p';cl.textContent=t('labelPaidBreakCd')}
-  else if(slack){cd.textContent=t('labelSlacking');cd.className='cd p';cl.textContent=t('labelPaused')}
-  else if(st==='rest'){cd.textContent=t('labelDayOff');cd.className='cd p';cl.textContent=t('labelTillFreedom')}
-  else if(st==='before'){const df=new Date();df.setHours(S.sH,S.sM,0,0);const dff=df-Date.now();cd.textContent=dff>0?t('labelTillStart')+fmt(dff):'00:00:00';cd.className='cd p';cl.textContent=t('labelTillStart')}
-  else if(st==='after'&&rem<=0){cd.textContent=t('labelDoneExclaim');cd.className='cd d';cl.textContent=t('labelDone')}
-  else if(cdMode===0){cd.textContent=fmt(rem);cd.className='cd';cl.textContent=t('labelTillFreedom')}
-  else{cd.textContent=fmt(wrk);cd.className='cd';cl.textContent=t('labelOnClock')}
+  if(poop){const el=Math.floor((Date.now()-poopStart)/1000);const m=Math.floor(el/60),s=el%60;document.getElementById('poopTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('poopEarn').textContent=(earn-poopEarnAtStart).toFixed(2);if(!updUI._pT||updUI._pT+8<Date.now()/1000){updUI._pT=Date.now()/1000;document.getElementById('poopTips').textContent=POOP_TIPS[Math.floor(Math.random()*POOP_TIPS.length)]}cd.textContent='🚽 放松中';cd.className='cd p';cl.textContent='⏳ 带薪放松'}
+  else if(slack){cd.textContent='⏸️ 摸鱼中';cd.className='cd p';cl.textContent='😴 暂停计时'}
+  else if(st==='rest'){cd.textContent='🎉 休息日';cd.className='cd p';cl.textContent='⏳ 距离下班'}
+  else if(st==='before'){const df=new Date();df.setHours(S.sH,S.sM,0,0);const dff=df-Date.now();cd.textContent=dff>0?'距上班 '+fmt(dff):'00:00:00';cd.className='cd p';cl.textContent='⏳ 距离上班'}
+  else if(st==='after'&&rem<=0){cd.textContent='🎉 已下班！';cd.className='cd d';cl.textContent='⏳ 下班啦'}
+  else if(cdMode===0){cd.textContent=fmt(rem);cd.className='cd';cl.textContent='⏳ 距离下班'}
+  else{cd.textContent=fmt(wrk);cd.className='cd';cl.textContent='🕐 已上班'}
   const sb=document.getElementById('sb');
-  if(poop){sb.textContent=t('statusPaidBreak');sb.className='sb sl'}
-  else if(slack){sb.textContent=t('statusSlacking');sb.className='sb sl'}
-  else if(!w){sb.textContent=t('statusDayOff');sb.className='sb rs'}
-  else if(st==='lunch'){sb.textContent=t('statusLunch');sb.className='sb rs'}
-  else if(st==='before'){sb.textContent=t('statusPreshift');sb.className='sb rs'}
-  else if(st==='after'){sb.textContent=t('statusDone');sb.className='sb rs'}
-  else{sb.textContent=t('statusWorking');sb.className='sb wk'}
+  if(poop){sb.textContent='● 带薪放松中';sb.className='sb sl'}
+  else if(slack){sb.textContent='● 摸鱼中';sb.className='sb sl'}
+  else if(!w){sb.textContent='● 休息日';sb.className='sb rs'}
+  else if(st==='lunch'){sb.textContent='● 午休中';sb.className='sb rs'}
+  else if(st==='before'){sb.textContent='● 未开工';sb.className='sb rs'}
+  else if(st==='after'){sb.textContent='● 已下班 🎉';sb.className='sb rs'}
+  else{sb.textContent='● 搬砖中';sb.className='sb wk'}
   document.getElementById('svDaily').textContent=daily>0?daily.toFixed(2):'--';
   document.getElementById('svPS').textContent=pms>0?(pms*1000).toFixed(4):'--';
   if(daily>0){const t=new Date(),ms3=new Date(t.getFullYear(),t.getMonth(),1);let wdp=0;for(let d2=new Date(ms3);d2<t;d2.setDate(d2.getDate()+1))if(S.wd.includes(d2.getDay()))wdp++;document.getElementById('svMonth').textContent=(wdp*daily).toFixed(2)}else document.getElementById('svMonth').textContent='--';
@@ -785,8 +657,8 @@ function burst(c){
 // ===== 下班庆祝 =====
 function offWork(){
   celebAct=true;const ov=document.getElementById('celeb');ov.innerHTML='';ov.className='celeb show';
-  const t=document.createElement('div');t.className='celeb-t';t.textContent=t('celebOffWork');ov.appendChild(t);
-  const s=document.createElement('div');s.className='celeb-s';s.textContent=t('celebEarned')+calc().daily.toFixed(2);ov.appendChild(s);
+  const t=document.createElement('div');t.className='celeb-t';t.textContent='🎉 下班啦！🎉';ov.appendChild(t);
+  const s=document.createElement('div');s.className='celeb-s';s.textContent='今天赚了 ¥'+calc().daily.toFixed(2);ov.appendChild(s);
   const cs=['#f9d976','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#f368e0','#ffd1dc','#69f0ae','#ffab40'];
   for(let i=0;i<80;i++){const c=document.createElement('div');c.className='celeb-c';c.style.left=Math.random()*100+'%';c.style.top='-5px';c.style.background=cs[Math.floor(Math.random()*cs.length)];c.style.width=(3+Math.random()*8)+'px';c.style.height=(3+Math.random()*8)+'px';c.style.setProperty('--dur',(2+Math.random()*3)+'s');c.style.animationDelay=(Math.random()*2.5)+'s';c.style.borderRadius=['50%','2px','0'][Math.floor(Math.random()*3)];ov.appendChild(c);setTimeout(()=>c.remove(),6000)}
   playOff();for(let i=0;i<6;i++)setTimeout(()=>burst(6+Math.floor(Math.random()*4)),i*250);
@@ -797,7 +669,7 @@ function offWork(){
 function showCai(){
   const ov=document.getElementById('caishen');ov.innerHTML='';ov.className='caishen show';
   const e=document.createElement('div');e.className='caishen-e';e.textContent='🧧';ov.appendChild(e);
-  const t=document.createElement('div');t.className='caishen-t';t.innerHTML=t('celebAttendance');ov.appendChild(t);
+  const t=document.createElement('div');t.className='caishen-t';t.innerHTML='🎊 恭喜满勤！财神来贺 🎊';ov.appendChild(t);
   const gs=['🧧','🪙','💰','✨','💎'];
   for(let i=0;i<50;i++){const g=document.createElement('div');g.className='caishen-g';g.textContent=gs[Math.floor(Math.random()*gs.length)];g.style.left=Math.random()*100+'%';g.style.fontSize=(12+Math.random()*18)+'px';g.style.animationDuration=(3+Math.random()*4)+'s';g.style.animationDelay=(Math.random()*3)+'s';ov.appendChild(g);setTimeout(()=>g.remove(),8000)}
   playCai();for(let i=0;i<8;i++)setTimeout(()=>burst(10+Math.floor(Math.random()*6)),i*400);
@@ -809,7 +681,7 @@ function openSet(){
   document.getElementById('sSal').value=S.salary;document.getElementById('sSH').value=S.sH;document.getElementById('sSM').value=S.sM;document.getElementById('sEH').value=S.eH;document.getElementById('sEM').value=S.eM;document.getElementById('sLH').value=S.lH;document.getElementById('sWD').value=S.mwd;
   const db=document.getElementById('dayCb');db.innerHTML='';DAY.forEach((n,i)=>{const l=document.createElement('label');l.className='dc-lb'+(S.wd.includes(i)?' on':'');const ip=document.createElement('input');ip.type='checkbox';ip.checked=S.wd.includes(i);ip.dataset.day=i;ip.addEventListener('change',()=>l.classList.toggle('on'));l.appendChild(ip);l.appendChild(document.createTextNode('周'+n));db.appendChild(l)});
   const SPK=[{n:'马里奥 1-UP',i:'🎮',d:'经典增命蘑菇'},{n:'支付宝到账',i:'📱',d:'清脆到账提示'},{n:'经典金币',i:'🪙',d:'马里奥叮叮声'},{n:'可爱布谷',i:'🐤',d:'轻快提示音'}];
-  const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent=t('settingsCurrent')+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent=t('settingsCurrent')+SPK[spk].n+' — '+SPK[spk].d;
+  const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent='当前: '+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent='当前: '+SPK[spk].n+' — '+SPK[spk].d;
   const gp=document.getElementById('goalPresets');gp.innerHTML='';GOAL_PRESETS.forEach((p,i)=>{const l=document.createElement('label');l.className='gp-l'+(goalIdx===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='goal';ip.checked=goalIdx===i;ip.addEventListener('change',()=>{document.querySelectorAll('.gp-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');goalIdx=i;document.getElementById('gName').value='';document.getElementById('gAmt').value='';document.getElementById('gUnit').value='';document.getElementById('gUnitAmt').value=''});l.appendChild(ip);l.appendChild(document.createTextNode(p.n));gp.appendChild(l)});
   if(goalIdx>=GOAL_PRESETS.length&&goals.length>0){const g=goals[goalIdx-GOAL_PRESETS.length];if(g){document.getElementById('gName').value=g.n||'';document.getElementById('gAmt').value=g.a||'';document.getElementById('gUnit').value=g.u||'';document.getElementById('gUnitAmt').value=g.ua||''}}
   document.getElementById('setOv').classList.add('show')
@@ -818,7 +690,7 @@ function closeSet(){document.getElementById('setOv').classList.remove('show')}
 function saveSet(){
   const ns={salary:parseFloat(document.getElementById('sSal').value)||10000,sH:parseInt(document.getElementById('sSH').value)||9,sM:parseInt(document.getElementById('sSM').value)||0,eH:parseInt(document.getElementById('sEH').value)||18,eM:parseInt(document.getElementById('sEM').value)||0,lH:parseInt(document.getElementById('sLH').value)||1,wd:[],mwd:parseInt(document.getElementById('sWD').value)||22};
   document.querySelectorAll('#dayCb input').forEach(ip=>{if(ip.checked)ns.wd.push(parseInt(ip.dataset.day))});
-  if(ns.wd.length===0){alert(t('settingsPickDay'));return}
+  if(ns.wd.length===0){alert('至少选一天');return}
   document.querySelectorAll('input[name="spk"]').forEach((ip,i)=>{if(ip.checked)spk=i});localStorage.setItem('salarySpk',spk);
   const gName=document.getElementById('gName').value.trim();const gAmt=parseFloat(document.getElementById('gAmt').value);
   if(gName&&gAmt>0){const gUnit=document.getElementById('gUnit').value.trim()||'次';const gUA=parseFloat(document.getElementById('gUnitAmt').value)||gAmt;const ei=goals.findIndex(g=>g.n===gName);if(ei>=0){goals[ei]={n:gName,a:gAmt,u:gUnit,ua:gUA};goalIdx=GOAL_PRESETS.length+ei}else{goals.push({n:gName,a:gAmt,u:gUnit,ua:gUA});goalIdx=GOAL_PRESETS.length+goals.length-1}localStorage.setItem('salaryGoals',JSON.stringify(goals))}else{if(!document.querySelector('input[name="goal"]:checked'))goalIdx=-1}
@@ -836,10 +708,8 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-if(curLang!=='zh')rebuildUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
-console.log('App ready, buttons should work');
 
 /* === i18n System (appended - does not modify any existing code) === */
 
