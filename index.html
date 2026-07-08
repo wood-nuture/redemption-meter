@@ -615,11 +615,11 @@ function updUI(){
   if(!slack||poop){const ip=Math.floor(earn),dp=(earn-ip).toFixed(8).slice(2);document.getElementById('amountInt').textContent=ip.toLocaleString();document.getElementById('amountDec').textContent='.'+dp}
   const ft=document.getElementById('aft');
   if(poop){}else if(slack){const k='slack';if(k!==qKey){qKey=k;if(!qIdx[k])qIdx[k]=0;qIdx[k]=(qIdx[k]+1)%QT[k].length;ft.textContent=QT[k][qIdx[k]]}}
-  else if(st==='before'){if('before'!==qKey){qKey='before';qIdx.before=((qIdx.before||0)+1)%QT.before.length;ft.textContent=QT.before[qIdx.before]}}
-  else if(st==='rest'){if('rest'!==qKey){qKey='rest';qIdx.rest=((qIdx.rest||0)+1)%QT.rest.length;ft.textContent=QT.rest[qIdx.rest]}}
-  else if(st==='lunch'){if('lunch'!==qKey){qKey='lunch';qIdx.lunch=((qIdx.lunch||0)+1)%QT.lunch.length;ft.textContent=QT.lunch[qIdx.lunch]}}
-  else if(st==='after'){if('after'!==qKey){qKey='after';qIdx.after=((qIdx.after||0)+1)%QT.after.length;ft.textContent=QT.after[qIdx.after]}}
-  else{if('wk'!==qKey){qKey='wk';qIdx.wk=((qIdx.wk||0)+1)%QT.wk.length;ft.textContent=QT.wk[qIdx.wk]}}
+  else if(st==='before'){if('before'!==qKey){qKey='before';qIdx.before=((qIdx.before||0)+1)%QT.before.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.before&&tsq.before.length>0&&curTheme!=='default'){ft.textContent=tsq.before[qIdx.before%tsq.before.length]}else{ft.textContent=QT.before[qIdx.before]}}}
+  else if(st==='rest'){if('rest'!==qKey){qKey='rest';qIdx.rest=((qIdx.rest||0)+1)%QT.rest.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.rest&&tsq.rest.length>0&&curTheme!=='default'){ft.textContent=tsq.rest[qIdx.rest%tsq.rest.length]}else{ft.textContent=QT.rest[qIdx.rest]}}}
+  else if(st==='lunch'){if('lunch'!==qKey){qKey='lunch';qIdx.lunch=((qIdx.lunch||0)+1)%QT.lunch.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.lunch&&tsq.lunch.length>0&&curTheme!=='default'){ft.textContent=tsq.lunch[qIdx.lunch%tsq.lunch.length]}else{ft.textContent=QT.lunch[qIdx.lunch]}}}
+  else if(st==='after'){if('after'!==qKey){qKey='after';qIdx.after=((qIdx.after||0)+1)%QT.after.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.after&&tsq.after.length>0&&curTheme!=='default'){ft.textContent=tsq.after[qIdx.after%tsq.after.length]}else{ft.textContent=QT.after[qIdx.after]}}}
+  else{if('wk'!==qKey){qKey='wk';qIdx.wk=((qIdx.wk||0)+1)%QT.wk.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.wk&&tsq.wk.length>0&&curTheme!=='default'){ft.textContent=tsq.wk[qIdx.wk%tsq.wk.length]}else{ft.textContent=QT.wk[qIdx.wk]}}}
   if(!updUI._funT||updUI._funT+30<Date.now()/1000){updUI._funT=Date.now()/1000;updFunLine()}
   const cd=document.getElementById('cd'),cl=document.getElementById('cdL');
   if(poop){const el=Math.floor((Date.now()-poopStart)/1000);const m=Math.floor(el/60),s=el%60;document.getElementById('poopTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('poopEarn').textContent=(earn-poopEarnAtStart).toFixed(2);if(!updUI._pT||updUI._pT+8<Date.now()/1000){updUI._pT=Date.now()/1000;document.getElementById('poopTips').textContent=POOP_TIPS[Math.floor(Math.random()*POOP_TIPS.length)]}cd.textContent='🚽 放松中';cd.className='cd p';cl.textContent='⏳ 带薪放松'}
