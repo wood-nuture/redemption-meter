@@ -261,20 +261,20 @@ select option{background:#2d1810;color:#fceabb}
 
 <!-- 带薪拉屎 -->
 <div class="poop-overlay" id="poopOv"><div class="poop-bg"></div>
-<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title">放空的时候，钱也在为你打工</div><div class="poop-sub">带薪放松计时器</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn">这趟放松，已为你赚了 <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips">别刷手机，专心致志，对钱尊重。</div><button class="poop-exit" onclick="exitPoop()">结束放松，继续搬砖 →</button></div></div>
+<div class="poop-content"><div class="poop-icon">🚽</div><div class="poop-title" data-i18n="poopTitle">放空的时候，钱也在为你打工</div><div class="poop-sub" data-i18n="poopSub">带薪放松计时器</div><div class="poop-timer" id="poopTimer">00:00</div><div class="poop-earn" data-i18n="poopEarnPrefix">这趟放松，已为你赚了 <span id="poopEarn">0.00</span> 元</div><div class="poop-tips" id="poopTips" data-i18n="poopDefTip">别刷手机，专心致志，对钱尊重。</div><button class="poop-exit" onclick="exitPoop()" data-i18n="poopExit">结束放松，继续搬砖 →</button></div></div>
 
 <!-- 总结弹窗 -->
-<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3>带薪放松结束！</h3><p>本次带薪价值</p><div class="v" id="summaryVal">¥ 0.00</div><p>身心舒畅，可以继续搬砖了。</p><button class="btn" onclick="closeSummary()">继续搬砖 💪</button></div></div>
+<div class="summary-overlay" id="summaryOv"><div class="summary-box"><div class="e">😌</div><h3 data-i18n="summaryTitle">带薪放松结束！</h3><p data-i18n="summaryValue">本次带薪价值</p><div class="v" id="summaryVal">¥ 0.00</div><p data-i18n="summaryMsg">身心舒畅，可以继续搬砖了。</p><button class="btn" onclick="closeSummary()" data-i18n="summaryBtn">继续搬砖 💪</button></div></div>
 
 <!-- 打工日报 -->
-<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
+<div class="report-overlay" id="reportOv"><div class="report-card" id="reportCard"><div class="report-date" id="rDate"></div><div class="report-title" id="reportTitle" data-i18n="reportTitle">📋 今日打工报告</div><div class="report-stats" id="rStats"></div><div class="report-convert" id="rConvert"></div><div class="report-msg" id="rMsg"></div><div class="report-actions"><button onclick="closeReport()">关闭</button><button class="pri" onclick="shareReport()">📸 截图分享</button></div></div></div>
 
 <!-- 心情记录 -->
-<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3>🎭 今天打工心情怎么样？</h3><p>点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()">跳过，不想说</div></div></div>
+<div class="mood-overlay" id="moodOv"><div class="mood-box"><h3 data-i18n="moodTitle">🎭 今天打工心情怎么样？</h3><p data-i18n="moodSub">点一下记录今日心情</p><div class="mood-options" id="moodOpts"></div><div class="mood-month" id="moodMonth"></div><div class="mood-skip" onclick="closeMood()" data-i18n="moodSkip">跳过，不想说</div></div></div>
 
 <div class="top-bar">
-  <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
-  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
+  <button class="top-btn" id="reportBtn" onclick="showReport()"  data-i18n-title="reportBtnTooltip" title="打工日报">📋</button>
+  <button class="top-btn" onclick="showProPopup()"  data-i18n-title="proDiamond" title="Pro">💎</button>
   <button class="top-btn" id="langBtn" onclick="toggleLang()" title="EN/CN">🌐</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
@@ -283,33 +283,33 @@ select option{background:#2d1810;color:#fceabb}
 
 <div class="container">
   <div class="cat" id="cat" onclick="tapCat()">🐱</div>
-  <div class="title-row">今日搬砖收益 <span class="sb" id="sb">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
+  <div class="title-row" data-i18n="titleGrind">今日搬砖收益 <span class="sb" id="sb" data-i18n="statusWorking">● 搬砖中</span><span class="streak-badge" id="streakBadge">🔥 0天</span></div>
 
   <div class="cd-w" onclick="toggleCD()">
-    <span class="cd-l" id="cdL">⏳ 距离下班</span>
+    <span class="cd-l" id="cdL" data-i18n="labelTillFreedom">⏳ 距离下班</span>
     <span class="cd" id="cd">00:00:00</span>
-    <button class="slack-btn" id="slackBtn" onclick="event.stopPropagation();toggleSlack()">😴 摸鱼</button>
-    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()">🚽 带薪放松</button>
+    <button class="slack-btn" id="slackBtn" onclick="event.stopPropagation();toggleSlack()" data-i18n="labelSlack">😴 摸鱼</button>
+    <button class="poop-btn" onclick="event.stopPropagation();enterPoop()" data-i18n="labelPaidBreak">🚽 带薪放松</button>
   </div>
 
   <div class="aw" id="aw">
     <div><span class="aws">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
-    <div class="aft" id="aft">开始搬砖赚小钱钱~</div>
+    <div class="aft" id="aft" data-i18n="startEarning">开始搬砖赚小钱钱~</div>
     <div class="goal-bar" id="goalBar" style="display:none">
-      <div class="goal-h"><span class="l" id="goalL">🎯 目标</span><span class="r" id="goalR">0%</span></div>
+      <div class="goal-h"><span class="l" id="goalL" data-i18n="goalLabel">🎯 目标</span><span class="r" id="goalR">0%</span></div>
       <div class="goal-tr"><div class="goal-fl" id="goalFl" style="width:0%"></div></div>
-      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText">已够 0</div>
+      <div style="font-size:10px;color:var(--tx2);margin-top:2px" id="goalText" data-i18n="goalGot">已够 0</div>
       <div class="goal-acc" id="goalAcc" style="display:none"></div>
     </div>
-    <div class="fun-line" id="funLine">恭喜，老板又帮你报销了今天的通勤费。</div>
+    <div class="fun-line" id="funLine" data-i18n="funDefault">恭喜，老板又帮你报销了今天的通勤费。</div>
     <div class="brick-area" id="brickArea"></div>
     <div class="worker-line" id="workerLine"></div>
   </div>
 
   <div class="sr">
-    <div class="sc">💰 日薪 <span class="sv" id="svDaily">--</span></div>
-    <div class="sc">⚡ 每秒 <span class="sv" id="svPS">--</span></div>
-    <div class="sc">📅 本月 <span class="sv" id="svMonth">--</span></div>
+    <div class="sc" data-i18n="statDaily">💰 日薪 <span class="sv" id="svDaily">--</span></div>
+    <div class="sc" data-i18n="statPerSec">⚡ 每秒 <span class="sv" id="svPS">--</span></div>
+    <div class="sc" data-i18n="statMonth">📅 本月 <span class="sv" id="svMonth">--</span></div>
     
   </div>
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
@@ -378,7 +378,30 @@ var LANG={
 "reportCopyDone":{"zh":"✅ 已复制！","en":"✅ Copied!"},
 "reportFrom":{"zh":"— 来自招财工资表","en":"— Salary Meter"},
 "shareTitle":{"zh":"今日打工报告","en":"Daily Report"},
-"settingsPickDay":{"zh":"至少选一天","en":"Pick at least one day"},
+"settingsPickDay":{"zh":"至少选一天","en":"Pick at least one day"},,
+"poopDefTip":{"zh":"别刷手机，专心致志，对钱尊重。","en":"Stay focused, respect the money."},
+"proDiamond":{"zh":"Pro","en":"Pro"},
+"reportBtnTooltip":{"zh":"打工日报","en":"Report"},
+"goalGot":{"zh":"已够 0","en":"Got 0"},
+"titleGrind":{"zh":"今日搬砖收益","en":"Today\'s Grind"},
+"labelSlack":{"zh":"😴 摸鱼","en":"😴 Slack"},
+"labelPaidBreak":{"zh":"🚽 带薪放松","en":"🚽 Paid Break"},
+"reportTitle":{"zh":"📋 今日打工报告","en":"📋 Daily Report"},
+"poopTitle":{"zh":"放空的时候，钱也在为你打工","en":"Money works while you chill"},
+"poopSub":{"zh":"带薪放松计时器","en":"Paid Break Timer"},
+"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "},
+"poopExit":{"zh":"结束放松，继续搬砖 →","en":"End Break →"},
+"summaryTitle":{"zh":"带薪放松结束！","en":"Paid Break Done!"},
+"summaryValue":{"zh":"本次带薪价值","en":"Break Value"},
+"summaryMsg":{"zh":"身心舒畅，可以继续搬砖了。","en":"Refreshed & ready to work."},
+"summaryBtn":{"zh":"继续搬砖 💪","en":"Get back 💪"},
+"moodTitle":{"zh":"🎭 今天打工心情怎么样？","en":"🎭 How was work today?"},
+"moodSub":{"zh":"点一下记录今日心情","en":"Tap to log your mood"},
+"moodSkip":{"zh":"跳过，不想说","en":"Skip"},
+"funDefault":{"zh":"恭喜，老板又帮你报销了今天的通勤费。","en":"Boss paid your commute today!"},
+"goalLabel":{"zh":"🎯 目标","en":"🎯 Goal"},
+"startEarning":{"zh":"开始搬砖赚小钱钱~","en":"Start earnin'~"},
+"poopEarnPrefix":{"zh":"这趟放松，已为你赚了 ","en":"This break earned you "}
 "settingsCurrent":{"zh":"当前: ","en":"Current: "},
 
 "proTitle":{"zh":"升级 Pro","en":"Upgrade Pro"},
@@ -400,6 +423,19 @@ var LANG={
 };
 function t(k){var v=LANG[k];return v?v[curLang]:k;}
 function toggleLang(){curLang=curLang==="zh"?"en":"zh";localStorage.setItem("salaryLang",curLang);location.reload();}
+
+function rebuildUI() {
+  document.title = t('pageTitle');
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(key) el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+    var key = el.getAttribute('data-i18n-title');
+    if(key) el.title = t(key);
+  });
+}
+
 
 
 function showProPopup(){
@@ -800,7 +836,7 @@ function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-if(curLang!=='zh')document.title=t('pageTitle');
+if(curLang!=='zh')rebuildUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
 console.log('App ready, buttons should work');
