@@ -249,16 +249,15 @@ select option{background:#2d1810;color:#fceabb}
   .celeb-t{font-size:34px}.caishen-e{font-size:68px}.poop-title{font-size:17px}.poop-timer{font-size:26px}
   .report-card{padding:20px 16px}.report-stats{gap:6px}.report-item{padding:8px}
 }
+
 /* ===== 🌙 Night Owl Theme ===== */
-body.theme-night{--g1:#7986CB;--g2:#5C6BC0;--g3:#3949AB;--tx:#C5CAE9;--tx2:#9FA8DA;--tx3:rgba(159,168,218,0.35);--cd:rgba(92,107,192,0.1);--bd:rgba(121,134,203,0.25);--hv:rgba(121,134,203,0.18);--sh:rgba(0,0,20,0.6);--gr:#69F0AE;--or:#FFD740;--radius:24px;background:linear-gradient(135deg,#05051a,#0d0d2a 25%,#1a1a4a 50%,#0d0d2a 75%,#05051a 100%)}
+body.theme-night{--g1:#7986CB;--g2:#5C6BC0;--g3:#3949AB;--tx:#C5CAE9;--tx2:#9FA8DA;--tx3:rgba(159,168,218,0.35);--cd:rgba(92,107,192,0.1);--bd:rgba(121,134,203,0.25);--hv:rgba(121,134,203,0.18);--sh:rgba(0,0,20,0.6);--gr:#69F0AE;--or:#FFD740;background:linear-gradient(135deg,#05051a,#0d0d2a 25%,#1a1a4a 50%,#0d0d2a 75%,#05051a 100%)}
 body.theme-night.dark{background:linear-gradient(135deg,#030310,#080825 25%,#12124a 50%,#080825 75%,#030310 100%)}
 body.theme-night .amount-num,body.theme-night .amount-dec{background:linear-gradient(180deg,#E8EAF6 0%,#9FA8DA 40%,#5C6BC0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 body.theme-night .aw{border-color:rgba(121,134,203,0.3);box-shadow:inset 0 0 80px rgba(92,107,192,0.04),0 8px 40px var(--sh)}
 body.theme-night .cd{text-shadow:0 0 30px rgba(121,134,203,0.25)}
-body.theme-night .cat::after{content:'🦉';animation:catCoin 3s ease-in-out infinite}
-body.theme-night .modal{--modal-bg:linear-gradient(160deg,#1a1a3a 0%,#0d0d25 100%)}
+body.theme-night .cat::after{content:'🦉'}
 body.theme-night .top-btn{border-color:rgba(121,134,203,0.2)}
-body.theme-night .top-btn:hover{box-shadow:0 0 20px rgba(121,134,203,0.12)}
 
 </style>
 </head>
@@ -343,7 +342,6 @@ body.theme-night .top-btn:hover{box-shadow:0 0 20px rgba(121,134,203,0.12)}
 
 <script>
 var isEnglishPage=true;
-if(!localStorage.getItem("salaryLang"))localStorage.setItem("salaryLang","en");
 
 // ===== Init =====
 let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
@@ -657,7 +655,7 @@ function updUI(){
 
 // ===== 金币爆发 =====
 function burst(c){
-  const box=document.getElementById('burstBox');var em=(themeData[curTheme]?themeData[curTheme].burstEm:['🪙','💰','✨','🌟','💫','🤑','💎','👛']);
+  const box=document.getElementById('burstBox'),em=_burstEm;
   for(let i=0;i<c;i++){
     const el=document.createElement('div');el.className='burst-p';
     el.textContent=em[Math.floor(Math.random()*em.length)];
@@ -717,7 +715,7 @@ function saveSet(){
 function tapCat(){const c=document.getElementById('cat');c.className='cat tap';setTimeout(()=>{c.className='cat'},350);burst(8);playCoin()}
 
 // ===== 背景 =====
-function mkIngots(){const c=document.getElementById('ingotRain');var is=(themeData[curTheme]?themeData[curTheme].decorEm:['🪙','💰','🥇','✨']);for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
+function mkIngots(){const c=document.getElementById('ingotRain'),is=_decorEm;for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
 function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<22;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
 
 // ===== Init =====
@@ -760,47 +758,28 @@ function showProPopup(){
 
 
 
-// ===== Theme System =====
-var curTheme = localStorage.getItem("salaryTheme") || "default";
-var themeData = {
-  "default": {
-    name:"Default", nameEn:"Default",
-    burstEm:["🪙","💰","✨","🌟","💫","🤑","💎","👛"],
-    decorEm:["🪙","💰","🥇","✨"]
-  },
-  "night": {
-    name:"Night Owl", nameEn:"Night Owl",
-    burstEm:["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"],
-    decorEm:["🌙","⭐","🦉","💡"]
-  }
-};
+// ===== 🌙 Night Owl Theme =====
+var _nightOn = localStorage.getItem("salaryNight")==="true";
+var _burstEm = ["🪙","💰","✨","🌟","💫","🤑","💎","👛"];
+var _decorEm = ["🪙","💰","🥇","✨"];
 
-function applyTheme(name){
-  curTheme = name;
-  localStorage.setItem("salaryTheme", name);
-  document.body.className = document.body.className.replace(/theme-\w+/g,"").trim();
-  if(name !== "default") document.body.classList.add("theme-"+name);
-}
-
-function initTheme(){
-  if(curTheme !== "default") applyTheme(curTheme);
-}
-
-
+if(_nightOn){ document.body.classList.add("theme-night"); _burstEm = ["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"]; _decorEm = ["🌙","⭐","🦉","💡"]; }
 
 function toggleNight(){
-  if(curTheme === "night"){
-    applyTheme("default");
+  _nightOn = !_nightOn;
+  localStorage.setItem("salaryNight", _nightOn?"true":"");
+  if(_nightOn){
+    document.body.classList.add("theme-night");
+    _burstEm = ["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"];
+    _decorEm = ["🌙","⭐","🦉","💡"];
   } else {
-    applyTheme("night");
+    document.body.classList.remove("theme-night");
+    _burstEm = ["🪙","💰","✨","🌟","💫","🤑","💎","👛"];
+    _decorEm = ["🪙","💰","🥇","✨"];
   }
-  var btn = document.getElementById("nightBtn");
-  if(btn) btn.textContent = curTheme === "night" ? "☀️" : "🌙";
+  var b = document.getElementById("nightBtn");
+  if(b) b.textContent = _nightOn ? "☀️" : "🌙";
 }
-
-initTheme();
-var nb = document.getElementById("nightBtn");
-if(nb && curTheme === "night") nb.textContent = "☀️";
 
 </script>
 </body>
