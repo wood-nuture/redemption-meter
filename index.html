@@ -252,7 +252,7 @@ select option{background:#2d1810;color:#fceabb}
 
 /* ===== 🌙 夜猫子主题 ===== */
 body.theme-night{--g1:#7986CB;--g2:#3949AB;--g3:#283593;--tx:#C5CAE9;--tx2:#7986CB;--tx3:rgba(121,134,203,0.4);--cd:rgba(40,53,147,0.08);--bd:rgba(57,73,171,0.2);--hv:rgba(57,73,171,0.15);--sh:rgba(0,0,0,0.6);--gr:#69F0AE;--or:#FFD740;background:linear-gradient(135deg,#0a0a1a,#1a0a2d 25%,#283593 50%,#1a0a2d 75%,#0a0a1a 100%)}
-body.theme-night.dark{--bg:linear-gradient(135deg,#050510,#0a0a2a 25%,#1a1a4a 50%,#0a0a2a 75%,#050510 100%);--tx:#b0b0d0;--tx2:#6a6a9a;--cd:rgba(40,53,147,0.12);--bd:rgba(57,73,171,0.25)}
+body.theme-night.dark{background:linear-gradient(135deg,#050510,#0a0a2a 25%,#1a1a4a 50%,#0a0a2a 75%,#050510 100%)}
 body.theme-night .amount-num,body.theme-night .amount-dec{background:linear-gradient(180deg,#C5CAE9 0%,#7986CB 45%,#3949AB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
 </style>
@@ -281,7 +281,6 @@ body.theme-night .amount-num,body.theme-night .amount-dec{background:linear-grad
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
   <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
-  <button class="top-btn" onclick="toggleNight()" title="夜猫子主题" id="nightBtn">🌙</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
   <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
@@ -649,7 +648,7 @@ function updUI(){
 
 // ===== 金币爆发 =====
 function burst(c){
-  const box=document.getElementById('burstBox'),em=['🪙','💰','✨','🌟','💫','🤑','💎','👛'];
+  const box=document.getElementById('burstBox');var em=(themeData[curTheme]?themeData[curTheme].burstEm:['🪙','💰','✨','🌟','💫','🤑','💎','👛']);
   for(let i=0;i<c;i++){
     const el=document.createElement('div');el.className='burst-p';
     el.textContent=em[Math.floor(Math.random()*em.length)];
@@ -709,7 +708,7 @@ function saveSet(){
 function tapCat(){const c=document.getElementById('cat');c.className='cat tap';setTimeout(()=>{c.className='cat'},350);burst(8);playCoin()}
 
 // ===== 背景 =====
-function mkIngots(){const c=document.getElementById('ingotRain'),is=['🪙','💰','🥇','✨'];for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
+function mkIngots(){const c=document.getElementById('ingotRain');var is=(themeData[curTheme]?themeData[curTheme].decorEm:['🪙','💰','🥇','✨']);for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
 function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<22;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
 
 // ===== 启动 =====
@@ -752,13 +751,48 @@ function showProPopup(){
 
 
 
-// ===== 🌙 夜猫子主题 =====
-function toggleNight(){
-  var on=document.body.classList.toggle("theme-night");
-  localStorage.setItem("salaryNight",on?"true":"");
+// ===== 主题系统 =====
+var curTheme = localStorage.getItem("salaryTheme") || "default";
+var themeData = {
+  "default": {
+    name:"默认经典", nameEn:"Classic",
+    burstEm:["🪙","💰","✨","🌟","💫","🤑","💎","👛"],
+    decorEm:["🪙","💰","🥇","✨"]
+  },
+  "night": {
+    name:"🌙 夜猫子", nameEn:"🌙 Night Owl",
+    burstEm:["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"],
+    decorEm:["🌙","⭐","🦉","💡"]
+  }
+};
+
+function applyTheme(name){
+  curTheme = name;
+  localStorage.setItem("salaryTheme", name);
+  document.body.className = document.body.className.replace(/theme-\w+/g,"").trim();
+  if(name !== "default") document.body.classList.add("theme-"+name);
 }
-var nightOn=localStorage.getItem("salaryNight")==="true";
-if(nightOn)document.body.classList.add("theme-night");
+
+function initTheme(){
+  if(curTheme !== "default") applyTheme(curTheme);
+}
+
+
+
+function toggleNight(){
+  if(curTheme === "night"){
+    applyTheme("default");
+  } else {
+    applyTheme("night");
+  }
+  var btn = document.getElementById("nightBtn");
+  if(btn) btn.textContent = curTheme === "night" ? "☀️" : "🌙";
+}
+
+// Initialize theme on page load
+initTheme();
+var nb = document.getElementById("nightBtn");
+if(nb && curTheme === "night") nb.textContent = "☀️";
 
 </script>
 </body>
