@@ -1,0 +1,15 @@
+{
+  "name": "赎身进度条",
+  "short_name": "赎身",
+  "description": "打工人工资可视化 · 摸鱼计时器 · 皮肤换装",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d0705",
+  "theme_color": "#f9d976",
+  "orientation": "portrait",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "icon-512.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ]
+}
