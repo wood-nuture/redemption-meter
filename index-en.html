@@ -836,12 +836,12 @@ function updUI(){
   else if(cdMode===0){cd.textContent=fmt(rem);cd.className='cd';cl.textContent='⏳ Till Freedom'}
   else{cd.textContent=fmt(wrk);cd.className='cd';cl.textContent='🕐 On Clock'}
   const sb=document.getElementById('sb');
-  if(poop){sb.textContent='● Paid Break';sb.className='sb sl'}
+  if(poop){sb.textContent=__('sb_poop');sb.className='sb sl'}
   else if(slack){sb.textContent='● Slackin\'';sb.className='sb sl'}
-  else if(!w){sb.textContent='● Day Off';sb.className='sb rs'}
-  else if(st==='lunch'){sb.textContent='● Lunch';sb.className='sb rs'}
-  else if(st==='before'){sb.textContent='● Pre-shift';sb.className='sb rs'}
-  else if(st==='after'){sb.textContent='● Done 🎉';sb.className='sb rs'}
+  else if(!w){sb.textContent=__('sb_rest');sb.className='sb rs'}
+  else if(st==='lunch'){sb.textContent=__('sb_lunch');sb.className='sb rs'}
+  else if(st==='before'){sb.textContent=__('sb_before');sb.className='sb rs'}
+  else if(st==='after'){sb.textContent=__('sb_after');sb.className='sb rs'}
   else{sb.textContent='● Grindin\'';sb.className='sb wk'}
   document.getElementById('svDaily').textContent=daily>0?daily.toFixed(2):'--';
   document.getElementById('svPS').textContent=pms>0?(pms*1000).toFixed(4):'--';
@@ -1036,13 +1036,7 @@ if ('serviceWorker' in navigator) {
 <div class="obo-f"><button class="obo-n" id="oboNext">Next →</button><button class="obo-skip" id="oboSKip" onclick="skipObo()">Skip</button></div>
 </div>
 <script>
-var OBO_DATA=[
-  {e:"⏱️",h:"Your Time Is Money",p:"Set your salary, watch every second count.<br>Breaks, lunch, overtime — <b>every minute calculated</b>",t:""},
-  {e:"🎨",h:"Match Your Mood",p:"<b>9 themes</b> from Classic to Rich.<br>Each with专属 floating effects, bursts & sounds",t:""},
-  {e:"🎯",h:"Save for What Matters",p:"Boba · Lipstick · A house<br>Watch the progress bar fill up — <b>it feels great</b>",t:""},
-  {e:"🛠️",h:"Worker's Toolkit",p:"💩 Paid Poop Timer　📋 Daily Reports<br>👥 Fellow Workers Online　😴 Slack Mode",t:""},
-  {e:"🚀",h:"Ready to Grind?",p:"⚙️ Click the gear to set your salary<br>🐱 Double-tap the cat to unlock themes<br><b style=color:var(--g1)>Start earning!</b>",t:"Let's Go 🚀"}
-],oboI=0,oboOk=false;
+var OBO_DATA=__("obo"),oboI=0,oboOk=false;
 
 function renderObo(i){
   var d=OBO_DATA[i],c=document.getElementById("oboC"),dt=document.getElementById("oboD");
