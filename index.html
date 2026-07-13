@@ -324,6 +324,7 @@ body.theme-night .cat::after{content:"🦉"}
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
+  <button class="top-btn" onclick="showTrends()" title="打工趋势">📊</button>
   <button class="top-btn" onclick="toggleHelp()" title="说明">❓</button>
   <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
@@ -872,6 +873,16 @@ document.addEventListener("DOMContentLoaded",function(){
   if(!localStorage.getItem("salaryObo")){setTimeout(function(){document.getElementById("oboOv").classList.add("show");renderObo(0)},300)}
 });
 </script>
+
+<!-- 趋势报告 -->
+<div class="ov" id="trendOv">
+<div class="modal" style="width:420px">
+<div class="mh"><h2>📊 打工趋势</h2><button class="mx" onclick="closeTrends()">✕</button></div>
+<div class="tt" id="trendTabs"></div>
+<div class="tg" id="trendStats"></div>
+<div class="tc"><canvas id="trendCanvas" height="140"></canvas></div>
+<div id="trendBody"></div>
+</div></div>
 
 </body>
 </html>
