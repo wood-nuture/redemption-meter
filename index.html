@@ -48,7 +48,7 @@ function renderTrends(mode){
   var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
   ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
   ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
   ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
   f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
   document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
@@ -106,7 +106,7 @@ function renderTrends(mode){
   var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
   ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
   ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
   ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
   f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
   document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
@@ -161,7 +161,7 @@ function renderTrends(mode){
   var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
   ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
   ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
   ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
   f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
   document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
@@ -999,7 +999,7 @@ function renderTrends(mode){
   var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
   ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
   ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
   ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
   f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
   document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
