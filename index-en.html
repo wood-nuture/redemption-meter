@@ -578,7 +578,7 @@ let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
 let goalIdx=-1,goals=[],lastUnitCount=0;
 let funIdx=0,streak=0,moodData=[];
 
-const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAY=__("day_names");
 let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
@@ -647,20 +647,9 @@ function getGoal(){
   return g&&g.a>0?g:null;
 }
 
-const FUN_LINES=[
-  'Boss paid your commute today!','This tea has no creamer — just your sweat.',
-  'Every cent is future Fuck You Money.','Every dollar you earn buys the right to say no.',
-  'Slackin\' money hits different.','Boss dreams of IPO, you dream of a raise.',
-  'Earn not to spend now, but to spend with pride later.','A skip today = freedom fund tomorrow.',
-  'Every dollar votes for the life you want.','Grind hard, stay hard, we\'re all kings.',
-  'One more chip on the table than yesterday.','Saving isn\'t pinching — it\'s building swagger.',
-];
+const FUN_LINES=__("fun_lines");
 
-const DAILY_MSGS=[
-  'One more day of freedom tokens ✨','Great work today, shine again tomorrow 🌟',
-  'Your labor became real numbers 📈','Grind is hard but you\'re growing 💪',
-  'After work is YOUR time 🌆','Remember: you\'re buying your future 🎫',
-];
+const DAILY_MSGS=__("daily_msgs");
 
 function updGoal(earn){
   const g=getGoal();const gb=document.getElementById('goalBar');
