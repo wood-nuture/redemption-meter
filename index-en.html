@@ -881,7 +881,7 @@ function burst(c){
 function offWork(){
   celebAct=true;const ov=document.getElementById('celeb');ov.innerHTML='';ov.className='celeb show';
   const t=document.createElement('div');t.className='celeb-t';t.textContent='🎉 Quitting Time! 🎉';ov.appendChild(t);
-  const s=document.createElement('div');s.className='celeb-s';s.textContent='Today earned ¥'+calc().daily.toFixed(2);ov.appendChild(s);
+  const s=document.createElement('div');s.className='celeb-s';s.textContent=__('celeb_earn')+calc().daily.toFixed(2);ov.appendChild(s);
   const cs=['#f9d976','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#f368e0','#ffd1dc','#69f0ae','#ffab40'];
   for(let i=0;i<80;i++){const c=document.createElement('div');c.className='celeb-c';c.style.left=Math.random()*100+'%';c.style.top='-5px';c.style.background=cs[Math.floor(Math.random()*cs.length)];c.style.width=(3+Math.random()*8)+'px';c.style.height=(3+Math.random()*8)+'px';c.style.setProperty('--dur',(2+Math.random()*3)+'s');c.style.animationDelay=(Math.random()*2.5)+'s';c.style.borderRadius=['50%','2px','0'][Math.floor(Math.random()*3)];ov.appendChild(c);setTimeout(()=>c.remove(),6000)}
   playOff();for(let i=0;i<6;i++)setTimeout(()=>burst(6+Math.floor(Math.random()*4)),i*250);
