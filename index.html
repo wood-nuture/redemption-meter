@@ -4,12 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <script src="theme-config.js">
+
+// ===== 趋势图 & 年度报告 =====
+function trackData(){
+  try{
+    var r=calc(),today=new Date().toISOString().slice(0,10);
+    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
+    var last=hist.length>0?hist[hist.length-1]:null;
+    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
+      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
+      if(hist.length>365)hist=hist.slice(-365);
+      localStorage.setItem("salaryHistory",JSON.stringify(hist));
+    }
+  }catch(e){}
+}
+function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
+function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
+function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
+function renderTrends(mode){
+  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
+  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
+  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
+  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
+  if(f.length<2)f=hist.slice(-30);
+  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
+  var avg=f.length>0?t/f.length:0;
+  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
+  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
+  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
+  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
+  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
+  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
+  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
+  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
+  f.forEach(function(h,i){
+    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
+    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
+    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
+  });
+  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
+  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
+  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
+  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
+}
+function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
+
 initTheme();
 </script>
 <script src="theme-effects.js">
+
+// ===== 趋势图 & 年度报告 =====
+function trackData(){
+  try{
+    var r=calc(),today=new Date().toISOString().slice(0,10);
+    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
+    var last=hist.length>0?hist[hist.length-1]:null;
+    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
+      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
+      if(hist.length>365)hist=hist.slice(-365);
+      localStorage.setItem("salaryHistory",JSON.stringify(hist));
+    }
+  }catch(e){}
+}
+function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
+function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
+function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
+function renderTrends(mode){
+  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
+  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
+  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
+  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
+  if(f.length<2)f=hist.slice(-30);
+  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
+  var avg=f.length>0?t/f.length:0;
+  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
+  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
+  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
+  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
+  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
+  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
+  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
+  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
+  f.forEach(function(h,i){
+    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
+    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
+    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
+  });
+  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
+  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
+  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
+  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
+}
+function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
+
 initTheme();
 </script>
 <script src="theme-ui.js">
+
+// ===== 趋势图 & 年度报告 =====
+function trackData(){
+  try{
+    var r=calc(),today=new Date().toISOString().slice(0,10);
+    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
+    var last=hist.length>0?hist[hist.length-1]:null;
+    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
+      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
+      if(hist.length>365)hist=hist.slice(-365);
+      localStorage.setItem("salaryHistory",JSON.stringify(hist));
+    }
+  }catch(e){}
+}
+function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
+function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
+function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
+function renderTrends(mode){
+  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
+  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
+  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
+  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
+  if(f.length<2)f=hist.slice(-30);
+  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
+  var avg=f.length>0?t/f.length:0;
+  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
+  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
+  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
+  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
+  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
+  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
+  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
+  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
+  f.forEach(function(h,i){
+    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
+    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
+    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
+  });
+  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
+  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
+  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
+  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
+}
+function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
+
 initTheme();
 </script>
 <link rel="manifest" href="manifest.json">
@@ -816,6 +972,58 @@ function showProPopup(){
 
 
 
+
+
+// ===== 趋势图 & 年度报告 =====
+function trackData(){
+  try{
+    var r=calc(),today=new Date().toISOString().slice(0,10);
+    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
+    var last=hist.length>0?hist[hist.length-1]:null;
+    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
+      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
+      if(hist.length>365)hist=hist.slice(-365);
+      localStorage.setItem("salaryHistory",JSON.stringify(hist));
+    }
+  }catch(e){}
+}
+function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
+function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
+function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
+function renderTrends(mode){
+  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
+  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
+  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
+  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
+  if(f.length<2)f=hist.slice(-30);
+  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
+  var avg=f.length>0?t/f.length:0;
+  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
+  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
+  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
+  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
+  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
+  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
+  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
+  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
+  f.forEach(function(h,i){
+    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
+    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
+    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
+  });
+  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
+  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" ¥"+avg.toFixed(0),W-pad.r-52,ay-3);
+  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
+  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
+  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
+}
+function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
 
 initTheme();
 
