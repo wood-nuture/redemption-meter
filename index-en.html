@@ -657,7 +657,7 @@ function updGoal(earn){
   const unitAmt=g.ua||g.a;const units=Math.floor(earn/unitAmt);
   document.getElementById('goalText').textContent=`Got ${units.toFixed(1)} ${g.u}`;
   if(units>lastUnitCount){const add=units-lastUnitCount;const ba=document.getElementById('brickArea');for(let i=0;i<Math.min(add,10);i++){const el=document.createElement('span');el.className='brick-icon';el.textContent='🧱';ba.appendChild(el);setTimeout(()=>el.remove(),2000)}lastUnitCount=units;if(add>0&&g.ua){playHua();burst(5)}}
-  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+' paid off!';document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
+  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+' '+__('celeb_earn').split('¥')[0];document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
   // 加速引导（大目标进度慢时）
   const ga=document.getElementById('goalAcc');
   if(g.a>=30000&&pct<5){ga.style.display='block';ga.textContent='💡 Slow? Side hustle?'}
