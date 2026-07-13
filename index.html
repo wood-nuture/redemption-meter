@@ -564,7 +564,7 @@ let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
 let goalIdx=-1,goals=[],lastUnitCount=0;
 let funIdx=0,streak=0,moodData=[];
 
-const DAY=['日','一','二','三','四','五','六'];
+const DAY=__("day_names");
 let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
@@ -634,20 +634,9 @@ function getGoal(){
   return g&&g.a>0?g:null;
 }
 
-const FUN_LINES=[
-  '恭喜，老板又帮你报销了今天的通勤费。','这杯奶茶，没有植脂末，全是你的血汗。',
-  '别小看这几块钱，这是你未来的「Fuck You Money」。','你赚的每一分钱，都是你未来说「不」的底气。',
-  '摸鱼赚的钱，最香。','老板的梦想是上市，你的梦想是老板给你涨工资。',
-  '赚钱的意义不是现在花，而是以后可以花得理直气壮。','今天忍住的消费，明天就是你的自由基金。',
-  '每一块钱都在投票你想要的生活。','打工人，打工魂，打工都是人上人。',
-  '你比昨天又多了一个拒绝的筹码。','存钱不是为了省钱，是为了攒底气。',
-];
+const FUN_LINES=__("fun_lines");
 
-const DAILY_MSGS=[
-  '今天也是为自由积累筹码的一天 ✨','辛苦了，明天继续发光 🌟',
-  '你今天的劳动，已经兑换成了看得见的数字 📈','打工很累，但你在一点点变强大 💪',
-  '下班后的时间，才是你的人生 🌆','记住：你不是在打工，你是在买自己的未来 🎫',
-];
+const DAILY_MSGS=__("daily_msgs");
 
 function updGoal(earn){
   const g=getGoal();const gb=document.getElementById('goalBar');
