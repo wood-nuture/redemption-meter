@@ -440,3 +440,27 @@ function __(key) {
   }
   return lang[key] !== undefined ? lang[key] : (LANG["zh"][key] || key);
 }
+
+// ===== 金额/日期格式化 =====
+function currencySymbol() {
+  var m = {zh:"¥", en:"$", ja:"¥", ko:"₩", de:"€", fr:"€", es:"€", pt:"R$"};
+  return m[_locale] || m["en"];
+}
+
+function formatMoney(n) {
+  var s = currencySymbol();
+  if (n === undefined || n === null || isNaN(n)) return s + "0.00";
+  var abs = Math.abs(n);
+  var parts = abs.toFixed(2).split(".");
+  var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (["de","fr","es"].includes(_locale)) intPart = intPart.replace(/,/g, ".");
+  return (n < 0 ? "-" : "") + s + intPart + "." + parts[1];
+}
+
+function shortDate(dateStr) {
+  if (!dateStr) return "";
+  var parts = dateStr.split("-");
+  if (parts.length < 3) return dateStr;
+  if (_locale === "en") return parts[1] + "/" + parts[2];
+  return parts[1] + "月" + parseInt(parts[2]) + "日";
+}
