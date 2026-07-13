@@ -12,6 +12,11 @@ initTheme();
 <script src="theme-ui.js">
 initTheme();
 </script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f9d976">
 <title>🐱 赎身进度条</title>
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
@@ -765,6 +770,14 @@ function showProPopup(){
 
 
 initTheme();
+
+// ===== PWA Service Worker =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js');
+  });
+}
+
 </script>
 </body>
 </html>
