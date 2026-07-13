@@ -23,7 +23,7 @@ function showTrends(m){document.getElementById("trendOv").classList.add("show");
 function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
 function renderTrends(mode){
   var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
   if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
   var n=new Date(),y=n.getFullYear(),m=n.getMonth();
   var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
@@ -93,7 +93,7 @@ function showTrends(m){document.getElementById("trendOv").classList.add("show");
 function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
 function renderTrends(mode){
   var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
   if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
   var n=new Date(),y=n.getFullYear(),m=n.getMonth();
   var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
@@ -148,7 +148,7 @@ function showTrends(m){document.getElementById("trendOv").classList.add("show");
 function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
 function renderTrends(mode){
   var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
   if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
   var n=new Date(),y=n.getFullYear(),m=n.getMonth();
   var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
@@ -880,7 +880,7 @@ function burst(c){
 // ===== End celebration =====
 function offWork(){
   celebAct=true;const ov=document.getElementById('celeb');ov.innerHTML='';ov.className='celeb show';
-  const t=document.createElement('div');t.className='celeb-t';t.textContent='🎉 Quitting Time! 🎉';ov.appendChild(t);
+  const t=document.createElement('div');t.className='celeb-t';t.textContent=__('celeb_title');ov.appendChild(t);
   const s=document.createElement('div');s.className='celeb-s';s.textContent=__('celeb_earn')+calc().daily.toFixed(2);ov.appendChild(s);
   const cs=['#f9d976','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#f368e0','#ffd1dc','#69f0ae','#ffab40'];
   for(let i=0;i<80;i++){const c=document.createElement('div');c.className='celeb-c';c.style.left=Math.random()*100+'%';c.style.top='-5px';c.style.background=cs[Math.floor(Math.random()*cs.length)];c.style.width=(3+Math.random()*8)+'px';c.style.height=(3+Math.random()*8)+'px';c.style.setProperty('--dur',(2+Math.random()*3)+'s');c.style.animationDelay=(Math.random()*2.5)+'s';c.style.borderRadius=['50%','2px','0'][Math.floor(Math.random()*3)];ov.appendChild(c);setTimeout(()=>c.remove(),6000)}
@@ -987,7 +987,7 @@ function showTrends(m){document.getElementById("trendOv").classList.add("show");
 function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
 function renderTrends(mode){
   var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L=isEn?{t:"Total",a:"Daily Avg",d:"Days",b:"Best Day",mo:"Month",yr:"Year",n:"No data yet. Start working!"}:{t:"总收入",a:"日均",d:"天数",b:"最佳日",mo:"本月",yr:"本年",n:"还没有数据，开始打工吧！"};
+  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
   if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
   var n=new Date(),y=n.getFullYear(),m=n.getMonth();
   var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
