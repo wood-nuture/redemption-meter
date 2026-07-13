@@ -268,6 +268,14 @@ select option{background:#2d1810;color:#fceabb}
 
 
 body.theme-night .cat::after{content:"🦉"}
+
+.hl{display:flex;gap:10px;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;transition:0.2s}
+.hl:hover{background:var(--hv);border-color:var(--g2)}
+.hi{font-size:22px;min-width:30px;text-align:center}
+.hl div:last-child{flex:1}
+.hl b{display:block;font-size:12px;color:var(--g1);margin-bottom:2px}
+.hl span{font-size:11px;color:var(--tx2);line-height:1.4}
+
 </style>
 </head>
 <body>
@@ -293,6 +301,7 @@ body.theme-night .cat::after{content:"🦉"}
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
+  <button class="top-btn" onclick="toggleHelp()" title="说明">❓</button>
   <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
@@ -333,6 +342,20 @@ body.theme-night .cat::after{content:"🦉"}
   </div>
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
 </div>
+
+<!-- 帮助弹窗 -->
+<div class="ov" id="helpOv">
+<div class="modal" style="width:380px">
+<div class="mh"><h2>💼 赎身进度条</h2><button class="mx" onclick="toggleHelp()">✕</button></div>
+<div class="hl"><div class="hi">⏱️</div><div><b>实时计薪</b><span>每分每秒看着钱涨，打工更有动力</span></div></div>
+<div class="hl"><div class="hi">🎨</div><div><b>9套皮肤</b><span>换一个心情搬砖，总有一款适合你</span></div></div>
+<div class="hl"><div class="hi">💩</div><div><b>带薪拉屎</b><span>让老板为你的放松时间买单</span></div></div>
+<div class="hl"><div class="hi">📋</div><div><b>打工日报</b><span>每天的努力都有数据记录下来</span></div></div>
+<div class="hl"><div class="hi">🎯</div><div><b>攒钱目标</b><span>奶茶 / 口红 / 一平米房，看着它们一步步实现</span></div></div>
+<div class="hl"><div class="hi">🐱</div><div><b>双击猫头</b><span>解锁全部 Pro 主题 ✨</span></div></div>
+<div class="hl"><div class="hi">📊</div><div><b>打工周报</b><span>每周回顾你的搬砖战绩</span></div></div>
+<div style="margin-top:14px;font-size:10px;color:var(--tx3);text-align:center;line-height:1.6">⚙️ 点击右上角齿轮设置你的工资和作息<br>📱 支持 PWA，可安装到手机桌面使用</div>
+</div></div>
 
 <!-- 设置弹窗 -->
 <div class="ov" id="setOv">
@@ -411,6 +434,7 @@ function toggleSlack(){slack=!slack;const b=document.getElementById('slackBtn');
 function enterPoop(){if(poop)return;poop=true;poopStart=Date.now();const r=calc();poopEarnAtStart=r.earn;document.getElementById('poopOv').classList.add('on')}
 function exitPoop(){if(!poop)return;const r=calc();summaryAmt=r.earn-poopEarnAtStart;if(summaryAmt<0)summaryAmt=0;poop=false;document.getElementById('poopOv').classList.remove('on');document.getElementById('summaryVal').textContent='¥ '+summaryAmt.toFixed(2);document.getElementById('summaryOv').classList.add('on')}
 function closeSummary(){document.getElementById('summaryOv').classList.remove('on');playCoin()}
+function toggleHelp(){document.getElementById('helpOv').classList.toggle('show')}
 
 // ===== 目标系统 =====
 const GOAL_PRESETS=[
