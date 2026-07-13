@@ -892,7 +892,7 @@ function offWork(){
 function showCai(){
   const ov=document.getElementById('caishen');ov.innerHTML='';ov.className='caishen show';
   const e=document.createElement('div');e.className='caishen-e';e.textContent='🧧';ov.appendChild(e);
-  const t=document.createElement('div');t.className='caishen-t';t.innerHTML='🎊 Perfect Attendance! 🎊';ov.appendChild(t);
+  const t=document.createElement('div');t.className='caishen-t';t.innerHTML=__('caishen_title');ov.appendChild(t);
   const gs=['🧧','🪙','💰','✨','💎'];
   for(let i=0;i<50;i++){const g=document.createElement('div');g.className='caishen-g';g.textContent=gs[Math.floor(Math.random()*gs.length)];g.style.left=Math.random()*100+'%';g.style.fontSize=(12+Math.random()*18)+'px';g.style.animationDuration=(3+Math.random()*4)+'s';g.style.animationDelay=(Math.random()*3)+'s';ov.appendChild(g);setTimeout(()=>g.remove(),8000)}
   playCai();for(let i=0;i<8;i++)setTimeout(()=>burst(10+Math.floor(Math.random()*6)),i*400);
