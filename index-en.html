@@ -837,12 +837,12 @@ function updUI(){
   else{cd.textContent=fmt(wrk);cd.className='cd';cl.textContent='🕐 On Clock'}
   const sb=document.getElementById('sb');
   if(poop){sb.textContent=__('sb_poop');sb.className='sb sl'}
-  else if(slack){sb.textContent='● Slackin\'';sb.className='sb sl'}
+  else if(slack){sb.textContent=__('sb_slack')';sb.className='sb sl'}
   else if(!w){sb.textContent=__('sb_rest');sb.className='sb rs'}
   else if(st==='lunch'){sb.textContent=__('sb_lunch');sb.className='sb rs'}
   else if(st==='before'){sb.textContent=__('sb_before');sb.className='sb rs'}
   else if(st==='after'){sb.textContent=__('sb_after');sb.className='sb rs'}
-  else{sb.textContent='● Grindin\'';sb.className='sb wk'}
+  else{sb.textContent=__('sb_working')';sb.className='sb wk'}
   document.getElementById('svDaily').textContent=daily>0?daily.toFixed(2):'--';
   document.getElementById('svPS').textContent=pms>0?(pms*1000).toFixed(4):'--';
   if(daily>0){const t=new Date(),ms3=new Date(t.getFullYear(),t.getMonth(),1);let wdp=0;for(let d2=new Date(ms3);d2<t;d2.setDate(d2.getDate()+1))if(S.wd.includes(d2.getDay()))wdp++;document.getElementById('svMonth').textContent=(wdp*daily).toFixed(2)}else document.getElementById('svMonth').textContent='--';
