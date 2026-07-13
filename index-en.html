@@ -633,12 +633,7 @@ function closeSummary(){document.getElementById('summaryOv').classList.remove('o
 
 
 // ===== Goals =====
-const GOAL_PRESETS=[
-  {n:'🧋 Boba',a:20,u:'cups',ua:20},{n:'💄 Lipstick',a:200,u:'pcs',ua:200},{n:'💅 Manicure',a:150,u:'times',ua:150},
-  {n:'🌸 Bouquet',a:80,u:'bunches',ua:80},{n:'🎬 Movie',a:60,u:'tickets',ua:60},{n:'🍰 Tea time',a:50,u:'times',ua:50},
-  {n:'👗 Dress',a:300,u:'pcs',ua:300},{n:'🧴 Skincare',a:500,u:'sets',ua:500},{n:'🎤 Concert',a:800,u:'tickets',ua:800},
-  {n:'📸 Photoshoot',a:1500,u:'sets',ua:1500},{n:'✈️ Trip',a:3000,u:'trips',ua:3000},{n:'🏠 House (sq ft)',a:50000,u:'sq ft',ua:50000},
-];
+const GOAL_PRESETS=__("goal_presets").map(function(g,i){var p=[20,200,150,80,60,50,300,500,800,1500,3000,50000];return{n:g.n,a:p[i],u:g.u,ua:p[i]}});
 
 function getGoal(){
   if(goalIdx<0||goalIdx>=GOAL_PRESETS.length+goals.length)return null;
@@ -947,16 +942,16 @@ function showProPopup(){
   var ex=document.getElementById("proOv");
   if(ex){ex.style.display="flex";return;}
   var isEn=isEnglishPage||localStorage.getItem("salaryLang")==="en";
-  var btn=isEn?"Upgrade Pro":"升级 Pro";
-  var ft1=isEn?"Unlimited Goals":"无限目标";
-  var ft2=isEn?"More Sounds":"更多音效";
-  var ft3=isEn?"Permanent History":"永久数据";
-  var ft4=isEn?"Custom Themes":"自定义主题";
-  var ft5=isEn?"Annual Report":"年度报告";
-  var price=isEn?"/month":"/月";
-  var year=isEn?"or $49.99/year":"或 $49.99/年";
-  var later=isEn?"Not now":"稍后再说";
-  var coming=isEn?"Coming soon!":"即将推出！";
+  var btn=__("pro_btn");
+  var ft1=__("pro_ft1");
+  var ft2=__("pro_ft2");
+  var ft3=__("pro_ft3");
+  var ft4=__("pro_ft4");
+  var ft5=__("pro_ft5");
+  var price=__("pro_price");
+  var year=__("pro_year");
+  var later=__("pro_later");
+  var coming=__("pro_coming");
   var h="<div class=ov id=proOv style=display:none><div class=modal style=max-width:380px;text-align:center>"+
     "<div class=mh style=justify-content:center><h2>"+btn+"</h2></div>"+
     "<p style=color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8>"+
