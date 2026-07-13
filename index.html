@@ -504,7 +504,7 @@ body.theme-night .cat::after{content:"🦉"}
   </div>
 
   <div class="aw" id="aw">
-    <div><span class="aws">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
+    <div><span class="aws" id="curSym">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
     <div class="aft" id="aft">开始搬砖赚小钱钱~</div>
     <div class="goal-bar" id="goalBar" style="display:none">
       <div class="goal-h"><span class="l" id="goalL">🎯 目标</span><span class="r" id="goalR">0%</span></div>
@@ -666,7 +666,7 @@ function updWorkerLine(){
   const mins=document.querySelectorAll('.sr .sc').length;
   const lines=[
     `👥 全国 ${workers} 位工友正在搬砖`,
-    `📊 今日全国平均时薪 ¥${avgSalary}`,
+    `📊 今日全国平均时薪 ${avgSalary}`,
     `🏢 你的工位附近有 ${Math.floor(Math.random()*20+5)} 位工友在摸鱼`,
   ];
   wl.textContent=lines[Math.floor(Math.random()*lines.length)];
@@ -868,7 +868,7 @@ function burst(c){
 function offWork(){
   celebAct=true;const ov=document.getElementById('celeb');ov.innerHTML='';ov.className='celeb show';
   const t=document.createElement('div');t.className='celeb-t';t.textContent=__('celeb_title');ov.appendChild(t);
-  const s=document.createElement('div');s.className='celeb-s';s.textContent=__('celeb_earn')+calc().daily.toFixed(2);ov.appendChild(s);
+  const s=document.createElement('div');s.className='celeb-s';s.textContent=__('celeb_earn')+formatMoney(calc().daily);ov.appendChild(s);
   const cs=['#f9d976','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#f368e0','#ffd1dc','#69f0ae','#ffab40'];
   for(let i=0;i<80;i++){const c=document.createElement('div');c.className='celeb-c';c.style.left=Math.random()*100+'%';c.style.top='-5px';c.style.background=cs[Math.floor(Math.random()*cs.length)];c.style.width=(3+Math.random()*8)+'px';c.style.height=(3+Math.random()*8)+'px';c.style.setProperty('--dur',(2+Math.random()*3)+'s');c.style.animationDelay=(Math.random()*2.5)+'s';c.style.borderRadius=['50%','2px','0'][Math.floor(Math.random()*3)];ov.appendChild(c);setTimeout(()=>c.remove(),6000)}
   playOff();for(let i=0;i<6;i++)setTimeout(()=>burst(6+Math.floor(Math.random()*4)),i*250);
