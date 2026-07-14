@@ -19,5 +19,8 @@
   "permissions": [
     "storage"
   ],
-  "offline_enabled": true
+  "offline_enabled": true,
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }
