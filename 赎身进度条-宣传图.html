@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赎身进度条 · 小红书画册</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* 深色背景画布 */
+.page{background:#080302;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+
+/* 卡片通用 */
+.card{width:480px;max-width:100%;border-radius:28px;overflow:hidden;margin-bottom:50px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.card-inner{padding:32px 28px;position:relative;overflow:hidden}
+
+/* ===== 卡片1: 情绪共鸣型 ===== */
+.card-1{background:linear-gradient(160deg,#1a0e0a 0%,#0d0705 100%)}
+.card-1 .shine{position:absolute;top:-30%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 50% 0%,rgba(249,217,118,0.04) 0%,transparent 50%);pointer-events:none}
+
+/* 手机框 */
+.phone-mock{width:280px;margin:12px auto 0;background:linear-gradient(180deg,#1a0e0a,#0f0906);border:1px solid rgba(255,215,150,0.15);border-radius:20px;padding:18px 14px;position:relative;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.phone-mock .status-bar{display:flex;justify-content:space-between;font-size:9px;color:var(--tx3,#7a6a5a);margin-bottom:8px}
+.phone-mock .cat-icon{text-align:center;font-size:32px;margin-bottom:2px;filter:drop-shadow(0 0 12px rgba(249,217,118,0.15))}
+.phone-mock .amount-row{text-align:center;margin:4px 0;display:flex;align-items:flex-start;justify-content:center;gap:0}
+.phone-mock .amount-row .sym{font-size:16px;color:#c9a96e;margin-top:8px;opacity:0.55}
+.phone-mock .amount-row .num{font-size:48px;font-weight:800;background:linear-gradient(180deg,#fff3d6 0%,#f8b500 45%,#e67e22 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.phone-mock .amount-row .dec{font-size:18px;font-weight:600;background:linear-gradient(180deg,#fff3d6 0%,#f8b500 45%,#e67e22 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.phone-mock .sub{text-align:center;font-size:10px;color:#7a6a5a;margin-top:2px;font-style:italic}
+.phone-mock .cd-line{text-align:center;font-size:22px;font-weight:700;color:#f9d976;margin:6px 0;text-shadow:0 0 20px rgba(249,217,118,0.12)}
+.phone-mock .tags{display:flex;justify-content:center;gap:4px;margin-top:6px;flex-wrap:wrap}
+.phone-mock .tags span{padding:2px 10px;border-radius:20px;font-size:9px}
+.phone-mock .tags .wk{background:rgba(76,175,80,0.12);color:#81c784}
+.phone-mock .tags .sc{background:rgba(255,152,0,0.1);color:#ffb74d}
+.phone-mock .tags .bd{background:rgba(255,215,150,0.06);border:1px solid rgba(255,215,150,0.15);color:#c9a96e}
+
+/* ===== 卡片2: 功能展示 ===== */
+.card-2{background:linear-gradient(160deg,#0d0705 0%,#1f1008 50%,#0d0705 100%)}
+.card-2 .shine{position:absolute;top:-20%;right:-20%;width:120%;height:120%;background:radial-gradient(circle at 80% 0%,rgba(249,217,118,0.05) 0%,transparent 50%);pointer-events:none}
+
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.feature-card{padding:16px 12px;background:rgba(255,215,150,0.04);border:1px solid rgba(255,215,150,0.08);border-radius:16px;text-align:center;transition:0.2s}
+.feature-card .icon{font-size:36px;margin-bottom:6px;display:block}
+.feature-card .name{font-size:13px;font-weight:600;color:#fceabb;margin-bottom:3px}
+.feature-card .desc{font-size:10px;color:#7a6a5a;line-height:1.5}
+
+/* ===== 卡片3: 对比反差型 ===== */
+.card-3{background:linear-gradient(160deg,#0d0705 0%,#1a0e0a 50%,#0d0705 100%)}
+.card-3 .shine{position:absolute;bottom:-20%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 30% 100%,rgba(249,217,118,0.04) 0%,transparent 50%);pointer-events:none}
+
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.compare-box{padding:24px 14px;border-radius:20px;text-align:center;position:relative}
+.compare-box.before{background:rgba(100,100,100,0.04);border:1px solid rgba(150,150,150,0.08)}
+.compare-box.after{background:rgba(249,217,118,0.04);border:1px solid rgba(249,217,118,0.12)}
+.compare-box .emoji{font-size:48px;margin-bottom:8px;display:block}
+.compare-box .title{font-size:15px;font-weight:700;margin-bottom:6px}
+.compare-box.before .title{color:#7a7a8a}
+.compare-box.after .title{color:#f9d976}
+.compare-box .list{font-size:11px;line-height:2.2;color:#7a6a5a;text-align:left;padding-left:6px}
+.compare-box .list li{list-style:none;display:flex;align-items:center;gap:4px}
+.compare-box .list li::before{content:'✗';color:#7a7a8a;font-size:10px}
+.compare-box.after .list li::before{content:'✓';color:#81c784;font-size:10px}
+.compare-box .vs{position:absolute;top:50%;right:-18px;transform:translateY(-50%);font-size:22px;font-weight:800;color:#5a4a3a;text-shadow:0 0 12px rgba(0,0,0,0.4);z-index:2;background:#080302;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(255,215,150,0.05)}
+
+/* ===== 通用文字 ===== */
+.title-lg{font-size:24px;font-weight:800;color:#f9d976;text-shadow:0 0 30px rgba(249,217,118,0.08);margin-bottom:2px;letter-spacing:1px}
+.title-sm{font-size:12px;color:#7a6a5a;letter-spacing:3px;margin-bottom:10px}
+.subtle{color:#7a6a5a;font-size:11px;line-height:1.6}
+.tagline{font-size:13px;color:#c9a96e;font-style:italic;margin-top:10px;padding-top:14px;border-top:1px solid rgba(255,215,150,0.06)}
+
+/* 标签 */
+.badge-host{display:flex;justify-content:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.badge{padding:3px 12px;border-radius:20px;font-size:9px;letter-spacing:1px}
+.badge.gold{background:rgba(249,217,118,0.1);color:#f9d976;border:1px solid rgba(249,217,118,0.08)}
+.badge.sub{background:rgba(255,255,255,0.03);color:#7a6a5a;border:1px solid rgba(255,255,255,0.04)}
+
+/* 页脚水印 */
+.footer{text-align:center;font-size:10px;color:#3a2a1a;margin-top:40px;letter-spacing:2px}
+
+/* ===== 金元宝装饰 ===== */
+.float-ingot{position:absolute;font-size:18px;opacity:0.06;pointer-events:none}
+.i1{top:4%;right:8%}.i2{bottom:6%;left:5%}.i3{top:18%;left:3%}.i4{bottom:14%;right:4%}
+
+/* 打字机光标 */
+.cursor-blink{animation:blink 1s step-end infinite;display:inline-block}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* 标签行 */
+.hashtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px;justify-content:center}
+.hashtags span{font-size:10px;color:#5a4a3a;letter-spacing:0.3px}
+
+/* 截图提示 */
+.screenshot-hint{text-align:center;font-size:11px;color:#3a2a1a;margin-bottom:20px;letter-spacing:2px}
+
+/* 徽标 */
+.logo-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:16px}
+.logo-bar .log{font-size:28px}
+.logo-bar .nm{font-size:12px;font-weight:600;color:#c9a96e;letter-spacing:3px}
+
+/* 箭头按钮装饰 */
+.mock-btn{display:inline-block;padding:6px 18px;border-radius:30px;background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;font-size:11px;font-weight:600;margin-top:8px}
+
+/* 数据亮点 */
+.highlight-row{display:flex;justify-content:center;gap:12px;margin-top:6px;flex-wrap:wrap}
+.highlight-item{text-align:center}
+.highlight-item .n{font-size:18px;font-weight:700;color:#f9d976}
+.highlight-item .l{font-size:9px;color:#7a6a5a}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="screenshot-hint">📸 截取每张卡片单独发布 · 建议 1:1 或 3:4 比例裁剪</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 1: 情绪共鸣型 -->
+<!-- ============================================================ -->
+<div class="card card-1">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot i1">🪙</span>
+    <span class="float-ingot i2">🪙</span>
+
+    <div class="badge-host">
+      <span class="badge gold">💛 情绪价值工具</span>
+      <span class="badge sub"># 打工人自救</span>
+    </div>
+
+    <div class="title-lg">上班第一天</div>
+    <div class="title-lg" style="font-size:20px;margin-top:-4px">我给自己做了个「赎身进度条」</div>
+    <div class="title-sm" style="margin-top:8px">💰 每分每秒都知道自己在攒自由</div>
+
+    <!-- 手机截图模拟 -->
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>🔋 100%</span></div>
+      <div class="cat-icon">🐱</div>
+      <div class="amount-row">
+        <span class="sym">¥</span>
+        <span class="num">287.5</span>
+        <span class="dec">0</span>
+      </div>
+      <div class="sub">「距离一杯奶茶还剩 ¥6.50」</div>
+      <div class="cd-line">⏱ 距下班 3:42:15</div>
+      <div class="tags">
+        <span class="wk">● 搬砖中</span>
+        <span class="sc">◐ 今日 ¥287.50</span>
+      </div>
+      <div class="highlight-row" style="margin-top:6px">
+        <div class="highlight-item"><div class="n">= 4</div><div class="l">杯奶茶</div></div>
+        <div class="highlight-item"><div class="n">= 1.2</div><div class="l">顿火锅</div></div>
+      </div>
+      <div style="text-align:center;margin-top:6px">
+        <span class="mock-btn">✨ 点击招财猫领金币</span>
+      </div>
+    </div>
+
+    <div class="tagline">
+      「你赚的每一分钱，都是你未来说『不』的底气」
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#上班摸鱼神器</span>
+      <span>#情绪价值</span>
+      <span>#存钱大作战</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 2: 功能展示型 -->
+<!-- ============================================================ -->
+<div class="card card-2">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot i3">🪙</span>
+    <span class="float-ingot i4">🪙</span>
+
+    <div class="badge-host">
+      <span class="badge gold">🔥 打工人专属</span>
+      <span class="badge sub">免费 · 无需下载</span>
+    </div>
+
+    <div class="title-lg">建议所有打工人装这个</div>
+    <div class="title-sm" style="margin-top:6px">上班终于有盼头了</div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="icon">💰</span>
+        <div class="name">实时计薪</div>
+        <div class="desc">每秒钟看着收入跳动，上班动力拉满</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">⏱️</span>
+        <div class="name">下班倒计时</div>
+        <div class="desc">精确到秒，每天都像周五下午</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🚽</span>
+        <div class="name">带薪拉屎</div>
+        <div class="desc">独立页面计时，摸鱼也要有仪式感</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🥤</span>
+        <div class="name">赚钱目标</div>
+        <div class="desc">实时换算奶茶/火锅/一平米房</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📊</span>
+        <div class="name">打工日报</div>
+        <div class="desc">每日/每周报告，分享给工友卷起来</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">👥</span>
+        <div class="name">工友圈</div>
+        <div class="desc">全国打工人实时在线，你并不孤单</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🎮</span>
+        <div class="name">金币爆发</div>
+        <div class="desc">每赚1元金币飞溅，满勤财神降临</div>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🌙</span>
+        <div class="name">深色模式</div>
+        <div class="desc">暖金/暗紫双主题，摸鱼不刺眼</div>
+      </div>
+    </div>
+
+    <div class="tagline">
+      🌟 一个网页就够了 · 不用下载 · 打开即用
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#上班摸鱼</span>
+      <span>#实用工具推荐</span>
+      <span>#副业灵感</span>
+      <span>#今天也是努力搬砖的一天</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 3: 对比反差型 -->
+<!-- ============================================================ -->
+<div class="card card-3">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot i1">🪙</span>
+    <span class="float-ingot i2">🪙</span>
+
+    <div class="badge-host">
+      <span class="badge gold">🔄 用了 vs 没用</span>
+      <span class="badge sub">打工人真实体验</span>
+    </div>
+
+    <div class="title-lg" style="font-size:22px">同样是上班</div>
+    <div class="title-sm" style="margin-top:4px">差距可以这么大</div>
+
+    <div class="compare-row">
+      <div class="compare-box before">
+        <div class="vs">VS</div>
+        <span class="emoji">😩</span>
+        <div class="title">没有进度条</div>
+        <ul class="list">
+          <li>不知道今天赚了多少</li>
+          <li>摸鱼都摸得心虚</li>
+          <li>下班只有疲惫感</li>
+          <li>月底钱包空空才慌</li>
+        </ul>
+      </div>
+
+      <div class="compare-box after">
+        <span class="emoji">🤩</span>
+        <div class="title">有赎身进度条</div>
+        <ul class="list">
+          <li>每分每秒看见收入增长</li>
+          <li>摸鱼都有底气了</li>
+          <li>下班还有日报总结</li>
+          <li>目标可视化，攒钱上瘾</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tagline">
+      📱 网页打开即用 · 双击就能看 · 完全免费
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#存钱日常</span>
+      <span>#打工摸鱼</span>
+      <span>#上班族必备</span>
+      <span>#极简生活</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 页脚 -->
+<!-- ============================================================ -->
+<div class="footer">
+  🐱 赎身进度条 · Redemption Meter<br>
+  wood-nuture.github.io/redemption-meter
+</div>
+
+</div>
+</body>
+</html>

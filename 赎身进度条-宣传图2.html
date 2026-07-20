@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赎身进度条 · 宣传图 第二弹</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+.page{background:#080302;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+
+.card{width:480px;max-width:100%;border-radius:28px;overflow:hidden;margin-bottom:50px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.card-inner{padding:32px 28px;position:relative;overflow:hidden}
+.shine{position:absolute;pointer-events:none}
+
+.float-ingot{position:absolute;font-size:18px;opacity:0.06;pointer-events:none}
+.badge-host{display:flex;justify-content:center;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.badge{padding:3px 12px;border-radius:20px;font-size:9px;letter-spacing:1px}
+.badge.gold{background:rgba(249,217,118,0.1);color:#f9d976;border:1px solid rgba(249,217,118,0.08)}
+.badge.sub{background:rgba(255,255,255,0.03);color:#7a6a5a;border:1px solid rgba(255,255,255,0.04)}
+.badge.grn{background:rgba(129,199,132,0.1);color:#81c784;border:1px solid rgba(129,199,132,0.08)}
+.badge.blu{background:rgba(100,150,255,0.1);color:#7c9cf0;border:1px solid rgba(100,150,255,0.08)}
+.badge.red{background:rgba(255,100,100,0.1);color:#ff6b6b;border:1px solid rgba(255,100,100,0.08)}
+.title-lg{font-size:24px;font-weight:800;color:#f9d976;text-shadow:0 0 30px rgba(249,217,118,0.08);margin-bottom:2px;letter-spacing:1px}
+.title-sm{font-size:12px;color:#7a6a5a;letter-spacing:3px;margin-bottom:14px}
+.tagline{font-size:13px;color:#c9a96e;font-style:italic;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,215,150,0.06)}
+.hashtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px;justify-content:center}
+.hashtags span{font-size:10px;color:#5a4a3a;letter-spacing:0.3px}
+.screenshot-hint{text-align:center;font-size:11px;color:#3a2a1a;margin-bottom:20px;letter-spacing:2px}
+.footer{text-align:center;font-size:10px;color:#3a2a1a;margin-top:40px;letter-spacing:2px}
+
+/* ===== 卡片4: 目标成就系统 ===== */
+.card-4{background:linear-gradient(160deg,#0a0604 0%,#1c110a 40%,#0d0705 100%)}
+.card-4 .shine{top:-30%;left:-10%;width:120%;height:120%;background:radial-gradient(circle at 30% 0%,rgba(249,217,118,0.04) 0%,transparent 50%)}
+
+.goal-showcase{margin-top:10px}
+.goal-card{background:rgba(255,215,150,0.04);border:1px solid rgba(255,215,150,0.08);border-radius:18px;padding:18px 16px;margin-bottom:10px}
+.goal-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.goal-card .head .lbl{font-size:11px;color:#7a6a5a}
+.goal-card .head .val{font-size:13px;font-weight:700;color:#f9d976}
+.goal-bar{height:4px;border-radius:4px;background:rgba(255,215,150,0.06);overflow:hidden;margin-bottom:4px}
+.goal-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#e67e22,#f9d976);transition:width 0.5s}
+.goal-sub{font-size:10px;color:#5a4a3a}
+.goal-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.goal-item{display:flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.06);border-radius:12px}
+.goal-item .gicon{font-size:22px}
+.goal-item .ginfo{text-align:left}
+.goal-item .ginfo .gn{font-size:11px;font-weight:600;color:#fceabb}
+.goal-item .ginfo .gp{font-size:9px;color:#5a4a3a}
+.goal-item .gbar{width:100%;height:2px;background:rgba(255,215,150,0.06);border-radius:2px;overflow:hidden;margin-top:2px}
+.goal-item .gbar .gf{height:100%;border-radius:2px;background:linear-gradient(90deg,#e67e22,#f9d976)}
+
+.achieve-row{display:flex;gap:8px;margin-top:12px;justify-content:center}
+.achieve-item{text-align:center;padding:10px 14px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.06);border-radius:14px;flex:1}
+.achieve-item .aicon{font-size:24px;display:block;margin-bottom:2px}
+.achieve-item .albl{font-size:9px;color:#5a4a3a}
+.achieve-item .anum{font-size:16px;font-weight:700;color:#f9d976}
+.achieve-item .anum.done{color:#81c784}
+
+/* ===== 卡片5: 打工日报+工友圈 ===== */
+.card-5{background:linear-gradient(160deg,#0d0705 0%,#15100a 40%,#0d0705 100%)}
+.card-5 .shine{bottom:-20%;right:-20%;width:140%;height:140%;background:radial-gradient(circle at 80% 100%,rgba(100,150,255,0.03) 0%,transparent 50%)}
+
+.report-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.report-preview .rp{background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.08);border-radius:18px;padding:16px 14px;position:relative;overflow:hidden}
+.report-preview .rp.full{grid-column:1/-1}
+.rp .rp-badge{position:absolute;top:10px;right:10px;font-size:9px;color:#5a4a3a;background:rgba(255,215,150,0.04);padding:2px 8px;border-radius:10px}
+.rp .rp-title{font-size:13px;font-weight:700;color:#f9d976;margin-bottom:8px}
+.rp .rp-stat{display:flex;justify-content:space-between;padding:3px 0;font-size:10px;border-bottom:1px solid rgba(255,215,150,0.03)}
+.rp .rp-stat .k{color:#7a6a5a}
+.rp .rp-stat .v{color:#fceabb;font-weight:600}
+.rp .rp-quote{font-size:10px;color:#5a4a3a;font-style:italic;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,215,150,0.04)}
+
+.worker-show{display:flex;align-items:center;gap:6px;margin-top:8px;justify-content:center}
+.worker-show .w-avatars{display:flex}
+.worker-show .w-avatars span{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,215,150,0.08);margin-left:-6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(255,215,150,0.04)}
+.worker-show .w-avatars span:first-child{margin-left:0}
+.worker-show .w-text{font-size:10px;color:#7a6a5a}
+.worker-show .w-text .wn{color:#f9d976;font-weight:600}
+
+.mood-row{display:flex;gap:4px;margin-top:8px;justify-content:center}
+.mood-row span{font-size:20px;padding:4px 6px;border:1px solid rgba(255,215,150,0.06);border-radius:10px;background:rgba(255,215,150,0.02)}
+.mood-row span.active{border-color:rgba(249,217,118,0.2);background:rgba(249,217,118,0.06);transform:scale(1.15);box-shadow:0 0 12px rgba(249,217,118,0.08)}
+
+.streak-show{display:flex;gap:3px;margin-top:6px;justify-content:center}
+.streak-show span{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:1px solid rgba(255,215,150,0.06)}
+.streak-show span.done{background:rgba(249,217,118,0.08);border-color:rgba(249,217,118,0.15);color:#f9d976}
+.streak-show span.today{background:rgba(249,217,118,0.15);border-color:#f9d976;color:#f9d976;box-shadow:0 0 12px rgba(249,217,118,0.12)}
+.streak-show span.pending{background:rgba(255,215,150,0.02);color:#3a2a1a}
+
+/* ===== 卡片6: 摸鱼文化 ===== */
+.card-6{background:linear-gradient(160deg,#0d0705 0%,#1a0e0a 100%)}
+.card-6 .shine{top:-10%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 20% 0%,rgba(255,180,77,0.04) 0%,transparent 50%)}
+
+.moyu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.moyu-card{border-radius:16px;padding:16px 12px;text-align:center;position:relative;overflow:hidden}
+.moyu-card .mc-icon{font-size:40px;margin-bottom:6px;display:block}
+.moyu-card .mc-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.moyu-card .mc-desc{font-size:10px;line-height:1.6;opacity:0.7}
+.moyu-card .mc-tag{position:absolute;top:8px;right:8px;font-size:8px;padding:1px 8px;border-radius:8px;letter-spacing:0.5px}
+.moyu-card.m1{background:rgba(129,199,132,0.04);border:1px solid rgba(129,199,132,0.1)}
+.moyu-card.m1 .mc-title{color:#81c784}
+.moyu-card.m1 .mc-tag{background:rgba(129,199,132,0.08);color:#81c784}
+.moyu-card.m2{background:rgba(100,150,255,0.04);border:1px solid rgba(100,150,255,0.1)}
+.moyu-card.m2 .mc-title{color:#7c9cf0}
+.moyu-card.m2 .mc-tag{background:rgba(100,150,255,0.08);color:#7c9cf0}
+.moyu-card.m3{background:rgba(249,217,118,0.04);border:1px solid rgba(249,217,118,0.1)}
+.moyu-card.m3 .mc-title{color:#f9d976}
+.moyu-card.m3 .mc-tag{background:rgba(249,217,118,0.08);color:#f9d976}
+.moyu-card.m4{background:rgba(255,100,100,0.04);border:1px solid rgba(255,100,100,0.1)}
+.moyu-card.m4 .mc-title{color:#ff6b6b}
+.moyu-card.m4 .mc-tag{background:rgba(255,100,100,0.08);color:#ff6b6b}
+
+.poop-mock{background:repeating-conic-gradient(rgba(245,240,235,0.06) 0% 25%,rgba(237,229,219,0.06) 0% 50%) 0 0/20px 20px;border-radius:16px;padding:14px;margin-top:12px;text-align:center}
+.poop-mock .pm-icon{font-size:32px}
+.poop-mock .pm-timer{font-size:22px;font-weight:700;color:#c9a96e;letter-spacing:2px;font-variant-numeric:tabular-nums;margin:2px 0}
+.poop-mock .pm-sub{font-size:10px;color:#5a4a3a}
+.poop-mock .pm-earn{font-size:12px;color:#7a6a5a;margin-top:2px}
+.poop-mock .pm-earn .pm-num{color:#f9d976;font-weight:600}
+
+/* ===== 卡片7: 语音包+音效 ===== */
+.card-7{background:linear-gradient(160deg,#0a0604 0%,#1c110a 100%)}
+.card-7 .shine{bottom:-10%;left:-10%;width:120%;height:120%;background:radial-gradient(circle at 0% 100%,rgba(249,217,118,0.03) 0%,transparent 50%)}
+
+.sound-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.sound-card{padding:14px 12px;border-radius:16px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.07);text-align:center;transition:0.2s}
+.sound-card .sc-icon{font-size:30px;margin-bottom:4px;display:block}
+.sound-card .sc-name{font-size:12px;font-weight:600;color:#fceabb;margin-bottom:2px}
+.sound-card .sc-desc{font-size:9px;color:#5a4a3a}
+.sound-card .sc-badge{font-size:8px;padding:1px 8px;border-radius:8px;background:rgba(249,217,118,0.06);color:#c9a96e;display:inline-block;margin-top:4px}
+.sound-card.locked{opacity:0.35}
+.sound-card.locked .sc-name{color:#5a4a3a}
+.sound-card.locked .sc-icon{filter:grayscale(0.7)}
+
+.stats-sound{display:flex;gap:12px;margin-top:14px;justify-content:center}
+.stats-sound .ss-item{text-align:center;padding:8px 16px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.06);border-radius:14px;flex:1}
+.stats-sound .ss-item .ss-n{font-size:18px;font-weight:700;color:#f9d976}
+.stats-sound .ss-item .ss-l{font-size:9px;color:#5a4a3a}
+
+/* ===== 卡片8: 数据上瘾 ===== */
+.card-8{background:linear-gradient(160deg,#0d0705 0%,#1a0e0a 50%,#0d0705 100%)}
+.card-8 .shine{top:-20%;right:-20%;width:140%;height:140%;background:radial-gradient(circle at 70% 0%,rgba(129,199,132,0.03) 0%,transparent 50%)}
+
+.stat-dashboard{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.stat-db{text-align:center;padding:12px 8px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.06);border-radius:14px}
+.stat-db .sd-icon{font-size:20px;display:block;margin-bottom:4px}
+.stat-db .sd-n{font-size:18px;font-weight:700;color:#f9d976;font-variant-numeric:tabular-nums}
+.stat-db .sd-l{font-size:9px;color:#5a4a3a;margin-top:2px}
+.stat-db.wide{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;text-align:left}
+.stat-db.wide .sd-n{font-size:14px}
+.stat-db.wide .sd-l{font-size:9px;margin-top:0}
+
+.timeline{margin-top:12px}
+.tl-day{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:10px;border-bottom:1px solid rgba(255,215,150,0.03)}
+.tl-day .tl-d{color:#7a6a5a;width:32px;flex-shrink:0}
+.tl-day .tl-bar{flex:1;height:10px;background:rgba(255,215,150,0.04);border-radius:10px;overflow:hidden}
+.tl-day .tl-bar .tl-f{height:100%;border-radius:10px;background:linear-gradient(90deg,#e67e22,#f9d976)}
+.tl-day .tl-v{color:#fceabb;font-weight:600;width:40px;text-align:right;flex-shrink:0}
+.tl-day.today .tl-d{color:#f9d976;font-weight:600}
+.tl-day.today .tl-bar{background:rgba(249,217,118,0.08);border:1px solid rgba(249,217,118,0.1)}
+
+.cta-line{text-align:center;margin-top:14px;padding:10px;background:rgba(249,217,118,0.04);border:1px solid rgba(249,217,118,0.08);border-radius:14px}
+.cta-line .cta{font-size:13px;font-weight:600;color:#f9d976}
+.cta-line .cta-sub{font-size:9px;color:#5a4a3a;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="screenshot-hint">📸 每张卡片独立截图 · 建议 1:1 或 3:4 比例发布</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 4: 目标成就系统 -->
+<!-- ============================================================ -->
+<div class="card card-4">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot" style="top:3%;right:5%">🎯</span>
+    <span class="float-ingot" style="bottom:5%;left:3%">🏆</span>
+
+    <div class="badge-host">
+      <span class="badge gold">🎯 目标驱动</span>
+      <span class="badge grn"># 成就感拉满</span>
+    </div>
+
+    <div class="title-lg">上班就盼着攒够这杯奶茶</div>
+    <div class="title-sm">把大目标拆成每天的小快乐</div>
+
+    <div class="goal-showcase">
+      <div class="goal-card">
+        <div class="head">
+          <span class="lbl">🥤 今日目标 — 奶茶自由</span>
+          <span class="val">¥24.50 / ¥30</span>
+        </div>
+        <div class="goal-bar"><div class="goal-fill" style="width:82%"></div></div>
+        <div class="goal-sub">还差 ¥5.50，约摸鱼 12 分钟就到手 🐟</div>
+      </div>
+
+      <div class="goal-list">
+        <div class="goal-item">
+          <span class="gicon">🥤</span>
+          <div class="ginfo">
+            <div class="gn">奶茶 ¥30</div>
+            <div class="gp">已攒 4 杯</div>
+            <div class="gbar"><div class="gf" style="width:70%"></div></div>
+          </div>
+        </div>
+        <div class="goal-item">
+          <span class="gicon">🍲</span>
+          <div class="ginfo">
+            <div class="gn">火锅 ¥200</div>
+            <div class="gp">已攒 1.2 顿</div>
+            <div class="gbar"><div class="gf" style="width:42%"></div></div>
+          </div>
+        </div>
+        <div class="goal-item">
+          <span class="gicon">💄</span>
+          <div class="ginfo">
+            <div class="gn">口红 ¥350</div>
+            <div class="gp">还差 ¥134</div>
+            <div class="gbar"><div class="gf" style="width:56%"></div></div>
+          </div>
+        </div>
+        <div class="goal-item">
+          <span class="gicon">🏠</span>
+          <div class="ginfo">
+            <div class="gn">一平米房 ¥8,000</div>
+            <div class="gp">已攒 3.2%</div>
+            <div class="gbar"><div class="gf" style="width:3.2%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="achieve-row">
+      <div class="achieve-item">
+        <span class="aicon">🔥</span>
+        <span class="albl">连续打卡</span>
+        <span class="anum">7 天</span>
+      </div>
+      <div class="achieve-item">
+        <span class="aicon">👑</span>
+        <span class="albl">获得徽章</span>
+        <span class="anum done">搬砖王者</span>
+      </div>
+      <div class="achieve-item">
+        <span class="aicon">🎯</span>
+        <span class="albl">已达成</span>
+        <span class="anum">12 个</span>
+      </div>
+    </div>
+
+    <div class="tagline">
+      🎯 预设 12 个目标 + 自定义 · 每完成一个都有庆祝特效
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#存钱大作战</span>
+      <span>#奶茶自由</span>
+      <span>#打工动力</span>
+      <span>#小目标</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 5: 打工日报+工友圈 -->
+<!-- ============================================================ -->
+<div class="card card-5">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot" style="top:8%;left:4%">📊</span>
+    <span class="float-ingot" style="bottom:4%;right:6%">👥</span>
+
+    <div class="badge-host">
+      <span class="badge gold">📊 打工日报</span>
+      <span class="badge blu">👥 工友圈</span>
+    </div>
+
+    <div class="title-lg">每天下班，收到一份打工总结</div>
+    <div class="title-sm">你的努力值得被看见</div>
+
+    <div class="report-preview">
+      <div class="rp full">
+        <span class="rp-badge">📆 今日日报</span>
+        <div class="rp-title">🐱 赎身进度 · 周四</div>
+        <div class="rp-stat"><span class="k">⏱ 今日工时</span><span class="v">7h 42m</span></div>
+        <div class="rp-stat"><span class="k">💰 今日收入</span><span class="v">¥287.50</span></div>
+        <div class="rp-stat"><span class="k">🥤 相当于</span><span class="v">4 杯奶茶</span></div>
+        <div class="rp-stat"><span class="k">🐟 摸鱼时间</span><span class="v">23m</span></div>
+        <div class="rp-quote">「今天也是为梦想窒息的一天，好在奶茶续命成功」</div>
+      </div>
+      <div class="rp">
+        <div class="rp-title">📈 本周趋势</div>
+        <div class="rp-stat"><span class="k">周一</span><span class="v">¥268</span></div>
+        <div class="rp-stat"><span class="k">周二</span><span class="v">¥302</span></div>
+        <div class="rp-stat"><span class="k">周三</span><span class="v">¥245</span></div>
+        <div class="rp-stat"><span class="k">周四</span><span class="v">¥287</span></div>
+      </div>
+      <div class="rp">
+        <div class="rp-title">🏅 连续打卡</div>
+        <div class="streak-show">
+          <span class="done">一</span>
+          <span class="done">二</span>
+          <span class="done">三</span>
+          <span class="today">四</span>
+          <span class="pending">五</span>
+          <span class="pending">六</span>
+          <span class="pending">日</span>
+        </div>
+        <div class="rp-quote" style="margin-top:8px">👑 已连续搬砖 4 天，再坚持 3 天解锁「搬砖王者」</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;padding:12px;background:rgba(255,215,150,0.03);border:1px solid rgba(255,215,150,0.06);border-radius:16px;text-align:center">
+      <div class="worker-show">
+        <div class="w-avatars">
+          <span>😊</span>
+          <span>😤</span>
+          <span>🥱</span>
+          <span>🤩</span>
+          <span>😎</span>
+        </div>
+        <div class="w-text">
+          全国 <span class="wn">1,283</span> 位工友正在搬砖中<br>
+          <span style="font-size:9px">今日平均时薪 ¥42.6 · 你超过了 67% 的工友</span>
+        </div>
+      </div>
+      <div class="mood-row">
+        <span>😊</span>
+        <span>🥱</span>
+        <span class="active">🤩</span>
+        <span>😤</span>
+        <span>😭</span>
+        <span>😎</span>
+      </div>
+    </div>
+
+    <div class="tagline">
+      📸 截图分享日报 · 和工友一起卷并快乐着
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#打工日报</span>
+      <span>#工友圈</span>
+      <span>#打工日常</span>
+      <span>#上班族</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 6: 摸鱼文化 -->
+<!-- ============================================================ -->
+<div class="card card-6">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot" style="top:5%;right:8%">🐟</span>
+    <span class="float-ingot" style="bottom:8%;left:5%">🚽</span>
+
+    <div class="badge-host">
+      <span class="badge gold">🐟 摸鱼文化</span>
+      <span class="badge red"># 带薪拉屎</span>
+    </div>
+
+    <div class="title-lg" style="font-size:22px">打工人的最高境界</div>
+    <div class="title-sm">把摸鱼变成一门艺术</div>
+
+    <div class="moyu-grid">
+      <div class="moyu-card m1">
+        <span class="mc-tag">⏸️ 暂停计时</span>
+        <span class="mc-icon">🐟</span>
+        <div class="mc-title">摸鱼模式</div>
+        <div class="mc-desc">点一下暂停金额增长<br>摸鱼也要坦坦荡荡</div>
+      </div>
+      <div class="moyu-card m2">
+        <span class="mc-tag">🚽 独立页面</span>
+        <span class="mc-icon">🚽</span>
+        <div class="mc-title">带薪拉屎</div>
+        <div class="mc-desc">卫生间风格计时器<br>放松赚钱两不误</div>
+      </div>
+      <div class="moyu-card m3">
+        <span class="mc-tag">🎰 随机掉落</span>
+        <span class="mc-icon">🪙</span>
+        <div class="mc-title">金币爆发</div>
+        <div class="mc-desc">每赚1元金币飞溅<br>点击招财猫双倍快乐</div>
+      </div>
+      <div class="moyu-card m4">
+        <span class="mc-tag">📊 有据可查</span>
+        <span class="mc-icon">📋</span>
+        <div class="mc-title">摸鱼统计</div>
+        <div class="mc-desc">你今天摸了几次鱼<br>日报清清楚楚</div>
+      </div>
+    </div>
+
+    <div class="poop-mock">
+      <div class="pm-icon">🚽</div>
+      <div class="pm-timer">14:32 🔄</div>
+      <div class="pm-sub">带薪拉屎中 · 已放松 14 分 32 秒</div>
+      <div class="pm-earn">期间赚了 <span class="pm-num">¥8.72</span> · 这就是传说中的躺着赚钱</div>
+    </div>
+
+    <div class="tagline">
+      🐟 打工不摸鱼，思想有问题 · 摸鱼不赚钱，等于白摸鱼
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#摸鱼</span>
+      <span>#带薪拉屎</span>
+      <span>#上班摸鱼姿势</span>
+      <span>#打工人自救指南</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 7: 语音包+音效 -->
+<!-- ============================================================ -->
+<div class="card card-7">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot" style="top:6%;left:6%">🎵</span>
+    <span class="float-ingot" style="bottom:4%;right:4%">🔊</span>
+
+    <div class="badge-host">
+      <span class="badge gold">🎵 沉浸体验</span>
+      <span class="badge sub"># 听觉上瘾</span>
+    </div>
+
+    <div class="title-lg">每赚一块钱，耳朵都有奖励</div>
+    <div class="title-sm">4 套语音包 + 里程碑庆祝音效</div>
+
+    <div class="sound-grid">
+      <div class="sound-card">
+        <span class="sc-icon">🍄</span>
+        <div class="sc-name">马里奥 1-UP</div>
+        <div class="sc-desc">经典 NES 音色，每块钱都是加命</div>
+        <span class="sc-badge">免费</span>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">📱</span>
+        <div class="sc-name">支付宝到账</div>
+        <div class="sc-desc">听着就像有人给你打钱</div>
+        <span class="sc-badge">免费</span>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🪙</span>
+        <div class="sc-name">经典金币</div>
+        <div class="sc-desc">超级马里奥金币声，根本停不下来</div>
+        <span class="sc-badge">免费</span>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🐤</span>
+        <div class="sc-name">可爱布谷</div>
+        <div class="sc-desc">治愈系，适合心情不好的时候</div>
+        <span class="sc-badge">免费</span>
+      </div>
+      <div class="sound-card locked">
+        <span class="sc-icon">🎮</span>
+        <div class="sc-name">街机厅</div>
+        <div class="sc-desc">格斗游戏 KO 音效 · Pro 专属</div>
+        <span class="sc-badge">🔒 Pro</span>
+      </div>
+      <div class="sound-card locked">
+        <span class="sc-icon">🎹</span>
+        <div class="sc-name">钢琴音</div>
+        <div class="sc-desc">优雅爵士风格 · Pro 专属</div>
+        <span class="sc-badge">🔒 Pro</span>
+      </div>
+    </div>
+
+    <div class="stats-sound">
+      <div class="ss-item">
+        <span class="ss-n">🏆</span>
+        <span class="ss-l">目标达成</span>
+        <span style="font-size:10px;color:#f9d976;display:block;margin-top:2px">庆祝音效</span>
+      </div>
+      <div class="ss-item">
+        <span class="ss-n">🎊</span>
+        <span class="ss-l">下班时刻</span>
+        <span style="font-size:10px;color:#f9d976;display:block;margin-top:2px">彩纸+金币雨</span>
+      </div>
+      <div class="ss-item">
+        <span class="ss-n">🎰</span>
+        <span class="ss-l">满勤彩蛋</span>
+        <span style="font-size:10px;color:#f9d976;display:block;margin-top:2px">财神降临</span>
+      </div>
+    </div>
+
+    <div class="tagline">
+      🔊 音效可开关 · 摸鱼时记得静音 😏
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#ASMR</span>
+      <span>#打工音效</span>
+      <span>#沉浸式打工</span>
+      <span>#摸鱼必备</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 卡片 8: 数据上瘾 -->
+<!-- ============================================================ -->
+<div class="card card-8">
+  <div class="card-inner">
+    <div class="shine"></div>
+    <span class="float-ingot" style="top:4%;right:3%">📈</span>
+    <span class="float-ingot" style="bottom:6%;left:4%">💎</span>
+
+    <div class="badge-host">
+      <span class="badge gold">📈 数据控狂喜</span>
+      <span class="badge grn"># 可视化上瘾</span>
+    </div>
+
+    <div class="title-lg">你的每一分钟，都值得被量化</div>
+    <div class="title-sm">用数据给自己一个交代</div>
+
+    <div class="stat-dashboard">
+      <div class="stat-db">
+        <span class="sd-icon">💰</span>
+        <span class="sd-n">¥8,423</span>
+        <span class="sd-l">本月总收入</span>
+      </div>
+      <div class="stat-db">
+        <span class="sd-icon">⏱️</span>
+        <span class="sd-n">176h</span>
+        <span class="sd-l">本月工时</span>
+      </div>
+      <div class="stat-db">
+        <span class="sd-icon">📊</span>
+        <span class="sd-n">¥47.8</span>
+        <span class="sd-l">平均时薪</span>
+      </div>
+      <div class="stat-db">
+        <span class="sd-icon">🥤</span>
+        <span class="sd-n">280</span>
+        <span class="sd-l">= 杯奶茶</span>
+      </div>
+      <div class="stat-db">
+        <span class="sd-icon">🍲</span>
+        <span class="sd-n">42</span>
+        <span class="sd-l">= 顿火锅</span>
+      </div>
+      <div class="stat-db">
+        <span class="sd-icon">🎯</span>
+        <span class="sd-n">87%</span>
+        <span class="sd-l">出勤率</span>
+      </div>
+      <div class="stat-db wide">
+        <div>
+          <span class="sd-icon">🏆</span>
+          <span class="sd-l" style="display:inline;margin-left:4px">本周排名 · 超过全国 67% 工友</span>
+        </div>
+        <div>
+          <span class="sd-n" style="font-size:14px">🔥 7 天连胜</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-day">
+        <span class="tl-d">周一</span>
+        <div class="tl-bar"><div class="tl-f" style="width:65%"></div></div>
+        <span class="tl-v">¥268</span>
+      </div>
+      <div class="tl-day">
+        <span class="tl-d">周二</span>
+        <div class="tl-bar"><div class="tl-f" style="width:78%"></div></div>
+        <span class="tl-v">¥302</span>
+      </div>
+      <div class="tl-day">
+        <span class="tl-d">周三</span>
+        <div class="tl-bar"><div class="tl-f" style="width:52%"></div></div>
+        <span class="tl-v">¥245</span>
+      </div>
+      <div class="tl-day today">
+        <span class="tl-d">周四</span>
+        <div class="tl-bar"><div class="tl-f" style="width:72%"></div></div>
+        <span class="tl-v">¥287</span>
+      </div>
+      <div class="tl-day">
+        <span class="tl-d">周五</span>
+        <div class="tl-bar" style="background:rgba(255,215,150,0.02)"><div class="tl-f" style="width:0%"></div></div>
+        <span class="tl-v" style="color:#3a2a1a">—</span>
+      </div>
+    </div>
+
+    <div class="cta-line">
+      <div class="cta">✨ 看得见的努力，才有成就感</div>
+      <div class="cta-sub">📱 网页打开即用 · 无需下载 · 数据都在本地</div>
+    </div>
+
+    <div class="hashtags">
+      <span>#打工人</span>
+      <span>#赎身进度条</span>
+      <span>#数据可视化</span>
+      <span>#存钱上瘾</span>
+      <span>#打工数据</span>
+      <span>#自我管理</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  🐱 赎身进度条 · Redemption Meter<br>
+  wood-nuture.github.io/redemption-meter
+</div>
+
+</div>
+</body>
+</html>

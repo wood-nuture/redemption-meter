@@ -3,179 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script src="theme-config.js">
-
-// ===== 趋势图 & 年度报告 =====
-function trackData(){
-  try{
-    var r=calc(),today=new Date().toISOString().slice(0,10);
-    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
-    var last=hist.length>0?hist[hist.length-1]:null;
-    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
-      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
-      if(hist.length>365)hist=hist.slice(-365);
-      localStorage.setItem("salaryHistory",JSON.stringify(hist));
-    }
-  }catch(e){}
-}
-function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
-function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
-function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
-function renderTrends(mode){
-  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
-  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
-  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
-  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
-  if(f.length<2)f=hist.slice(-30);
-  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
-  var avg=f.length>0?t/f.length:0;
-  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
-  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
-  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
-  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
-  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
-  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
-  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
-  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
-  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
-  f.forEach(function(h,i){
-    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
-    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
-    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
-  });
-  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
-  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
-  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
-  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
-  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
-  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
-}
-function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
-(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
-
-initTheme();
-</script>
-<script src="lang.js">
-initTheme();
-</script>
-<script src="theme-effects.js">
-
-// ===== 趋势图 & 年度报告 =====
-function trackData(){
-  try{
-    var r=calc(),today=new Date().toISOString().slice(0,10);
-    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
-    var last=hist.length>0?hist[hist.length-1]:null;
-    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
-      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
-      if(hist.length>365)hist=hist.slice(-365);
-      localStorage.setItem("salaryHistory",JSON.stringify(hist));
-    }
-  }catch(e){}
-}
-function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
-function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
-function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
-function renderTrends(mode){
-  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
-  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
-  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
-  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
-  if(f.length<2)f=hist.slice(-30);
-  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
-  var avg=f.length>0?t/f.length:0;
-  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
-  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
-  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
-  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
-  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
-  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
-  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
-  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
-  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
-  f.forEach(function(h,i){
-    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
-    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
-    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
-  });
-  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
-  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
-  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
-  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
-  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
-  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
-}
-function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
-(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
-
-initTheme();
-</script>
-<script src="theme-ui.js">
-
-// ===== 趋势图 & 年度报告 =====
-function trackData(){
-  try{
-    var r=calc(),today=new Date().toISOString().slice(0,10);
-    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
-    var last=hist.length>0?hist[hist.length-1]:null;
-    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
-      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
-      if(hist.length>365)hist=hist.slice(-365);
-      localStorage.setItem("salaryHistory",JSON.stringify(hist));
-    }
-  }catch(e){}
-}
-function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
-function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
-function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
-function renderTrends(mode){
-  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
-  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
-  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
-  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
-  if(f.length<2)f=hist.slice(-30);
-  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
-  var avg=f.length>0?t/f.length:0;
-  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
-  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
-  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
-  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
-  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
-  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
-  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
-  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
-  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
-  f.forEach(function(h,i){
-    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
-    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
-    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
-  });
-  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
-  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
-  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
-  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
-  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
-  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
-}
-function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
-(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
-
-initTheme();
-</script>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.svg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#f9d976">
 <title>🐱 赎身进度条</title>
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
@@ -413,7 +240,6 @@ select option{background:#2d1810;color:#fceabb}
 .gp-l:hover{border-color:var(--g2)}
 .gp-l.on{background:rgba(249,217,118,0.08);border-color:var(--g2);color:var(--g1)}
 .gp-l input{display:none}
-.gp-l.disabled{opacity:0.4;cursor:not-allowed}
 
 @media(max-width:530px){
   .cat{font-size:48px}.amount-num{font-size:42px}.amount-dec{font-size:17px}.aws{font-size:20px}
@@ -423,41 +249,6 @@ select option{background:#2d1810;color:#fceabb}
   .celeb-t{font-size:34px}.caishen-e{font-size:68px}.poop-title{font-size:17px}.poop-timer{font-size:26px}
   .report-card{padding:20px 16px}.report-stats{gap:6px}.report-item{padding:8px}
 }
-
-
-
-body.theme-night .cat::after{content:"🦉"}
-/* ===== 引导页 ===== */
-.obo{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0d0705,#1f1008 50%,#0d0705 100%);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
-.obo.show{display:flex}
-.obo-c{position:relative;width:400px;max-width:88vw;height:420px;max-height:70vh}
-.obo-s{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transform:translateX(60px);transition:all 0.45s cubic-bezier(.4,0,.2,1);pointer-events:none}
-.obo-s.on{opacity:1;transform:translateX(0);pointer-events:auto}
-.obo-s.off{opacity:0;transform:translateX(-60px)}
-.obo-e{font-size:64px;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(249,217,118,0.12))}
-.obo-h{font-size:20px;font-weight:700;color:var(--g1);margin-bottom:4px;letter-spacing:1px}
-.obo-p{font-size:13px;color:var(--tx2);line-height:1.7;max-width:320px;margin:0 auto}
-.obo-p s{color:var(--tx3);text-decoration:line-through}
-.obo-b{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;max-width:320px}
-.obo-b s{font-size:ext;padding:4px 10px;border:1px solid var(--bd);border-radius:8px;font-size:11px;color:var(--tx2);background:var(--cd)}
-.obo-d{display:flex;gap:8px;align-items:center;margin-top:16px}
-.obo-d s{width:7px;height:7px;border-radius:50%;background:var(--tx3);transition:all 0.3s}
-.obo-d s.a{width:22px;border-radius:4px;background:var(--g1);box-shadow:0 0 10px rgba(249,217,118,0.2)}
-.obo-f{margin-top:18px;display:flex;gap:12px;align-items:center}
-.obo-n{padding:10px 28px;border:none;border-radius:30px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;transition:0.25s}
-.obo-n:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(243,156,18,0.25)}
-.obo-skip{padding:8px 16px;border:1px solid var(--bd);border-radius:30px;background:transparent;color:var(--tx3);font-size:11px;cursor:pointer;font-family:inherit;transition:0.2s}
-.obo-skip:hover{color:var(--tx2);border-color:var(--tx2)}
-@media(max-width:500px){.obo-c{height:380px}.obo-e{font-size:48px}.obo-h{font-size:17px}.obo-p{font-size:12px}}
-
-
-.hl{display:flex;gap:10px;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;transition:0.2s}
-.hl:hover{background:var(--hv);border-color:var(--g2)}
-.hi{font-size:22px;min-width:30px;text-align:center}
-.hl div:last-child{flex:1}
-.hl b{display:block;font-size:12px;color:var(--g1);margin-bottom:2px}
-.hl span{font-size:11px;color:var(--tx2);line-height:1.4}
-
 </style>
 </head>
 <body>
@@ -483,12 +274,8 @@ body.theme-night .cat::after{content:"🦉"}
 
 <div class="top-bar">
   <button class="top-btn" id="reportBtn" onclick="showReport()" title="打工日报">📋</button>
-  <button class="top-btn" onclick="showTrends()" title="打工趋势">📊</button>
-  <button class="top-btn" onclick="toggleHelp()" title="说明">❓</button>
-  <button class="top-btn" id="langBtn" onclick="window.location.href='index-en.html'" title="English">🇺🇸</button>
   <button class="top-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
   <button class="top-btn" id="soundBtn" onclick="toggleSnd()">🔊</button>
-  <button class="top-btn" onclick="showProPopup()" title="Pro">💎</button>
   <button class="top-btn" onclick="openSet()">⚙️</button>
 </div>
 
@@ -504,7 +291,7 @@ body.theme-night .cat::after{content:"🦉"}
   </div>
 
   <div class="aw" id="aw">
-    <div><span class="aws" id="curSym">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
+    <div><span class="aws">¥</span><span class="amount-num" id="amountInt">0</span><span class="amount-dec" id="amountDec">.00000000</span></div>
     <div class="aft" id="aft">开始搬砖赚小钱钱~</div>
     <div class="goal-bar" id="goalBar" style="display:none">
       <div class="goal-h"><span class="l" id="goalL">🎯 目标</span><span class="r" id="goalR">0%</span></div>
@@ -526,20 +313,6 @@ body.theme-night .cat::after{content:"🦉"}
   <div class="att-b"><span class="att-l">📋</span><div class="att-t"><div class="att-f" id="attF" style="width:0%"></div></div><span class="att-n" id="attN">0/22</span></div>
 </div>
 
-<!-- 帮助弹窗 -->
-<div class="ov" id="helpOv">
-<div class="modal" style="width:380px">
-<div class="mh"><h2>💼 赎身进度条</h2><button class="mx" onclick="toggleHelp()">✕</button></div>
-<div class="hl"><div class="hi">⏱️</div><div><b>实时计薪</b><span>每分每秒看着钱涨，打工更有动力</span></div></div>
-<div class="hl"><div class="hi">🎨</div><div><b>9套皮肤</b><span>换一个心情搬砖，总有一款适合你</span></div></div>
-<div class="hl"><div class="hi">💩</div><div><b>带薪拉屎</b><span>让老板为你的放松时间买单</span></div></div>
-<div class="hl"><div class="hi">📋</div><div><b>打工日报</b><span>每天的努力都有数据记录下来</span></div></div>
-<div class="hl"><div class="hi">🎯</div><div><b>攒钱目标</b><span>奶茶 / 口红 / 一平米房，看着它们一步步实现</span></div></div>
-<div class="hl"><div class="hi">🐱</div><div><b>双击猫头</b><span>解锁全部 Pro 主题 ✨</span></div></div>
-<div class="hl"><div class="hi">📊</div><div><b>打工周报</b><span>每周回顾你的搬砖战绩</span></div></div>
-<div style="margin-top:14px;font-size:10px;color:var(--tx3);text-align:center;line-height:1.6">⚙️ 点击右上角齿轮设置你的工资和作息<br>📱 支持 PWA，可安装到手机桌面使用</div>
-</div></div>
-
 <!-- 设置弹窗 -->
 <div class="ov" id="setOv">
 <div class="modal">
@@ -550,8 +323,6 @@ body.theme-night .cat::after{content:"🦉"}
 <div class="fg"><label>工作日</label><div class="dc" id="dayCb"></div></div>
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
-<div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label style="display:flex;align-items:center;gap:4px">🎨 皮肤主题 <span id="proBadge" style="font-size:9px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;padding:1px 6px;border-radius:8px">🔒 Pro</span></label><div class="gp" id="themeList"></div><div class="spk-pr" id="themeStatus">当前: 默认经典</div></div>
-
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
 <div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
 </div></div>
@@ -564,12 +335,11 @@ let poop=false,poopStart=0,poopEarnAtStart=0,summaryAmt=0;
 let goalIdx=-1,goals=[],lastUnitCount=0;
 let funIdx=0,streak=0,moodData=[];
 
-const DAY=__("day_names");
+const DAY=['日','一','二','三','四','五','六'];
 let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
   try{
-    localStorage.setItem("salaryLang","zh");
     let r=localStorage.getItem('salarySet');if(r)Object.assign(S,JSON.parse(r));
     sndOn=localStorage.getItem('salarySnd')!=='false';
     dark=localStorage.getItem('salaryDrk')==='true';
@@ -618,9 +388,13 @@ function enterPoop(){if(poop)return;poop=true;poopStart=Date.now();const r=calc(
 function exitPoop(){if(!poop)return;const r=calc();summaryAmt=r.earn-poopEarnAtStart;if(summaryAmt<0)summaryAmt=0;poop=false;document.getElementById('poopOv').classList.remove('on');document.getElementById('summaryVal').textContent='¥ '+summaryAmt.toFixed(2);document.getElementById('summaryOv').classList.add('on')}
 function closeSummary(){document.getElementById('summaryOv').classList.remove('on');playCoin()}
 
-
 // ===== 目标系统 =====
-const GOAL_PRESETS=__("goal_presets").map(function(g,i){var p=[20,200,150,80,60,50,300,500,800,1500,3000,50000];return{n:g.n,a:p[i],u:g.u,ua:p[i]}});
+const GOAL_PRESETS=[
+  {n:'🧋 奶茶',a:20,u:'杯',ua:20},{n:'💄 一支口红',a:200,u:'支',ua:200},{n:'💅 美甲',a:150,u:'次',ua:150},
+  {n:'🌸 一束花',a:80,u:'束',ua:80},{n:'🎬 看电影',a:60,u:'场',ua:60},{n:'🍰 下午茶',a:50,u:'次',ua:50},
+  {n:'👗 一条裙子',a:300,u:'条',ua:300},{n:'🧴 护肤品',a:500,u:'套',ua:500},{n:'🎤 演唱会',a:800,u:'场',ua:800},
+  {n:'📸 写真',a:1500,u:'套',ua:1500},{n:'✈️ 短途旅行',a:3000,u:'次',ua:3000},{n:'🏠 一平米房',a:50000,u:'平米',ua:50000},
+];
 
 function getGoal(){
   if(goalIdx<0||goalIdx>=GOAL_PRESETS.length+goals.length)return null;
@@ -629,9 +403,20 @@ function getGoal(){
   return g&&g.a>0?g:null;
 }
 
-const FUN_LINES=__("fun_lines");
+const FUN_LINES=[
+  '恭喜，老板又帮你报销了今天的通勤费。','这杯奶茶，没有植脂末，全是你的血汗。',
+  '别小看这几块钱，这是你未来的「Fuck You Money」。','你赚的每一分钱，都是你未来说「不」的底气。',
+  '摸鱼赚的钱，最香。','老板的梦想是上市，你的梦想是老板给你涨工资。',
+  '赚钱的意义不是现在花，而是以后可以花得理直气壮。','今天忍住的消费，明天就是你的自由基金。',
+  '每一块钱都在投票你想要的生活。','打工人，打工魂，打工都是人上人。',
+  '你比昨天又多了一个拒绝的筹码。','存钱不是为了省钱，是为了攒底气。',
+];
 
-const DAILY_MSGS=__("daily_msgs");
+const DAILY_MSGS=[
+  '今天也是为自由积累筹码的一天 ✨','辛苦了，明天继续发光 🌟',
+  '你今天的劳动，已经兑换成了看得见的数字 📈','打工很累，但你在一点点变强大 💪',
+  '下班后的时间，才是你的人生 🌆','记住：你不是在打工，你是在买自己的未来 🎫',
+];
 
 function updGoal(earn){
   const g=getGoal();const gb=document.getElementById('goalBar');
@@ -644,7 +429,7 @@ function updGoal(earn){
   const unitAmt=g.ua||g.a;const units=Math.floor(earn/unitAmt);
   document.getElementById('goalText').textContent=`已够 ${units.toFixed(1)} ${g.u}`;
   if(units>lastUnitCount){const add=units-lastUnitCount;const ba=document.getElementById('brickArea');for(let i=0;i<Math.min(add,10);i++){const el=document.createElement('span');el.className='brick-icon';el.textContent='🧱';ba.appendChild(el);setTimeout(()=>el.remove(),2000)}lastUnitCount=units;if(add>0&&g.ua){playHua();burst(5)}}
-  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+' '+__('celeb_earn');document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
+  if(earn>=g.a&&earn-g.a<2){if(!updGoal._done){updGoal._done=true;playFire();setTimeout(()=>{const b=document.createElement('div');b.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:700;color:var(--g1);z-index:12;pointer-events:none;animation:celebP 0.6s ease-out forwards;text-shadow:0 0 20px rgba(249,217,118,0.3)';b.textContent='🎉 '+g.n+'钱已入账！';document.body.appendChild(b);setTimeout(()=>b.remove(),2000)},200)}}
   // 加速引导（大目标进度慢时）
   const ga=document.getElementById('goalAcc');
   if(g.a>=30000&&pct<5){ga.style.display='block';ga.textContent='💡 靠工资攒够需要很久，想加速吗？'}
@@ -653,9 +438,8 @@ function updGoal(earn){
 }
 
 function updFunLine(){
-  var qArr=window._themeQuotes&&window._themeQuotes.length>0?window._themeQuotes:FUN_LINES;
-  funIdx=(funIdx+1)%qArr.length;
-  document.getElementById('funLine').textContent=qArr[funIdx];
+  funIdx=(funIdx+1)%FUN_LINES.length;
+  document.getElementById('funLine').textContent=FUN_LINES[funIdx];
 }
 
 // ===== 工友圈（匿名统计） =====
@@ -666,7 +450,7 @@ function updWorkerLine(){
   const mins=document.querySelectorAll('.sr .sc').length;
   const lines=[
     `👥 全国 ${workers} 位工友正在搬砖`,
-    `📊 今日全国平均时薪 ${avgSalary}`,
+    `📊 今日全国平均时薪 ¥${avgSalary}`,
     `🏢 你的工位附近有 ${Math.floor(Math.random()*20+5)} 位工友在摸鱼`,
   ];
   wl.textContent=lines[Math.floor(Math.random()*lines.length)];
@@ -798,8 +582,13 @@ function calc(){
 function fmt(m){if(m<=0)return'00:00:00';const ts=Math.floor(m/1000);return`${String(Math.floor(ts/3600)).padStart(2,'0')}:${String(Math.floor((ts%3600)/60)).padStart(2,'0')}:${String(ts%60).padStart(2,'0')}`}
 
 // ===== 语录 =====
-const QT={wk:__("qt_working"),lunch:__("qt_lunch"),before:__("qt_before"),after:__("qt_after"),rest:__("qt_rest"),slack:__("qt_slack")};
-const POOP_TIPS=__("poop_tips");
+const QT={wk:['一分耕耘一分收获，今天的汗水是明天的奶茶 🌾','每分每秒都在增值，你值得更好的生活 📈','摸鱼是为了更好地搬砖，搬砖是为了早日不搬砖 😎','加油，打工人！你的努力，¥¥¥在替你说话 💪','存钱罐越来越重了，离梦想又近了一步 🪙','今天也在为更好的自己打工 ✨','每一块钱都是自由的选票，积累它，兑换未来 🌟','你认真工作的样子，真的很耀眼 ✨','赚钱的意义不是为了现在，而是为了以后可以说"不" 💎','今天忍住的奶茶，明天可能就是一杯自由 ☕','搬的每一块砖，都在构建你想要的生活 🏗️','累的时候看看数字，它不会骗你 ❤️','你比自己想象的更值钱 —— 看，数字在证明 💰','每一分钟的坚持，都在为未来的选择权充值 ⏳','工作是为了生活，但生活不是为了工作 🌈'],
+lunch:['🍱 好好吃饭，下午继续赚钱！','🍚 吃饱了才有力气搬砖~','☕ 午休时间，让大脑充个电','🥟 今天的午饭格外香，因为是劳动换来的'],
+before:['⏰ 养精蓄锐，准备开赚！','☕ 新的一天，新的¥¥¥在等你','🌅 每一天都是赚钱的好日子'],
+after:['🎉 下班快乐！今天也是丰收的一天','🌇 夕阳为你加冕，明天继续加油','🍻 去享受属于你的时间吧，你今天很棒'],
+rest:['🎉 休息是为了走更远的路','☀️ 周末愉快，钱的事明天再说','🌴 享受慢生活，你值得拥有'],
+slack:['😴 摸鱼也是一种生活智慧','🐟 鱼都摸了，快乐就完事了','😌 适当的休息，是为了更好地出发','🛋️ 摸鱼使我快乐，快乐使我更有效率'],};
+const POOP_TIPS=['别刷手机，专心致志，对钱尊重。','慢慢来，老板正在为你买单。','每一秒的放空，都是对资本的温柔反抗。','蹲自己的坑，让老板的会等等。','带薪拉屎，是打工人最优雅的叛逆。','时间在走，钱在涨，你在爽。','这不是摸鱼，这是战略性休整。','你的每一次深呼吸，都在消耗公司的氧气。'];
 let qIdx={},qKey='';
 
 // ===== UI 更新 =====
@@ -808,11 +597,11 @@ function updUI(){
   if(!slack||poop){const ip=Math.floor(earn),dp=(earn-ip).toFixed(8).slice(2);document.getElementById('amountInt').textContent=ip.toLocaleString();document.getElementById('amountDec').textContent='.'+dp}
   const ft=document.getElementById('aft');
   if(poop){}else if(slack){const k='slack';if(k!==qKey){qKey=k;if(!qIdx[k])qIdx[k]=0;qIdx[k]=(qIdx[k]+1)%QT[k].length;ft.textContent=QT[k][qIdx[k]]}}
-  else if(st==='before'){if('before'!==qKey){qKey='before';qIdx.before=((qIdx.before||0)+1)%QT.before.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.before&&tsq.before.length>0&&curTheme!=='default'){ft.textContent=tsq.before[qIdx.before%tsq.before.length]}else{ft.textContent=QT.before[qIdx.before]}}}
-  else if(st==='rest'){if('rest'!==qKey){qKey='rest';qIdx.rest=((qIdx.rest||0)+1)%QT.rest.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.rest&&tsq.rest.length>0&&curTheme!=='default'){ft.textContent=tsq.rest[qIdx.rest%tsq.rest.length]}else{ft.textContent=QT.rest[qIdx.rest]}}}
-  else if(st==='lunch'){if('lunch'!==qKey){qKey='lunch';qIdx.lunch=((qIdx.lunch||0)+1)%QT.lunch.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.lunch&&tsq.lunch.length>0&&curTheme!=='default'){ft.textContent=tsq.lunch[qIdx.lunch%tsq.lunch.length]}else{ft.textContent=QT.lunch[qIdx.lunch]}}}
-  else if(st==='after'){if('after'!==qKey){qKey='after';qIdx.after=((qIdx.after||0)+1)%QT.after.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.after&&tsq.after.length>0&&curTheme!=='default'){ft.textContent=tsq.after[qIdx.after%tsq.after.length]}else{ft.textContent=QT.after[qIdx.after]}}}
-  else{if('wk'!==qKey){qKey='wk';qIdx.wk=((qIdx.wk||0)+1)%QT.wk.length;var tsq=window._themeStatusQuotes;if(tsq&&tsq.wk&&tsq.wk.length>0&&curTheme!=='default'){ft.textContent=tsq.wk[qIdx.wk%tsq.wk.length]}else{ft.textContent=QT.wk[qIdx.wk]}}}
+  else if(st==='before'){if('before'!==qKey){qKey='before';qIdx.before=((qIdx.before||0)+1)%QT.before.length;ft.textContent=QT.before[qIdx.before]}}
+  else if(st==='rest'){if('rest'!==qKey){qKey='rest';qIdx.rest=((qIdx.rest||0)+1)%QT.rest.length;ft.textContent=QT.rest[qIdx.rest]}}
+  else if(st==='lunch'){if('lunch'!==qKey){qKey='lunch';qIdx.lunch=((qIdx.lunch||0)+1)%QT.lunch.length;ft.textContent=QT.lunch[qIdx.lunch]}}
+  else if(st==='after'){if('after'!==qKey){qKey='after';qIdx.after=((qIdx.after||0)+1)%QT.after.length;ft.textContent=QT.after[qIdx.after]}}
+  else{if('wk'!==qKey){qKey='wk';qIdx.wk=((qIdx.wk||0)+1)%QT.wk.length;ft.textContent=QT.wk[qIdx.wk]}}
   if(!updUI._funT||updUI._funT+30<Date.now()/1000){updUI._funT=Date.now()/1000;updFunLine()}
   const cd=document.getElementById('cd'),cl=document.getElementById('cdL');
   if(poop){const el=Math.floor((Date.now()-poopStart)/1000);const m=Math.floor(el/60),s=el%60;document.getElementById('poopTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('poopEarn').textContent=(earn-poopEarnAtStart).toFixed(2);if(!updUI._pT||updUI._pT+8<Date.now()/1000){updUI._pT=Date.now()/1000;document.getElementById('poopTips').textContent=POOP_TIPS[Math.floor(Math.random()*POOP_TIPS.length)]}cd.textContent='🚽 放松中';cd.className='cd p';cl.textContent='⏳ 带薪放松'}
@@ -823,13 +612,13 @@ function updUI(){
   else if(cdMode===0){cd.textContent=fmt(rem);cd.className='cd';cl.textContent='⏳ 距离下班'}
   else{cd.textContent=fmt(wrk);cd.className='cd';cl.textContent='🕐 已上班'}
   const sb=document.getElementById('sb');
-  if(poop){sb.textContent=__('sb_poop');sb.className='sb sl'}
-  else if(slack){sb.textContent=__('sb_slack');sb.className='sb sl'}
-  else if(!w){sb.textContent=__('sb_rest');sb.className='sb rs'}
-  else if(st==='lunch'){sb.textContent=__('sb_lunch');sb.className='sb rs'}
-  else if(st==='before'){sb.textContent=__('sb_before');sb.className='sb rs'}
-  else if(st==='after'){sb.textContent=__('sb_after');sb.className='sb rs'}
-  else{sb.textContent=__('sb_working');sb.className='sb wk'}
+  if(poop){sb.textContent='● 带薪放松中';sb.className='sb sl'}
+  else if(slack){sb.textContent='● 摸鱼中';sb.className='sb sl'}
+  else if(!w){sb.textContent='● 休息日';sb.className='sb rs'}
+  else if(st==='lunch'){sb.textContent='● 午休中';sb.className='sb rs'}
+  else if(st==='before'){sb.textContent='● 未开工';sb.className='sb rs'}
+  else if(st==='after'){sb.textContent='● 已下班 🎉';sb.className='sb rs'}
+  else{sb.textContent='● 搬砖中';sb.className='sb wk'}
   document.getElementById('svDaily').textContent=daily>0?daily.toFixed(2):'--';
   document.getElementById('svPS').textContent=pms>0?(pms*1000).toFixed(4):'--';
   if(daily>0){const t=new Date(),ms3=new Date(t.getFullYear(),t.getMonth(),1);let wdp=0;for(let d2=new Date(ms3);d2<t;d2.setDate(d2.getDate()+1))if(S.wd.includes(d2.getDay()))wdp++;document.getElementById('svMonth').textContent=(wdp*daily).toFixed(2)}else document.getElementById('svMonth').textContent='--';
@@ -851,7 +640,7 @@ function updUI(){
 
 // ===== 金币爆发 =====
 function burst(c){
-  const box=document.getElementById('burstBox');var em=window._burstEm||['🪙','💰','✨','🌟','💫','🤑','💎','👛'];
+  const box=document.getElementById('burstBox'),em=['🪙','💰','✨','🌟','💫','🤑','💎','👛'];
   for(let i=0;i<c;i++){
     const el=document.createElement('div');el.className='burst-p';
     el.textContent=em[Math.floor(Math.random()*em.length)];
@@ -867,8 +656,8 @@ function burst(c){
 // ===== 下班庆祝 =====
 function offWork(){
   celebAct=true;const ov=document.getElementById('celeb');ov.innerHTML='';ov.className='celeb show';
-  const t=document.createElement('div');t.className='celeb-t';t.textContent=__('celeb_title');ov.appendChild(t);
-  const s=document.createElement('div');s.className='celeb-s';s.textContent=__('celeb_earn')+formatMoney(calc().daily);ov.appendChild(s);
+  const t=document.createElement('div');t.className='celeb-t';t.textContent='🎉 下班啦！🎉';ov.appendChild(t);
+  const s=document.createElement('div');s.className='celeb-s';s.textContent='今天赚了 ¥'+calc().daily.toFixed(2);ov.appendChild(s);
   const cs=['#f9d976','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff','#5f27cd','#f368e0','#ffd1dc','#69f0ae','#ffab40'];
   for(let i=0;i<80;i++){const c=document.createElement('div');c.className='celeb-c';c.style.left=Math.random()*100+'%';c.style.top='-5px';c.style.background=cs[Math.floor(Math.random()*cs.length)];c.style.width=(3+Math.random()*8)+'px';c.style.height=(3+Math.random()*8)+'px';c.style.setProperty('--dur',(2+Math.random()*3)+'s');c.style.animationDelay=(Math.random()*2.5)+'s';c.style.borderRadius=['50%','2px','0'][Math.floor(Math.random()*3)];ov.appendChild(c);setTimeout(()=>c.remove(),6000)}
   playOff();for(let i=0;i<6;i++)setTimeout(()=>burst(6+Math.floor(Math.random()*4)),i*250);
@@ -879,7 +668,7 @@ function offWork(){
 function showCai(){
   const ov=document.getElementById('caishen');ov.innerHTML='';ov.className='caishen show';
   const e=document.createElement('div');e.className='caishen-e';e.textContent='🧧';ov.appendChild(e);
-  const t=document.createElement('div');t.className='caishen-t';t.innerHTML=__('caishen_title');ov.appendChild(t);
+  const t=document.createElement('div');t.className='caishen-t';t.innerHTML='🎊 恭喜满勤！财神来贺 🎊';ov.appendChild(t);
   const gs=['🧧','🪙','💰','✨','💎'];
   for(let i=0;i<50;i++){const g=document.createElement('div');g.className='caishen-g';g.textContent=gs[Math.floor(Math.random()*gs.length)];g.style.left=Math.random()*100+'%';g.style.fontSize=(12+Math.random()*18)+'px';g.style.animationDuration=(3+Math.random()*4)+'s';g.style.animationDelay=(Math.random()*3)+'s';ov.appendChild(g);setTimeout(()=>g.remove(),8000)}
   playCai();for(let i=0;i<8;i++)setTimeout(()=>burst(10+Math.floor(Math.random()*6)),i*400);
@@ -894,7 +683,7 @@ function openSet(){
   const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent='当前: '+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent='当前: '+SPK[spk].n+' — '+SPK[spk].d;
   const gp=document.getElementById('goalPresets');gp.innerHTML='';GOAL_PRESETS.forEach((p,i)=>{const l=document.createElement('label');l.className='gp-l'+(goalIdx===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='goal';ip.checked=goalIdx===i;ip.addEventListener('change',()=>{document.querySelectorAll('.gp-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');goalIdx=i;document.getElementById('gName').value='';document.getElementById('gAmt').value='';document.getElementById('gUnit').value='';document.getElementById('gUnitAmt').value=''});l.appendChild(ip);l.appendChild(document.createTextNode(p.n));gp.appendChild(l)});
   if(goalIdx>=GOAL_PRESETS.length&&goals.length>0){const g=goals[goalIdx-GOAL_PRESETS.length];if(g){document.getElementById('gName').value=g.n||'';document.getElementById('gAmt').value=g.a||'';document.getElementById('gUnit').value=g.u||'';document.getElementById('gUnitAmt').value=g.ua||''}}
-  document.getElementById('setOv').classList.add('show');if(document.getElementById('themeList'))renderThemes();
+  document.getElementById('setOv').classList.add('show')
 }
 function closeSet(){document.getElementById('setOv').classList.remove('show')}
 function saveSet(){
@@ -911,8 +700,8 @@ function saveSet(){
 function tapCat(){const c=document.getElementById('cat');c.className='cat tap';setTimeout(()=>{c.className='cat'},350);burst(8);playCoin()}
 
 // ===== 背景 =====
-function mkIngots(){const c=document.getElementById('ingotRain');var is=window._decorEm||['🪙','💰','🥇','✨'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
-function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<40;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
+function mkIngots(){const c=document.getElementById('ingotRain'),is=['🪙','💰','🥇','✨'];for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
+function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<22;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
 
 // ===== 启动 =====
 mkIngots();mkStars();checkStreak();
@@ -921,152 +710,50 @@ updSnd();updUI();
 setInterval(updUI,50);
 setInterval(()=>{lastInt=-1},60000);
 
-/* === i18n System (appended - does not modify any existing code) === */
-
-
-// ===== Pro 弹窗 =====
-function showProPopup(){
-  var ex=document.getElementById("proOv");
-  if(ex){ex.style.display="flex";return;}
-  var isEn=localStorage.getItem("salaryLang")==="en";
-  var btn=__("pro_btn");
-  var ft1=__("pro_ft1");
-  var ft2=__("pro_ft2");
-  var ft3=__("pro_ft3");
-  var ft4=__("pro_ft4");
-  var ft5=__("pro_ft5");
-  var price=__("pro_price");
-  var year=__("pro_year");
-  var later=__("pro_later");
-  var coming=__("pro_coming");
-  var h="<div class=ov id=proOv style=display:none><div class=modal style=max-width:380px;text-align:center>"+
-    "<div class=mh style=justify-content:center><h2>"+btn+"</h2></div>"+
-    "<p style=color:var(--tx2);font-size:13px;margin-bottom:14px;line-height:1.8>"+
-    ft1+"<br>"+ft2+"<br>"+ft3+"<br>"+ft4+"<br>"+ft5+"</p>"+
-    "<div style=background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px>"+
-    "<div style=font-size:24px;font-weight:700;color:var(--g1);margin-bottom:2px>$4.99<span style=font-size:14px;font-weight:400;color:var(--tx3)>"+price+"</span></div>"+
-    "<div style=font-size:11px;color:var(--tx3)>"+year+"</div></div>"+
-    "<button class=btn-p style=width:100%;padding:10px;border:none;border-radius:10px;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;font-weight:600 onclick=alert('"+coming+"')>"+btn+"</button>"+
-    "<div style=margin-top:8px><button class=btn-s style=padding:7px 18px;border:1px solid var(--bd);border-radius:10px;font-size:12px;cursor:pointer;background:var(--cd);color:var(--tx2);font-family:inherit onclick=document.getElementById('proOv').style.display='none'>"+later+"</button></div></div></div>";
-  document.body.insertAdjacentHTML("beforeend",h);
-  document.getElementById("proOv").style.display="flex";
-}
-
-
-
-
-
-// ===== 趋势图 & 年度报告 =====
-function trackData(){
-  try{
-    var r=calc(),today=new Date().toISOString().slice(0,10);
-    var hist=JSON.parse(localStorage.getItem("salaryHistory")||"[]");
-    var last=hist.length>0?hist[hist.length-1]:null;
-    if(r.st==="after"&&(!last||last.d!==today)&&r.earn>0){
-      hist.push({d:today,e:Math.round(r.earn*100)/100,h:Math.round(r.wrk/3600000*10)/10});
-      if(hist.length>365)hist=hist.slice(-365);
-      localStorage.setItem("salaryHistory",JSON.stringify(hist));
-    }
-  }catch(e){}
-}
-function getHist(){try{return JSON.parse(localStorage.getItem("salaryHistory")||"[]")}catch(e){return[]}}
-function showTrends(m){document.getElementById("trendOv").classList.add("show");renderTrends(m||"month")}
-function closeTrends(){document.getElementById("trendOv").classList.remove("show")}
-function renderTrends(mode){
-  var hist=getHist(),isEn=(localStorage.getItem("salaryLang")==="en");
-  var L={t:__("trend_total"),a:__("trend_avg"),d:__("trend_days"),b:__("trend_best"),mo:__("trend_month"),yr:__("trend_year"),n:__("trend_empty")};
-  if(hist.length===0){document.getElementById("trendBody").innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">'+L.n+'</div>';document.getElementById("trendStats").innerHTML="";return}
-  var n=new Date(),y=n.getFullYear(),m=n.getMonth();
-  var f=mode==="month"?hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y&&d.getMonth()===m}):hist.filter(function(h){var d=new Date(h.d);return d.getFullYear()===y});
-  if(f.length<2)f=hist.slice(-30);
-  var t=0,best=0,bd="";f.forEach(function(h){t+=h.e;if(h.e>best){best=h.e;bd=h.d}});
-  var avg=f.length>0?t/f.length:0;
-  document.getElementById("trendStats").innerHTML='<s><b>¥'+t.toFixed(0)+'</b><s>'+L.t+'</s></s><s><b>¥'+avg.toFixed(0)+'</b><s>'+L.a+'</s></s><s><b>'+f.length+'</b><s>'+L.d+'</s></s>';
-  var c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
-  var W=c.parentElement.clientWidth-4,H=140,pad={t:12,b:18,l:36,r:8};
-  c.width=W*2;c.height=H*2;c.style.width=W+"px";c.style.height=H+"px";ctx.scale(2,2);
-  var bw=Math.max(3,Math.min(14,(W-pad.l-pad.r)/f.length-2)),mv=Math.max(best,1);
-  ctx.fillStyle="rgba(255,215,150,0.03)";ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="rgba(255,215,150,0.06)";ctx.lineWidth=0.5;
-  for(var i=0;i<=4;i++){var gy=pad.t+(H-pad.t-pad.b)*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l-2,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke()}
-  var g=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
-  g.addColorStop(0,"rgba(249,217,118,0.85)");g.addColorStop(0.5,"rgba(243,156,18,0.65)");g.addColorStop(1,"rgba(230,126,34,0.2)");
-  f.forEach(function(h,i){
-    var bh=(h.e/mv)*(H-pad.t-pad.b),x=pad.l+i*((W-pad.l-pad.r)/f.length),y=H-pad.b-bh;
-    ctx.fillStyle=g;ctx.beginPath();roundRect2(ctx,x,y,bw,bh,2);ctx.fill();
-    if(h.d===bd){ctx.fillStyle="rgba(255,215,0,0.2)";ctx.beginPath();roundRect2(ctx,x-1,y-1,bw+2,bh+2,3);ctx.fill()}
-  });
-  var ah=(avg/mv)*(H-pad.t-pad.b),ay=H-pad.b-ah;
-  ctx.strokeStyle="rgba(255,100,100,0.35)";ctx.lineWidth=1;ctx.setLineDash([3,3]);
-  ctx.beginPath();ctx.moveTo(pad.l,ay);ctx.lineTo(W-pad.r,ay);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="rgba(255,100,100,0.4)";ctx.font="9px sans-serif";ctx.fillText(L.a+" "+currencySymbol()+avg.toFixed(0),W-pad.r-52,ay-3);
-  ctx.fillStyle="rgba(255,215,150,0.25)";ctx.font="8px sans-serif";ctx.textAlign="center";
-  f.forEach(function(h,i){if(i%5===0||i===f.length-1){var x2=pad.l+i*((W-pad.l-pad.r)/f.length)+bw/2;var p=h.d.split("-");ctx.fillText(p[1]+"/"+p[2],x2,H-2)}});
-  document.getElementById("trendTabs").innerHTML='<button class="'+(mode==="month"?"on":"")+'" onclick="renderTrends(\'month\')">'+L.mo+'</button><button class="'+(mode==="year"?"on":"")+'" onclick="renderTrends(\'year\')">'+L.yr+'</button>';
-}
-function roundRect2(c,x,y,w,h,r){if(r>w/2)r=w/2;if(r>h/2)r=h/2;c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
-(function(){setInterval(function(){try{trackData()}catch(e){}},15000)})();
-
-initTheme();
-
-// ===== PWA Service Worker =====
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js');
-  });
-}
-
-</script>
-<div class="obo" id="oboOv">
-<div class="obo-c" id="oboC"></div>
-<div class="obo-d" id="oboD"></div>
-<div class="obo-f"><button class="obo-n" id="oboNext">下一步 →</button><button class="obo-skip" id="oboSKip" onclick="skipObo()">跳过</button></div>
+<!-- ===== 使用说明 ===== -->
+<div class="ov" id="helpOv">
+<div class="modal" style="max-width:440px">
+<div class="mh"><h2>📖 使用说明</h2><button class="mx" onclick="closeHelp()">✕</button></div>
+<div style="font-size:12px;color:var(--tx2);line-height:2;margin-bottom:8px">
+<b>🐱 点击招财猫</b> — 触发金币爆发，好运加倍<br>
+<b>⏱ 点击倒计时</b> — 切换「距下班」/「已上班」<br>
+<b>😴 摸鱼按钮</b> — 暂停计薪，摸鱼更安心<br>
+<b>🚽 带薪放松</b> — 独立卫生间计时器，躺着赚钱<br>
+<b>⚙️ 设置</b> — 月薪、上下班时间、午休、工作日、语音包、赚钱目标<br>
+<b>🌙 深色模式</b> — 暖金⇄暗紫，摸鱼不刺眼<br>
+<b>🔊 音效开关</b> — 4套语音包可选<br>
+<b>📋 打工日报</b> — 每日自动生成，支持截图分享<br>
+<b>🎭 下班心情</b> — 记录每日心情，月度统计<br>
+<b>🔥 连续打卡</b> — 满7天解锁「搬砖王者」徽章<br>
+<b>🎯 赚钱目标</b> — 预设12项目标+自定义，量化进度<br>
+<b>💰 每赚1元</b> — 自动金币飞溅+音效提示<br>
+<b>🏁 下班庆祝</b> — 彩纸+金币雨+过关音效<br>
+<b>🧧 满勤彩蛋</b> — 财神降临送祝福<br>
+<b>👥 工友圈</b> — 全国打工人匿名在线统计<br>
 </div>
-<script>
-var OBO_DATA=__("obo"),oboI=0,oboOk=false;
-
-function renderObo(i){
-  var d=OBO_DATA[i],c=document.getElementById("oboC"),dt=document.getElementById("oboD");
-  c.innerHTML="";
-  var s=document.createElement("div");s.className="obo-s on";
-  s.innerHTML='<div class="obo-e">'+d.e+'</div><div class="obo-h">'+d.h+'</div><div class="obo-p">'+d.p+'</div>'+(d.t?'':'');
-  c.appendChild(s);
-  dt.innerHTML="";for(var j=0;j<OBO_DATA.length;j++){var b=document.createElement("s");b.className=j===i?"a":"";dt.appendChild(b)}
-  var nb=document.getElementById("oboNext");nb.textContent=d.t||"下一步 →";nb.onclick=function(){nextObo()};
-  document.getElementById("oboSKip").style.display=i<OBO_DATA.length-1?"inline-block":"none";
-}
-
-function nextObo(){
-  if(oboI<OBO_DATA.length-1){oboI++;renderObo(oboI)}
-  else{skipObo()}
-}
-
-function skipObo(){
-  document.getElementById("oboOv").classList.remove("show");
-  localStorage.setItem("salaryObo","1");
-  if(!document.querySelector(".obo-c .obo-s")){location.reload()}
-}
-
-function toggleHelp(){
-  if(!localStorage.getItem("salaryObo")){document.getElementById("oboOv").classList.add("show");renderObo(0)}
-  else{document.getElementById("oboOv").classList.toggle("show");if(document.getElementById("oboOv").classList.contains("show"))renderObo(0)}
-}
-
-// 首次访问自动弹出
-document.addEventListener("DOMContentLoaded",function(){
-  if(!localStorage.getItem("salaryObo")){setTimeout(function(){document.getElementById("oboOv").classList.add("show");renderObo(0)},300)}
-});
-</script>
-
-<!-- 趋势报告 -->
-<div class="ov" id="trendOv">
-<div class="modal" style="width:420px">
-<div class="mh"><h2>📊 打工趋势</h2><button class="mx" onclick="closeTrends()">✕</button></div>
-<div class="tt" id="trendTabs"></div>
-<div class="tg" id="trendStats"></div>
-<div class="tc"><canvas id="trendCanvas" height="140"></canvas></div>
-<div id="trendBody"></div>
+<div style="background:rgba(249,217,118,0.04);border:1px solid rgba(249,217,118,0.08);border-radius:12px;padding:10px;margin-bottom:4px;font-size:11px;color:var(--tx3);line-height:1.8;text-align:center">
+💡 所有数据保存在浏览器本地，关闭不丢失<br>
+📱 手机电脑通用，打开即用，无需下载
+</div>
 </div></div>
 
+<script>
+// ===== 帮助/使用说明 =====
+function openHelp(){document.getElementById('helpOv').classList.add('show')}
+function closeHelp(){document.getElementById('helpOv').classList.remove('show')}
+
+// Add help button to top bar
+(function(){
+  var tb = document.querySelector(".top-bar");
+  if(tb){
+    var btn = document.createElement("button");
+    btn.className = "top-btn";
+    btn.textContent = "❓";
+    btn.title = "使用说明";
+    btn.onclick = openHelp;
+    tb.insertBefore(btn, tb.firstChild);
+  }
+})();
+</script>
 </body>
 </html>
