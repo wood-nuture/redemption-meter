@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>🐱 赎身进度条</title>
+<title>🐱 分秒成金</title>
 <style>
 :root{--g1:#f9d976;--g2:#f39c12;--g3:#e67e22;--bg:linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%);--tx:#fceabb;--tx2:#c9a96e;--tx3:rgba(201,169,110,0.4);--cd:rgba(255,215,150,0.06);--bd:rgba(255,215,150,0.15);--hv:rgba(255,215,150,0.12);--sh:rgba(0,0,0,0.4);--gr:#81c784;--or:#ffb74d;--radius:20px}
 body.dark{--bg:linear-gradient(135deg,#050508,#0d0d1a 50%,#050510 100%);--tx:#c8c8d4;--tx2:#7a7a8a;--tx3:rgba(120,120,140,0.35);--cd:rgba(255,255,255,0.02);--bd:rgba(255,255,255,0.06);--hv:rgba(255,255,255,0.04);--sh:rgba(0,0,0,0.6);--g1:#b8974a;--g2:#a07830;--g3:#8a6420;--gr:#5a8a5c;--or:#b89440}
@@ -320,13 +320,35 @@ select option{background:#2d1810;color:#fceabb}
 <div class="fg"><label>月薪（税前）</label><input type="number" id="sSal" min="0" step="100"></div>
 <div class="fr"><div class="fg"><label>上班</label><div class="ti"><input type="number" id="sSH" min="0" max="23"><span class="co">:</span><input type="number" id="sSM" min="0" max="59"></div></div><div class="fg"><label>下班</label><div class="ti"><input type="number" id="sEH" min="0" max="23"><span class="co">:</span><input type="number" id="sEM" min="0" max="59"></div></div></div>
 <div class="fg"><label>午休（小时）</label><div class="ti"><input type="number" id="sLH" min="0" max="3" value="1"></div><div class="h">午休金额暂停增长</div></div>
+<div class="fg"><label>午休开始时间</label><div class="ti"><input type="time" id="sLS" step="300"></div><div class="h">留空 = 自动放在工作时长正中（旧行为）</div></div>
 <div class="fg"><label>工作日</label><div class="dc" id="dayCb"></div></div>
 <div class="fg"><label>月计薪天数</label><input type="number" id="sWD" min="1" max="31"><div class="h">日薪 = 月薪 ÷ 计薪天数</div></div>
 <div class="fg"><label>🎵 语音包</label><div class="spk-o" id="spkO"></div><div class="spk-pr" id="spkPr">当前: 马里奥 1-UP</div></div>
 <div class="fg" style="margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)"><label>🎯 赚钱目标</label><div class="gp" id="goalPresets"></div><div class="fr" style="margin-top:4px"><div class="fg"><label>自定义名称</label><input type="text" id="gName" placeholder="例: 做美甲"></div><div class="fg"><label>目标金额</label><input type="number" id="gAmt" min="0" step="1" placeholder="例: 200"></div></div><div class="fr"><div class="fg"><label>换算单位</label><input type="text" id="gUnit" placeholder="例: 次美甲"></div><div class="fg"><label>每单位金额</label><input type="number" id="gUnitAmt" min="0" step="0.1" placeholder="例: 150"></div></div></div>
-<div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="saveSet()">✓ 保存</button></div>
+<div class="mf"><button class="btn btn-s" onclick="closeSet()">取消</button><button class="btn btn-p" onclick="try{saveSet()}catch(e){if(window.__dbgErr)window.__dbgErr(e,'保存设置')}">✓ 保存</button></div>
 </div></div>
 
+<script>
+/* 若浏览器禁止 file:// 使用 localStorage，则降级到内存，避免每次读写都抛异常 */
+(function () {
+  var safe = false;
+  try { window.localStorage.setItem('__probe__', '1'); window.localStorage.removeItem('__probe__'); safe = true; } catch (e) { safe = false; }
+  if (safe) return;
+  var mem = {};
+  var api = {
+    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, String(k)) ? mem[String(k)] : null; },
+    setItem: function (k, v) { mem[String(k)] = String(v); },
+    removeItem: function (k) { delete mem[String(k)]; },
+    clear: function () { mem = {}; },
+    key: function (i) { return Object.keys(mem)[i] || null; }
+  };
+  Object.defineProperty(api, 'length', { get: function () { return Object.keys(mem).length; } });
+  try {
+    Object.defineProperty(window, 'localStorage', { configurable: true, get: function () { return api; } });
+    window.__LS_FALLBACK__ = true;
+  } catch (e) {}
+})();
+</script>
 <script>
 // ===== 初始化 =====
 let AC=null,sndOn=true,dark=false,cdMode=0,slack=false,spk=0;
@@ -336,7 +358,7 @@ let goalIdx=-1,goals=[],lastUnitCount=0;
 let funIdx=0,streak=0,moodData=[];
 
 const DAY=['日','一','二','三','四','五','六'];
-let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,wd:[1,2,3,4,5],mwd:22};
+let S={salary:10000,sH:9,sM:0,eH:18,eM:0,lH:1,lS:null,wd:[1,2,3,4,5],mwd:22};
 
 function load(){
   try{
@@ -381,7 +403,7 @@ function toggleSnd(){sndOn=!sndOn;localStorage.setItem('salarySnd',sndOn);updSnd
 function updSnd(){const b=document.getElementById('soundBtn');b.textContent=sndOn?'🔊':'🔇';b.className='top-btn'+(sndOn?'':' so')}
 function toggleDark(){dark=!dark;localStorage.setItem('salaryDrk',dark);document.body.classList.toggle('dark',dark);const b=document.getElementById('darkBtn');b.textContent=dark?'☀️':'🌙';b.className='top-btn'+(dark?' do':'')}
 function toggleCD(){cdMode=cdMode?0:1;localStorage.setItem('salaryCD',cdMode)}
-function toggleSlack(){slack=!slack;const b=document.getElementById('slackBtn');b.textContent=slack?'😴 摸鱼中':'😴 摸鱼';b.classList.toggle('on',slack)}
+function toggleSlack(){slack=!slack;const b=document.getElementById('slackBtn')||document.querySelector('.slack-btn');if(b){b.textContent=slack?'😴 摸鱼中':'😴 摸鱼';b.classList.toggle('on',slack)}}
 
 // ===== 带薪拉屎 =====
 function enterPoop(){if(poop)return;poop=true;poopStart=Date.now();const r=calc();poopEarnAtStart=r.earn;document.getElementById('poopOv').classList.add('on')}
@@ -564,7 +586,7 @@ function calc(){
   let st='before',earn=0,rem=0,wrk=0;
   if(!w)st='rest';
   else{
-    const ls=sm+eff/2,le=ls+lm;
+    const ls=(S.lS!=null&&S.lS>=sm&&S.lS+lm<=em)?S.lS:sm+eff/2,le=ls+lm;
     if(ms<sm)st='before';
     else if(ms<ls){st=slack?'slack':'working';wrk=n-ds;earn=wrk*pms;rem=de-n}
     else if(ms<le){st='lunch';const mrn=(ls-sm)*60*1000;earn=mrn*pms;rem=de-n;wrk=mrn}
@@ -640,7 +662,7 @@ function updUI(){
 
 // ===== 金币爆发 =====
 function burst(c){
-  const box=document.getElementById('burstBox'),em=['🪙','💰','✨','🌟','💫','🤑','💎','👛'];
+  const box=document.getElementById('burstBox'),em=(window._burstEm||['🪙','💰','✨','🌟','💫','🤑','💎','👛']);
   for(let i=0;i<c;i++){
     const el=document.createElement('div');el.className='burst-p';
     el.textContent=em[Math.floor(Math.random()*em.length)];
@@ -677,7 +699,7 @@ function showCai(){
 
 // ===== 设置 =====
 function openSet(){
-  document.getElementById('sSal').value=S.salary;document.getElementById('sSH').value=S.sH;document.getElementById('sSM').value=S.sM;document.getElementById('sEH').value=S.eH;document.getElementById('sEM').value=S.eM;document.getElementById('sLH').value=S.lH;document.getElementById('sWD').value=S.mwd;
+  document.getElementById('sSal').value=S.salary;document.getElementById('sSH').value=S.sH;document.getElementById('sSM').value=S.sM;document.getElementById('sEH').value=S.eH;document.getElementById('sEM').value=S.eM;document.getElementById('sLH').value=S.lH;document.getElementById('sLS').value=S.lS!=null?(String(Math.floor(S.lS/60)).padStart(2,'0')+':'+String(S.lS%60).padStart(2,'0')):'';document.getElementById('sWD').value=S.mwd;
   const db=document.getElementById('dayCb');db.innerHTML='';DAY.forEach((n,i)=>{const l=document.createElement('label');l.className='dc-lb'+(S.wd.includes(i)?' on':'');const ip=document.createElement('input');ip.type='checkbox';ip.checked=S.wd.includes(i);ip.dataset.day=i;ip.addEventListener('change',()=>l.classList.toggle('on'));l.appendChild(ip);l.appendChild(document.createTextNode('周'+n));db.appendChild(l)});
   const SPK=[{n:'马里奥 1-UP',i:'🎮',d:'经典增命蘑菇'},{n:'支付宝到账',i:'📱',d:'清脆到账提示'},{n:'经典金币',i:'🪙',d:'马里奥叮叮声'},{n:'可爱布谷',i:'🐤',d:'轻快提示音'}];
   const sp=document.getElementById('spkO');sp.innerHTML='';SPK.forEach((p,i)=>{const l=document.createElement('label');l.className='spk-l'+(spk===i?' on':'');const ip=document.createElement('input');ip.type='radio';ip.name='spk';ip.checked=spk===i;ip.addEventListener('change',()=>{document.querySelectorAll('.spk-l').forEach(el=>el.classList.remove('on'));l.classList.add('on');document.getElementById('spkPr').textContent='当前: '+p.n+' — '+p.d});l.appendChild(ip);l.appendChild(document.createTextNode(p.i+' '+p.n));sp.appendChild(l)});document.getElementById('spkPr').textContent='当前: '+SPK[spk].n+' — '+SPK[spk].d;
@@ -688,7 +710,7 @@ function openSet(){
 function closeSet(){document.getElementById('setOv').classList.remove('show')}
 function saveSet(){
   const ns={salary:parseFloat(document.getElementById('sSal').value)||10000,sH:parseInt(document.getElementById('sSH').value)||9,sM:parseInt(document.getElementById('sSM').value)||0,eH:parseInt(document.getElementById('sEH').value)||18,eM:parseInt(document.getElementById('sEM').value)||0,lH:parseInt(document.getElementById('sLH').value)||1,wd:[],mwd:parseInt(document.getElementById('sWD').value)||22};
-  document.querySelectorAll('#dayCb input').forEach(ip=>{if(ip.checked)ns.wd.push(parseInt(ip.dataset.day))});
+  const _lsv=document.getElementById('sLS').value;ns.lS=_lsv?(parseInt(_lsv.slice(0,2))*60+parseInt(_lsv.slice(3,5))):null;document.querySelectorAll('#dayCb input').forEach(ip=>{if(ip.checked)ns.wd.push(parseInt(ip.dataset.day))});
   if(ns.wd.length===0){alert('至少选一天');return}
   document.querySelectorAll('input[name="spk"]').forEach((ip,i)=>{if(ip.checked)spk=i});localStorage.setItem('salarySpk',spk);
   const gName=document.getElementById('gName').value.trim();const gAmt=parseFloat(document.getElementById('gAmt').value);
@@ -700,14 +722,14 @@ function saveSet(){
 function tapCat(){const c=document.getElementById('cat');c.className='cat tap';setTimeout(()=>{c.className='cat'},350);burst(8);playCoin()}
 
 // ===== 背景 =====
-function mkIngots(){const c=document.getElementById('ingotRain'),is=['🪙','💰','🥇','✨'];for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
+function mkIngots(){const c=document.getElementById('ingotRain'),is=(window._decorEm||['🪙','💰','🥇','✨']);for(let i=0;i<16;i++){const e=document.createElement('div');e.className='ingot';e.textContent=is[Math.floor(Math.random()*is.length)];e.style.left=(Math.random()*95+2.5)+'%';e.style.fontSize=(14+Math.random()*18)+'px';e.style.animationDuration=(12+Math.random()*16)+'s';e.style.animationDelay=(Math.random()*20)+'s';c.appendChild(e)}}
 function mkStars(){const c=document.getElementById('sparkles'),cs=['#f9d976','#f8b500','#ffd700','#ffecb3','#ffab40','#fff8e1'];for(let i=0;i<22;i++){const e=document.createElement('div');e.className='sparkle';e.style.left=Math.random()*100+'%';e.style.top=Math.random()*100+'%';const s=3+Math.random()*7;e.style.width=s+'px';e.style.height=s+'px';e.style.background=cs[Math.floor(Math.random()*cs.length)];e.style.animationDuration=(3+Math.random()*5)+'s';e.style.animationDelay=(Math.random()*8)+'s';c.appendChild(e)}}
 
 // ===== 启动 =====
 mkIngots();mkStars();checkStreak();
 if(dark){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';document.getElementById('darkBtn').className='top-btn do'}
 updSnd();updUI();
-setInterval(updUI,50);
+setInterval(function(){try{updUI()}catch(e){if(window.__dbgErr)window.__dbgErr(e,'计薪循环')}},50);
 setInterval(()=>{lastInt=-1},60000);
 </script>
 
@@ -756,5 +778,750 @@ function closeHelp(){document.getElementById('helpOv').classList.remove('show')}
   }
 })();
 </script>
+
+<style>
+/* ===== v2: 皮肤选择器 ===== */
+#themePicks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#themePicks .gp-l{justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:6px 4px}
+
+/* 诊断条 */
+#dbgBar{position:fixed;top:0;left:0;right:0;z-index:99999;display:none;background:#b3261e;color:#fff;
+  font:12px/1.6 ui-monospace,Consolas,monospace;padding:8px 10px;max-height:45vh;overflow:auto;
+  white-space:pre-wrap;word-break:break-all;box-shadow:0 2px 12px rgba(0,0,0,.5)}
+#dbgBar b{display:block;margin-bottom:4px;font-size:13px}
+#dbgBar button{margin-top:6px;margin-right:6px;padding:3px 8px;border-radius:6px;border:1px solid #fff6;
+  background:#fff2;color:#fff;font:12px inherit;cursor:pointer}
+
+/* 提示条（非错误，黄色、自动消失） */
+#dbgNote{position:fixed;left:12px;right:12px;bottom:12px;z-index:99998;background:#f0b429;color:#2a1a00;
+  font:12px/1.6 "PingFang SC","Microsoft YaHei",sans-serif;padding:10px 36px 10px 12px;border-radius:10px;
+  box-shadow:0 6px 20px rgba(0,0,0,.45);animation:of .25s ease}
+#dbgNote b{display:block;margin-bottom:2px;font-size:13px}
+#dbgNote .x{position:absolute;right:8px;top:6px;border:0;background:transparent;font-size:16px;
+  color:#2a1a00;cursor:pointer;line-height:1}
+
+#setOv .modal{padding-bottom:0}
+#setOv .mf{position:sticky;bottom:0;z-index:5;margin-top:10px;padding:12px 0 14px;
+  background:var(--modal-bg,linear-gradient(160deg,#2d1810 0%,#1a0e0a 100%));
+  border-top:1px solid var(--bd);
+  border-radius:0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px)}
+
+/* ===== v2: 趋势图 ===== */
+#trendOv .modal{max-width:440px}
+.tt{display:flex;gap:6px;margin-bottom:8px}
+.tt button{flex:1;padding:6px;border-radius:10px;border:1px solid var(--bd);background:transparent;
+  color:var(--tx2);font-size:12px;cursor:pointer;font-family:inherit;transition:.2s}
+.tt button.on{background:var(--hv);color:var(--tx);border-color:var(--g2)}
+.tstat{display:flex;gap:8px;margin-bottom:8px}
+.tstat div{flex:1;background:var(--cd);border:1px solid var(--bd);border-radius:12px;
+  padding:8px 4px;text-align:center;color:var(--tx3);font-size:11px}
+.tstat div b{display:block;color:var(--tx);font-size:15px;margin-bottom:3px;font-weight:600}
+.tc{background:rgba(255,215,150,0.02);border-radius:12px;padding:6px}
+#trendBody{font-size:12px;color:var(--tx3);text-align:center;padding:8px 0 0;line-height:1.7}
+</style>
+
+<!-- ===== v2: 打工趋势弹窗 ===== -->
+<div class="ov" id="trendOv">
+  <div class="modal">
+    <div class="mh"><h2>📈 打工趋势</h2><button class="mx" onclick="closeTrends()">✕</button></div>
+    <div class="tt" id="trendTabs"></div>
+    <div class="tstat" id="trendStats"></div>
+    <div class="tc"><canvas id="trendCanvas" height="140"></canvas></div>
+    <div id="trendBody"></div>
+  </div>
+</div>
+
+<script>
+/* ================= 皮肤系统（9 套，全部免费） ================= */
+var THEMES = {
+  "default": {
+    name:"默认经典",nameEn:"Classic",icon:"👑",gender:"all",pro:false,
+    burstEm:["🪙","💰","✨","🌟","💫","🤑","💎","👛"],
+    decorEm:["🪙","💰","🥇","✨"],
+    perDollarEmoji:"",perDollarSound:"ding",
+    quotes:[
+      "每分每秒都在增值，你值得更好的生活 📈",
+      "今天也在为更好的自己打工 ✨",
+      "搬的每一块砖，都在构建你想要的生活 🏗️",
+      "工作是为了生活，但生活不是为了工作 🌈"
+    ],
+    statusQuotes:{
+      wk:["摸鱼是为了更好地搬砖，搬砖是为了早日不搬砖 😎","加油，打工人！你的努力在替你说话 💪"],
+      lunch:["🍱 好好吃饭，下午继续赚钱！","🍚 吃饱了才有力气搬砖~"],
+      before:["⏰ 养精蓄锐，准备开赚！","🌅 每一天都是赚钱的好日子"],
+      after:["🎉 下班快乐！今天也是丰收的一天","🌇 夕阳为你加冕，明天继续加油"],
+      rest:["🎉 休息是为了走更远的路","☀️ 周末愉快，钱的事明天再说"],
+      slack:["😴 摸鱼也是一种生活智慧","🐟 鱼都摸了，快乐就完事了"]
+    },
+    css:{"--g1":"#f9d976","--g2":"#f39c12","--g3":"#e67e22","--tx":"#fceabb","--tx2":"#c9a96e","--tx3":"rgba(201,169,110,0.4)","--cd":"rgba(255,215,150,0.06)","--bd":"rgba(255,215,150,0.15)","--hv":"rgba(255,215,150,0.12)","--sh":"rgba(0,0,0,0.4)","--gr":"#81c784","--or":"#ffb74d","--bg":"linear-gradient(135deg,#0d0705,#1f1008 25%,#2d1810 50%,#1f1008 75%,#0d0705 100%)","--radius":"20px"}
+  },
+  "ox": {
+    name:"🐂 牛马本色",nameEn:"🐂 Grinder",icon:"🐂",gender:"all",pro:false,
+    burstEm:["🌾","🔗","🪵","💧","🧑‍🌾","🐂","🥾","🪓"],
+    decorEm:["🌾","🔗","🪵","💧"],
+    perDollarEmoji:"💧",perDollarSound:"clang",
+    quotes:["埋头苦干，不问前程 🐂","今天的汗水是明天的底气 💧","一步一个脚印，踏实就是捷径 🔗"],
+    statusQuotes:{
+      wk:["🌾 田里稻花香，工位上活儿忙","🔗 低头拉车，抬头看路"],
+      lunch:["🌾 吃饱了才有力气耕田","🧑‍🌾 午饭是地里长出来的"],
+      before:["🔗 套上缰绳，新的一天开始了","🐂 又是一天好日头"],
+      after:["🐂 收工了，明天再来犁地","🌾 夕阳下的牛，是最自由的"],
+      rest:["🌾 歇一歇，地不等人","💧 休息是为了更好地流汗"],
+      slack:["💧 偷一会儿懒，牛也要喝水","🪵 磨刀不误砍柴工"]
+    },
+    css:{"--g1":"#DAA520","--g2":"#B8860B","--g3":"#8B6914","--tx":"#F5DEB3","--tx2":"#D2B48C","--tx3":"rgba(210,180,140,0.4)","--cd":"rgba(139,105,20,0.08)","--bd":"rgba(184,134,11,0.2)","--hv":"rgba(184,134,11,0.15)","--sh":"rgba(0,0,0,0.5)","--gr":"#8B7355","--or":"#DAA520","--bg":"linear-gradient(135deg,#1a0f05,#2d1a0a 25%,#3d2817 50%,#2d1a0a 75%,#1a0f05 100%)","--radius":"18px"}
+  },
+  "office": {
+    name:"💼 社畜日常",nameEn:"💼 Corporate",icon:"💼",gender:"all",pro:false,
+    burstEm:["📎","📊","☕","📋","🖇️","📉","🖨️","🔔"],
+    decorEm:["📎","📊","☕","📋"],
+    perDollarEmoji:"✅",perDollarSound:"keyclick",
+    quotes:["今天也是为自由积累筹码的一天 ✨","辛苦了，明天继续发光 🌟","又熬过了一天，你真棒 🌈"],
+    statusQuotes:{
+      wk:["📎 又一份文件，又一个已读","📊 会议室里的人生，PPT里的梦想"],
+      lunch:["☕ 便利店的饭团，就是午餐","📋 午休时间，不看消息"],
+      before:["📊 打开电脑，开始一天的角色扮演","🔔 钉钉响了，该上班了"],
+      after:["🔔 钉钉已关，人间值得","📉 今天的数据不好看，但心情好看"],
+      rest:["📋 周末了，把工牌挂在衣柜里","🖨️ 打印机都休息了，你也休息吧"],
+      slack:["📎 偷偷摸鱼，是职场最基本的素养","🖇️ 摸鱼五分钟，快乐两小时"]
+    },
+    css:{"--g1":"#A0AEC0","--g2":"#718096","--g3":"#4A5568","--tx":"#E2E8F0","--tx2":"#A0AEC0","--tx3":"rgba(160,174,192,0.4)","--cd":"rgba(74,85,104,0.08)","--bd":"rgba(113,128,150,0.2)","--hv":"rgba(113,128,150,0.15)","--sh":"rgba(0,0,0,0.5)","--gr":"#68D391","--or":"#F6AD55","--bg":"linear-gradient(135deg,#1a202c,#2a3040 25%,#3d4a60 50%,#2a3040 75%,#1a202c 100%)","--radius":"18px"}
+  },
+  "coffee": {
+    name:"☕ 咖啡续命",nameEn:"☕ Coffee",icon:"☕",gender:"f",pro:false,
+    burstEm:["☕","🧋","🧊","🥤","💊","🍩","🧁","🥐"],
+    decorEm:["☕","🧋","🧊","🥤"],
+    perDollarEmoji:"☕",perDollarSound:"pour",
+    quotes:["咖啡是液体的工牌 ☕","每一口都是续命，每一分都是自由"],
+    statusQuotes:{
+      wk:["☕ 第三杯了，手开始抖但心不抖","🧋 打工人的血液里，一半是咖啡"],
+      lunch:["🥐 咖啡配面包，打工人的法餐","🍩 甜食就是工作的安慰剂"],
+      before:["☕ 第一口咖啡，第一口气","🧊 冰美式，清醒第一课"],
+      after:["🧋 下班了，换一杯甜的","🥤 今天的苦已经喝够了"],
+      rest:["🍩 周末不喝咖啡，喝快乐","🧁 甜食自由日"],
+      slack:["☕ 咖啡凉了，心也凉了……再来一杯","💊 咖啡+布洛芬，打工人的续命组合"]
+    },
+    css:{"--g1":"#A1887F","--g2":"#6D4C41","--g3":"#4E342E","--tx":"#D7CCC8","--tx2":"#A1887F","--tx3":"rgba(161,136,127,0.4)","--cd":"rgba(78,52,46,0.08)","--bd":"rgba(109,76,65,0.2)","--hv":"rgba(109,76,65,0.15)","--sh":"rgba(0,0,0,0.5)","--gr":"#81C784","--or":"#FFB74D","--bg":"linear-gradient(135deg,#1a0e05,#2d1a0a 25%,#3e2723 50%,#2d1a0a 75%,#1a0e05 100%)","--radius":"20px"}
+  },
+  "night": {
+    name:"🌙 夜猫子",nameEn:"🌙 Night Owl",icon:"🌙",gender:"all",pro:false,
+    burstEm:["🌙","⭐","🦉","💡","🛵","🌃","🔦","📖"],
+    decorEm:["🌙","⭐","🦉","💡"],
+    perDollarEmoji:"🐱",perDollarSound:"catcall",
+    quotes:["月亮不睡我不睡 🌙","深夜的代码和星光一样安静 ⭐"],
+    statusQuotes:{
+      wk:["🦉 夜越深，效率越高","🌙 窗外的月亮在陪你加班"],
+      lunch:["🌙 午夜的泡面，加个蛋","🛵 点个夜宵，犒劳自己"],
+      before:["🌃 白天属于公司，夜晚属于自己","⭐ 星星亮起来的时候，灵感也来了"],
+      after:["⭐ 天快亮了，该睡了","🌙 晚安，你是今天最努力的人"],
+      rest:["🦉 周末的夜晚，不用设闹钟","📖 深夜读书，灵魂自由"],
+      slack:["🌙 摸鱼到深夜，才是真正的自由","💡 灵感总是在摸鱼的时候出现"]
+    },
+    css:{"--g1":"#7986CB","--g2":"#5C6BC0","--g3":"#3949AB","--tx":"#C5CAE9","--tx2":"#9FA8DA","--tx3":"rgba(159,168,218,0.35)","--cd":"rgba(92,107,192,0.1)","--bd":"rgba(121,134,203,0.25)","--hv":"rgba(121,134,203,0.18)","--sh":"rgba(0,0,20,0.6)","--gr":"#69F0AE","--or":"#FFD740","--bg":"linear-gradient(135deg,#05051a,#0d0d2a 25%,#1a1a4a 50%,#0d0d2a 75%,#05051a 100%)","--radius":"22px"}
+  },
+  "fairy": {
+    name:"🌸 打工仙女",nameEn:"🌸 Fairy",icon:"🌸",gender:"f",pro:false,
+    burstEm:["🌸","💄","👜","👠","🎀","💅","🧴","💐"],
+    decorEm:["🌸","💄","👜","🎀"],
+    perDollarEmoji:"💕",perDollarSound:"crystal",
+    quotes:["工资可以少，妆不能花 🌸","今天也是精致的牛马女孩 💅","打工而已，不必卖命 💐"],
+    statusQuotes:{
+      wk:["🌸 今天眼影画得不错，开工","💅 指甲做好了，心情就好了"],
+      lunch:["🎀 和同事一起点奶茶","🧴 补个防晒，下午也要美美的"],
+      before:["💄 涂好口红，战斗力+10","👠 穿上高跟鞋，今天气场两米"],
+      after:["👜 下班了，去逛街犒劳自己","🌸 今天也辛苦自己了，真棒"],
+      rest:["💐 周末要做个仙女，不打工","🎀 约闺蜜喝下午茶去"],
+      slack:["💅 补个妆，再摸五分钟鱼","👠 摸鱼也要摸得优雅"]
+    },
+    css:{"--g1":"#F48FB1","--g2":"#D81B60","--g3":"#AD1457","--tx":"#F8BBD0","--tx2":"#F48FB1","--tx3":"rgba(244,143,177,0.35)","--cd":"rgba(173,20,87,0.06)","--bd":"rgba(216,27,96,0.15)","--hv":"rgba(216,27,96,0.12)","--sh":"rgba(0,0,0,0.4)","--gr":"#81C784","--or":"#FFB74D","--bg":"linear-gradient(135deg,#1a0a12,#2d1520 25%,#4d2a3d 50%,#2d1520 75%,#1a0a12 100%)","--radius":"22px"}
+  },
+  "geek": {
+    name:"💻 极客工位",nameEn:"💻 Geek",icon:"💻",gender:"m",pro:false,
+    burstEm:["⌨️","🖥️","🐧","🤖","⚡","💾","🖱️","📟"],
+    decorEm:["⌨️","🖥️","🐧","⚡"],
+    perDollarEmoji:"▍",perDollarSound:"keyclick",
+    quotes:["rm -rf / 没敢敲，辞职信没敢交 ⌨️","代码跑得通，人生跑不通","Hello World, Goodbye Money"],
+    statusQuotes:{
+      wk:["🐧 又在改 Bug 了，第 13 遍","🤖 今天的我，是台莫得感情的编码机器"],
+      lunch:["🤖 机器人不需要吃饭，但你需要","💾 午饭时间，磁盘碎片整理"],
+      before:["⚡ 电脑开机，灵魂开机","🐧 打开终端，新的一天开始了"],
+      after:["💾 提交最后一行代码，下班","🖥️ 屏幕熄灭，大脑关机"],
+      rest:["🖥️ 周末了，给自己的项目写写代码","⌨️ 真正的程序员周末也写代码"],
+      slack:["⌨️ 键盘敲得响，摸鱼摸得爽","🐧 假装在查 Bug，其实在看论坛"]
+    },
+    css:{"--g1":"#81C784","--g2":"#43A047","--g3":"#2E7D32","--tx":"#C8E6C9","--tx2":"#81C784","--tx3":"rgba(129,199,132,0.4)","--cd":"rgba(27,94,32,0.08)","--bd":"rgba(46,125,50,0.2)","--hv":"rgba(46,125,50,0.15)","--sh":"rgba(0,0,0,0.5)","--gr":"#69F0AE","--or":"#FFD740","--bg":"linear-gradient(135deg,#050d05,#0a1a0a 25%,#1a3d1a 50%,#0a1a0a 75%,#050d05 100%)","--radius":"16px"}
+  },
+  "chill": {
+    name:"🛌 躺平主义",nameEn:"🛌 Chill",icon:"🛌",gender:"all",pro:false,
+    burstEm:["🛌","🧸","📱","🍜","🐈","☁️","🧦","🫖"],
+    decorEm:["🛌","🧸","☁️","🐈"],
+    perDollarEmoji:"💤",perDollarSound:"windchime",
+    quotes:["卷不动了，先躺一会儿 🛌","人生苦短，及时行乐","躺平不是放弃，是战略性休整 ☁️"],
+    statusQuotes:{
+      wk:["☁️ 今天没什么要紧事，慢慢来","🐈 学学猫，优雅地浪费时间"],
+      lunch:["🍜 泡面配剧，神仙日子","🧸 午休时间，抱紧我的小熊"],
+      before:["🧸 再躺五分钟……半小时","☁️ 起床是需要勇气的"],
+      after:["🛌 终于下班了，床在召唤","🧦 换上睡衣，世界与我无关"],
+      rest:["🐈 周末就是用来发呆的","☁️ 什么也不做，也是一种成就"],
+      slack:["☁️ 摸鱼是对生活最基本的尊重","🫖 喝茶、放空、看云"]
+    },
+    css:{"--g1":"#FBC02D","--g2":"#F9A825","--g3":"#F57F17","--tx":"#FFF9C4","--tx2":"#FBC02D","--tx3":"rgba(251,192,45,0.35)","--cd":"rgba(245,127,23,0.06)","--bd":"rgba(249,168,37,0.15)","--hv":"rgba(249,168,37,0.12)","--sh":"rgba(0,0,0,0.4)","--gr":"#81C784","--or":"#FFB74D","--bg":"linear-gradient(135deg,#1a1508,#2d2815 25%,#4a3d1a 50%,#2d2815 75%,#1a1508 100%)","--radius":"24px"}
+  },
+  "rich": {
+    name:"🧧 暴富",nameEn:"🧧 Rich",icon:"🧧",gender:"all",pro:false,
+    burstEm:["🧨","🧧","🏮","🐉","🎊","💵","🥇","🎆"],
+    decorEm:["🧨","🧧","🏮","🎊"],
+    perDollarEmoji:"🎇",perDollarSound:"coins",
+    quotes:["不想暴富的牛马不是好打工人 🧧","今天也是离暴富更近的一天 💰","贫穷限制了我的想象力，但没限制我的梦想"],
+    statusQuotes:{
+      wk:["🧧 每一块钱都是在往金库添砖","💰 你在打工，钱在打工"],
+      lunch:["🥟 今天的盒饭格外香，因为快发工资了","🧧 少吃一顿外卖，多存一份自由"],
+      before:["🏮 开门红，今天一定进财","🐉 龙年要发财，牛年也要发财"],
+      after:["🎊 又赚了一天，离暴富又近一步","💵 今天的你，比昨天又贵了一点"],
+      rest:["🧨 周末也要想着怎么搞钱","🥇 休息是为了下周赚更多"],
+      slack:["💵 摸鱼的时候，钱也在生钱","🎆 躺赚是最高境界"]
+    },
+    css:{"--g1":"#FF5252","--g2":"#D32F2F","--g3":"#B71C1C","--tx":"#FFCDD2","--tx2":"#EF9A9A","--tx3":"rgba(239,154,154,0.3)","--cd":"rgba(183,28,28,0.08)","--bd":"rgba(211,47,47,0.2)","--hv":"rgba(211,47,47,0.15)","--sh":"rgba(0,0,0,0.5)","--gr":"#FFB74D","--or":"#FF5252","--bg":"linear-gradient(135deg,#1a0505,#2d1005 25%,#5a1a0a 50%,#2d1005 75%,#1a0505 100%)","--radius":"18px"}
+  }
+};
+
+var curTheme = localStorage.getItem('salaryTheme') || 'default';
+
+function themeLabel(t){
+  var n = t.name || '', i = t.icon || '';
+  return (i && n.indexOf(i) < 0) ? (i + ' ' + n) : n;
+}
+
+function applyTheme(id){
+  var t = THEMES[id];
+  if (!t) return;
+  curTheme = id;
+  localStorage.setItem('salaryTheme', id);
+
+  document.body.className = document.body.className.replace(/\btheme-[\w-]+/g, '').trim();
+  if (id !== 'default') document.body.classList.add('theme-' + id);
+
+  // 皮肤变量写到 body 的内联样式上，优先级高于 body.dark 的类规则
+  var keys = Object.keys(THEMES['default'].css);
+  if (id === 'default') {
+    keys.forEach(function(k){ document.body.style.removeProperty(k); });
+  } else {
+    for (var k in t.css) document.body.style.setProperty(k, t.css[k]);
+  }
+
+  window._burstEm = t.burstEm || [];
+  window._decorEm = t.decorEm || [];
+
+  var rain = document.getElementById('ingotRain');
+  if (rain && typeof mkIngots === 'function') { rain.innerHTML = ''; mkIngots(); }
+
+  renderThemes();
+}
+
+function renderThemes(){
+  var box = document.getElementById('themePicks');
+  if (!box) return;
+  box.innerHTML = '';
+  for (var id in THEMES) {
+    var t = THEMES[id];
+    var l = document.createElement('label');
+    l.className = 'gp-l' + (curTheme === id ? ' on' : '');
+    var ip = document.createElement('input');
+    ip.type = 'radio'; ip.name = 'theme'; ip.checked = (curTheme === id);
+    ip.addEventListener('change', (function(x){ return function(){ applyTheme(x); }; })(id));
+    l.appendChild(ip);
+    l.appendChild(document.createTextNode(themeLabel(t)));
+    box.appendChild(l);
+  }
+}
+
+(function initThemeModule(){
+  // 把皮肤选择器插到设置面板「赚钱目标」上方
+  var gp = document.getElementById('goalPresets');
+  if (gp) {
+    var fg = gp.closest('.fg');
+    if (fg && fg.parentNode) {
+      var d = document.createElement('div');
+      d.className = 'fg';
+      d.style.marginTop = '4px';
+      d.style.paddingTop = '10px';
+      d.style.borderTop = '1px solid var(--bd)';
+      d.innerHTML = '<label>🎨 皮肤</label><div class="gp" id="themePicks"></div>';
+      fg.parentNode.insertBefore(d, fg);
+    }
+  }
+  applyTheme(curTheme);
+})();
+
+/* ================= 打工趋势 ================= */
+function trackData(){
+  try{
+    var r = calc(), today = new Date().toISOString().slice(0,10);
+    var hist = JSON.parse(localStorage.getItem('salaryHistory') || '[]');
+    var last = hist.length > 0 ? hist[hist.length-1] : null;
+    if (r.st === 'after' && (!last || last.d !== today) && r.earn > 0) {
+      hist.push({ d: today, e: Math.round(r.earn*100)/100, h: Math.round(r.wrk/3600000*10)/10 });
+      if (hist.length > 365) hist = hist.slice(-365);
+      localStorage.setItem('salaryHistory', JSON.stringify(hist));
+    }
+  }catch(e){}
+}
+function getHist(){
+  try { return JSON.parse(localStorage.getItem('salaryHistory') || '[]'); } catch(e){ return []; }
+}
+function showTrends(m){
+  document.getElementById('trendOv').classList.add('show');
+  renderTrends(m || 'month');
+}
+function closeTrends(){ document.getElementById('trendOv').classList.remove('show'); }
+
+function renderTrends(mode){
+  var hist = getHist();
+  var body = document.getElementById('trendBody');
+  var stats = document.getElementById('trendStats');
+  var tabs = document.getElementById('trendTabs');
+
+  tabs.innerHTML = '<button class="' + (mode==='month'?'on':'') + '" onclick="renderTrends(\'month\')">本月</button>'
+                 + '<button class="' + (mode==='year'?'on':'')  + '" onclick="renderTrends(\'year\')">本年</button>';
+
+  if (hist.length === 0) {
+    stats.innerHTML = '';
+    body.textContent = '还没有数据。下班后会自动记录当天收入，攒两天就能看趋势了。';
+    var cv0 = document.getElementById('trendCanvas');
+    var cx0 = cv0.getContext('2d');
+    cx0.clearRect(0, 0, cv0.width, cv0.height);
+    return;
+  }
+  body.textContent = '';
+
+  var n = new Date(), y = n.getFullYear(), mo = n.getMonth();
+  var f = mode === 'month'
+    ? hist.filter(function(h){ var d = new Date(h.d); return d.getFullYear()===y && d.getMonth()===mo; })
+    : hist.filter(function(h){ var d = new Date(h.d); return d.getFullYear()===y; });
+  if (f.length < 2) f = hist.slice(-30);
+
+  var total = 0, best = 0, bd = '';
+  f.forEach(function(h){ total += h.e; if (h.e > best) { best = h.e; bd = h.d; } });
+  var avg = f.length > 0 ? total / f.length : 0;
+
+  stats.innerHTML = '<div><b>¥' + total.toFixed(0) + '</b>总收入</div>'
+                  + '<div><b>¥' + avg.toFixed(0)   + '</b>日均</div>'
+                  + '<div><b>' + f.length + '</b>天数</div>';
+
+  var c = document.getElementById('trendCanvas'), ctx = c.getContext('2d');
+  var W = (c.parentElement.clientWidth || 380) - 4, H = 140;
+  var pad = { t: 12, b: 18, l: 36, r: 8 };
+  c.width = W * 2; c.height = H * 2;
+  c.style.width = W + 'px'; c.style.height = H + 'px';
+  ctx.setTransform(1,0,0,1,0,0); ctx.scale(2,2);
+  ctx.clearRect(0, 0, W, H);
+
+  var bw = Math.max(3, Math.min(14, (W - pad.l - pad.r) / f.length - 2));
+  var mv = Math.max(best, 1);
+
+  ctx.fillStyle = 'rgba(255,215,150,0.03)'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(255,215,150,0.06)'; ctx.lineWidth = 0.5;
+  for (var i = 0; i <= 4; i++) {
+    var gy = pad.t + (H - pad.t - pad.b) * (1 - i / 4);
+    ctx.beginPath(); ctx.moveTo(pad.l - 2, gy); ctx.lineTo(W - pad.r, gy); ctx.stroke();
+  }
+
+  var g = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+  g.addColorStop(0, 'rgba(249,217,118,0.85)');
+  g.addColorStop(0.5, 'rgba(243,156,18,0.65)');
+  g.addColorStop(1, 'rgba(230,126,34,0.2)');
+
+  f.forEach(function(h, i){
+    var bh = (h.e / mv) * (H - pad.t - pad.b);
+    var x = pad.l + i * ((W - pad.l - pad.r) / f.length);
+    var yy = H - pad.b - bh;
+    ctx.fillStyle = g;
+    ctx.beginPath(); roundRect2(ctx, x, yy, bw, bh, 2); ctx.fill();
+    if (h.d === bd) {
+      ctx.fillStyle = 'rgba(255,215,0,0.2)';
+      ctx.beginPath(); roundRect2(ctx, x - 1, yy - 1, bw + 2, bh + 2, 3); ctx.fill();
+    }
+  });
+
+  var ah = (avg / mv) * (H - pad.t - pad.b), ay = H - pad.b - ah;
+  ctx.strokeStyle = 'rgba(255,100,100,0.35)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+  ctx.beginPath(); ctx.moveTo(pad.l, ay); ctx.lineTo(W - pad.r, ay); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255,100,100,0.55)'; ctx.font = '9px sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('日均 ¥' + avg.toFixed(0), W - pad.r - 52, ay - 3);
+
+  ctx.fillStyle = 'rgba(255,215,150,0.25)'; ctx.font = '8px sans-serif'; ctx.textAlign = 'center';
+  f.forEach(function(h, i){
+    if (i % 5 === 0 || i === f.length - 1) {
+      var x2 = pad.l + i * ((W - pad.l - pad.r) / f.length) + bw / 2;
+      var p = h.d.split('-');
+      ctx.fillText(p[1] + '/' + p[2], x2, H - 2);
+    }
+  });
+}
+
+function roundRect2(c, x, y, w, h, r){
+  if (r > w / 2) r = w / 2; if (r > h / 2) r = h / 2;
+  c.moveTo(x + r, y);
+  c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r);
+  c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y);
+  c.closePath();
+}
+
+setInterval(function(){ try { trackData(); } catch(e){} }, 15000);
+try { trackData(); } catch(e){}
+
+// 顶栏加「📈」入口
+(function(){
+  var tb = document.querySelector('.top-bar');
+  if (!tb) return;
+  var b = document.createElement('button');
+  b.className = 'top-btn';
+  b.textContent = '📈';
+  b.title = '打工趋势';
+  b.onclick = function(){ showTrends(); };
+  tb.insertBefore(b, tb.firstChild);
+})();
+
+/* ================= 诊断模块（错误直接显示在页面上） ================= */
+(function(){
+  var bar = null;
+  function ensure(){
+    if (bar) return bar;
+    bar = document.createElement('div');
+    bar.id = 'dbgBar';
+    bar.innerHTML = '<b>⚠ 页面出错，请把这段文字拍照发给我</b>';
+    document.body.appendChild(bar);
+    var b1 = document.createElement('button');
+    b1.textContent = '清空本地数据并重载';
+    b1.onclick = function(){ try{ localStorage.clear(); }catch(e){} location.reload(); };
+    var b2 = document.createElement('button');
+    b2.textContent = '关闭提示';
+    b2.onclick = function(){ bar.style.display = 'none'; };
+    bar.appendChild(b1);
+    bar.appendChild(b2);
+    return bar;
+  }
+  window.__dbgErr = function(err, where){
+    try{
+      var b = ensure();
+      b.style.display = 'block';
+      var m = '[' + where + '] ' + (err && (err.message || err));
+      if (b.textContent.indexOf(m) < 0) b.appendChild(document.createTextNode('\n' + m));
+    }catch(e){}
+  };
+  window.__dbgNote = function(title, msg, ms){
+    try{
+      var old = document.getElementById('dbgNote');
+      if (old) old.remove();
+      var n = document.createElement('div');
+      n.id = 'dbgNote';
+      var b = document.createElement('b');
+      b.textContent = title;
+      n.appendChild(b);
+      n.appendChild(document.createTextNode(msg));
+      var x = document.createElement('button');
+      x.className = 'x';
+      x.textContent = '✕';
+      x.onclick = function(){ n.remove(); };
+      n.appendChild(x);
+      document.body.appendChild(n);
+      if (ms !== 0) setTimeout(function(){ if (n.parentNode) n.remove(); }, ms || 15000);
+    }catch(e){}
+  };
+  window.addEventListener('error', function(e){ window.__dbgErr(e.error || e.message, '全局'); });
+  window.addEventListener('unhandledrejection', function(e){ window.__dbgErr(e.reason, 'Promise'); });
+
+  if (window.__LS_FALLBACK__) {
+    window.__dbgNote('本地存储被浏览器禁用', '设置可以改、功能都能用，但关闭页面后会恢复默认。想长期保存请用线上版，或双击「启动本地版.cmd」以 http 方式打开。');
+  }
+
+  // 自检：金额连续 6 秒不变就提示
+  var last = null, idle = 0;
+  setInterval(function(){
+    try{
+      var el = document.getElementById('amountDec');
+      if (!el) return;
+      var v = el.textContent;
+      if (v === last) idle++; else { idle = 0; last = v; }
+      if (idle === 6) window.__dbgErr('金额连续 6 秒没变化，计薪循环可能已停', '自检');
+    }catch(e){}
+  }, 1000);
+})();
+</script>
+
+
+<style>
+/* ===== v3: 数据面板 ===== */
+#setOv .dataRow{display:flex;gap:8px}
+#setOv .dataRow .btn{flex:1;padding:8px 0;font-size:12px}
+#imgOv .modal{max-width:520px}
+#imgOv img{width:100%;border-radius:12px;display:block;background:#000}
+#imgOv .hint{font-size:11px;color:var(--tx3);margin-top:8px;text-align:center}
+#imgOv .dl{display:inline-block;margin-top:10px;padding:8px 18px;border-radius:10px;
+  background:linear-gradient(135deg,var(--g1),var(--g3));color:#2a1a00;font-size:13px;
+  font-weight:600;text-decoration:none}
+</style>
+
+<script>
+/* ================= v3: 导出 / 导入 / 日报图片 ================= */
+(function () {
+  var KEYS = ['salarySet','salarySnd','salaryDrk','salaryCD','salarySpk','salaryAtt',
+              'salaryAttDate','salaryAttTrig','salaryGoal','salaryGoals','salaryStreak',
+              'salaryMood','salaryLastVisit','salaryTheme','salaryHistory'];
+
+  /* ---------- 导出 ---------- */
+  function buildExportPayload() {
+    var data = {};
+    for (var i = 0; i < KEYS.length; i++) {
+      try { var v = localStorage.getItem(KEYS[i]); if (v !== null) data[KEYS[i]] = v; } catch (e) {}
+    }
+    return JSON.stringify({
+      __app: 'redemption-meter',
+      __version: 3,
+      __exportedAt: new Date().toISOString(),
+      data: data
+    }, null, 2);
+  }
+
+  function downloadText(filename, text) {
+    try {
+      var blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function exportSettings() {
+    var txt = buildExportPayload();
+    var name = '分秒成金-设置-' + new Date().toISOString().slice(0, 10) + '.json';
+    if (downloadText(name, txt)) {
+      window.__dbgNote && window.__dbgNote('已导出', '文件已开始下载：' + name, 6000);
+    } else {
+      // 兜底：弹窗显示文本，让用户自己复制
+      var ov = document.createElement('div');
+      ov.className = 'ov'; ov.id = 'expOv';
+      ov.innerHTML = '<div class="modal"><div class="mh"><h2>导出内容</h2>' +
+        '<button class="mx" onclick="this.closest(\'.ov\').classList.remove(\'show\')">✕</button></div>' +
+        '<div class="h" style="margin-bottom:6px">下载被拦截了，请手动复制下面全部内容保存为 .json</div>' +
+        '<textarea style="width:100%;height:220px;font-size:11px;background:var(--cd);color:var(--tx);' +
+        'border:1px solid var(--bd);border-radius:8px;padding:8px" readonly></textarea></div>';
+      document.body.appendChild(ov);
+      ov.querySelector('textarea').value = txt;
+      ov.classList.add('show');
+      ov.querySelector('textarea').select();
+    }
+  }
+
+  /* ---------- 导入 ---------- */
+  function applyImport(text) {
+    var obj;
+    try { obj = JSON.parse(text); } catch (e) { alert('文件格式不对：不是有效的 JSON'); return; }
+    if (!obj || obj.__app !== 'redemption-meter' || !obj.data) {
+      alert('这不是「分秒成金」的设置文件'); return;
+    }
+    var n = 0;
+    for (var k in obj.data) {
+      if (KEYS.indexOf(k) < 0) continue;
+      try { localStorage.setItem(k, obj.data[k]); n++; } catch (e) {}
+    }
+    alert('已导入 ' + n + ' 项设置，页面将重新加载');
+    location.reload();
+  }
+
+  function pickFile() {
+    var inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = '.json,application/json';
+    inp.onchange = function () {
+      var f = inp.files && inp.files[0];
+      if (!f) return;
+      var fr = new FileReader();
+      fr.onload = function () { applyImport(String(fr.result)); };
+      fr.onerror = function () { alert('读取文件失败'); };
+      fr.readAsText(f);
+    };
+    inp.click();
+  }
+
+  /* ---------- 日报图片 ---------- */
+  function fmtMoney(n) {
+    return n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function buildReportCanvas() {
+    var W = 750, H = 1000;
+    var c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    var x = c.getContext('2d');
+
+    // 背景
+    var g = x.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#170b06'); g.addColorStop(0.5, '#2d1810'); g.addColorStop(1, '#170b06');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+    // 金色描边
+    x.strokeStyle = 'rgba(249,217,118,0.25)'; x.lineWidth = 3;
+    x.strokeRect(24, 24, W - 48, H - 48);
+
+    // 顶部小字
+    x.textAlign = 'center';
+    x.fillStyle = 'rgba(201,169,110,0.75)';
+    x.font = '22px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('🐱 分秒成金', W / 2, 96);
+
+    var d = new Date();
+    var dateStr = d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' +
+                  String(d.getDate()).padStart(2, '0');
+    x.fillStyle = 'rgba(201,169,110,0.5)';
+    x.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText(dateStr + ' 今日打工报告', W / 2, 140);
+
+    var r = (typeof calc === 'function') ? calc() : { earn: 0, daily: 0, wrk: 0 };
+    var earn = r.earn || 0;
+
+    // 金额
+    x.fillStyle = '#f9d976';
+    x.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('今日已赚', W / 2, 236);
+
+    var grad = x.createLinearGradient(0, 260, 0, 380);
+    grad.addColorStop(0, '#ffe9a8'); grad.addColorStop(0.5, '#f9d976'); grad.addColorStop(1, '#e67e22');
+    x.fillStyle = grad;
+    x.font = 'bold 108px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('¥' + fmtMoney(earn), W / 2, 356);
+
+    // 分隔线
+    x.strokeStyle = 'rgba(249,217,118,0.18)'; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(90, 410); x.lineTo(W - 90, 410); x.stroke();
+
+    // 折算
+    var unitName = '杯奶茶', unitPrice = 20;
+    try {
+      if (typeof getGoal === 'function') {
+        var gg = getGoal();
+        if (gg && gg.a > 0) { unitName = gg.u || '次'; unitPrice = gg.a; }
+      }
+    } catch (e) {}
+    var count = unitPrice > 0 ? (earn / unitPrice) : 0;
+
+    x.fillStyle = 'rgba(252,234,187,0.9)';
+    x.font = '30px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('相当于 ' + count.toFixed(2) + ' ' + unitName, W / 2, 480);
+
+    // 三项统计
+    var stats = [
+      ['日薪', '¥' + fmtMoney(r.daily || 0)],
+      ['已工作', ((r.wrk || 0) / 3600000).toFixed(1) + ' h'],
+      ['时薪', '¥' + fmtMoney(((r.daily || 0) / 8) || 0)]
+    ];
+    for (var i = 0; i < 3; i++) {
+      var bx = 90 + i * ((W - 180) / 3), bw = (W - 180) / 3 - 16;
+      x.fillStyle = 'rgba(255,215,150,0.06)';
+      x.beginPath();
+      x.roundRect ? x.roundRect(bx, 540, bw, 120, 16) : x.rect(bx, 540, bw, 120);
+      x.fill();
+      x.fillStyle = 'rgba(252,234,187,0.95)';
+      x.font = 'bold 34px "PingFang SC","Microsoft YaHei",sans-serif';
+      x.fillText(stats[i][1], bx + bw / 2, 596);
+      x.fillStyle = 'rgba(201,169,110,0.6)';
+      x.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+      x.fillText(stats[i][0], bx + bw / 2, 634);
+    }
+
+    // 语录
+    var quote = '';
+    try { quote = document.getElementById('aft').textContent || ''; } catch (e) {}
+    if (quote) {
+      x.fillStyle = 'rgba(252,234,187,0.78)';
+      x.font = '26px "PingFang SC","Microsoft YaHei",sans-serif';
+      var maxW = W - 180, line = '', yy = 740;
+      for (var ci = 0; ci < quote.length; ci++) {
+        var test = line + quote[ci];
+        if (x.measureText(test).width > maxW) { x.fillText(line, W / 2, yy); yy += 40; line = quote[ci]; }
+        else line = test;
+        if (yy > 800) break;
+      }
+      if (line) x.fillText(line, W / 2, yy);
+    }
+
+    // 底部
+    x.fillStyle = 'rgba(201,169,110,0.45)';
+    x.font = '20px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('每一分钱，都是你未来说「不」的底气', W / 2, 900);
+    x.fillStyle = 'rgba(201,169,110,0.28)';
+    x.font = '17px "PingFang SC","Microsoft YaHei",sans-serif';
+    x.fillText('分秒成金 · 时间就是钱', W / 2, 938);
+
+    return c;
+  }
+
+  function showReportImage() {
+    var c;
+    try { c = buildReportCanvas(); }
+    catch (e) { alert('生成图片失败：' + e.message); return; }
+    var url = c.toDataURL('image/png');
+    var old = document.getElementById('imgOv');
+    if (old) old.remove();
+
+    var ov = document.createElement('div');
+    ov.className = 'ov'; ov.id = 'imgOv';
+    ov.innerHTML =
+      '<div class="modal">' +
+        '<div class="mh"><h2>📸 日报图片</h2><button class="mx" onclick="document.getElementById(\'imgOv\').classList.remove(\'show\')">✕</button></div>' +
+        '<img alt="打工日报">' +
+        '<a class="dl" download="打工日报-' + new Date().toISOString().slice(0, 10) + '.png">保存图片</a>' +
+        '<div class="hint">手机上长按图片也能保存到相册</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    ov.querySelector('img').src = url;
+    ov.querySelector('a').href = url;
+    ov.classList.add('show');
+  }
+
+  /* ---------- 注入入口 ---------- */
+  function inject() {
+    // 设置面板底部加「数据」一栏
+    var mf = document.querySelector('#setOv .mf');
+    if (mf && !document.getElementById('dataBox')) {
+      var box = document.createElement('div');
+      box.className = 'fg';
+      box.id = 'dataBox';
+      box.style.cssText = 'margin-top:4px;padding-top:10px;border-top:1px solid var(--bd)';
+      box.innerHTML = '<label>💾 数据</label>' +
+        '<div class="dataRow">' +
+          '<button class="btn btn-s" id="expBtn">导出设置</button>' +
+          '<button class="btn btn-s" id="impBtn">导入设置</button>' +
+        '</div>' +
+        '<div class="h">导出一个 JSON 文件；换设备或清缓存前先存一份</div>';
+      mf.parentNode.insertBefore(box, mf);
+      box.querySelector('#expBtn').addEventListener('click', exportSettings);
+      box.querySelector('#impBtn').addEventListener('click', pickFile);
+    }
+
+    // 日报弹窗加「生成图片」按钮
+    var actions = document.querySelector('#reportOv .report-actions');
+    if (actions && !document.getElementById('imgBtn')) {
+      var b = document.createElement('button');
+      b.id = 'imgBtn'; b.className = 'pri'; b.textContent = '🖼 生成图片';
+      b.addEventListener('click', showReportImage);
+      actions.appendChild(b);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', inject);
+  else inject();
+
+  // 对外暴露（便于自检）
+  window.__v3 = { buildExportPayload: buildExportPayload, buildReportCanvas: buildReportCanvas,
+                  showReportImage: showReportImage, exportSettings: exportSettings };
+})();
+</script>
+
 </body>
 </html>
